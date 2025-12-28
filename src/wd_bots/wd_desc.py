@@ -1,42 +1,34 @@
 #!/usr/bin/python3
 """
-# ---
-from . import wd_desc
-# wd_desc.wwdesc(NewDesc, qid, i, fixlang, ask="", tage='')
-# wd_desc.work_api_desc(NewDesc, qid)
-# ---
+
 """
 
+import functools
 import json
-import os
 import sys
 import time
 from datetime import datetime
-
-from ..helps import logger
 from . import NewHimoAPIBot
+from ..helps import logger
 
-import functools
+
+menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
 
 
 @functools.lru_cache(maxsize=1)
-def get_wd_api_bot():
+def get_wd_api_bot() -> NewHimoAPIBot:
     return NewHimoAPIBot(Mr_or_bot="bot", www="www")
 
 
-file_name = os.path.basename(__file__)
+def del_keys(translation_map) -> dict:
 
-menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
-# ---
-# [[Topic:Xr8nyeau0ysm1zop]]
-langs_to_del = ["en-gb", "en-ca", "de-at", "de-ch", "zh-cn", "zh-sg", "zh-my", "zh-hk", "zh-mo", "zh-tw"]
+    # [[Topic:Xr8nyeau0ysm1zop]]
+    langs_to_del = ["en-gb", "en-ca", "de-at", "de-ch", "zh-cn", "zh-sg", "zh-my", "zh-hk", "zh-mo", "zh-tw"]
 
-
-def del_keys(d):
     for key in langs_to_del:
-        if key in d:
-            del d[key]
-    return d
+        if key in translation_map:
+            del translation_map[key]
+    return translation_map
 
 
 def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
@@ -102,9 +94,6 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     # ---
     logger.info(summary)
     # ---
-    if "workibrahem" in sys.argv:
-        summary = ""
-    # ---
     skipplang = []
     # ---
     if queries_list == [] and fixlang == []:
@@ -141,7 +130,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     # ---
     if "success" in skipp:
         # logger.info(summary)
-        logger.info(f"<<lightgreen>> **{qid} true. {summary}")
+        logger.warning(f"<<lightgreen>> **{qid} true. {summary}")
         return True, NewDesc
     # ---
     if ("using the same description text" in skipp) and ("associated with language code" in skipp):
@@ -165,7 +154,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
         logger.info(NewDesc)
 
     elif err_wait in skipp:
-        logger.info(f'<<lightred>> {file_name} - "{err_wait} time.sleep(5) " ')
+        logger.info(f'<<lightred>> wd_desc.py - "{err_wait} time.sleep(5) " ')
         time.sleep(5)
 
     else:

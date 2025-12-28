@@ -14,7 +14,7 @@ except ImportError:
     new_all = None
 
 from src.helps.log import config_logger
-from src.mk_cats import ToMakeNewCat2222
+from src.mk_cats import create_categories_from_list
 
 config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
 new_all_tab = {1: False}
@@ -94,7 +94,7 @@ def main():
     categories_list = [f"Category:{x}" if not x.startswith("Category:") else x for x in categories_list]
     if categories_list:
         print(f"categories_list work with {len(categories_list)} cats.")
-        ToMakeNewCat2222(categories_list, callback=new_all_work_on_title)
+        create_categories_from_list(categories_list, callback=new_all_work_on_title)
 
 
 if __name__ == "__main__":

@@ -14,10 +14,11 @@ from ..b18_new.LCN_new import find_LCN, find_Page_Cat_without_hidden
 from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import himoBOT2
-from . import no_1
+from ..wd_bots import to_wd
 from ..helps import logger
 from .mk_bots import filter_en
 from ..utils.skip_cats import NO_Templates_lower, skip_encats
+from .create_category_page import new_category
 
 try:
     from ArWikiCats import resolve_arabic_category_label  # type: ignore
@@ -221,7 +222,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
 
     # إنشاء التصنيف وإضافته للصفحات
 
-    hhh = no_1.new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
+    hhh = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
 
     if hhh:
         add_to_final_list(members, ar_title, callback=callback)
@@ -233,8 +234,9 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         if listen != []:
             add_to_final_list(listen, ar_title, callback=callback)
 
-        no_1.Log_to_wikidata(ar_title, en_page_title, qid)
-
+        to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
+    else:
+        to_wd.add_label(qid, ar_title)
     return en_cats_of_new_cat
 
 
@@ -327,8 +329,12 @@ def one_cat(en_title, num, lenth, sugust="", uselabs=False, callback=None):
     no_work(en_title, labb, num, lenth, callback=callback)
 
 
-def ToMakeNewCat2222(liste, uselabs=False, callback=None):
+def create_categories_from_list(liste, uselabs=False, callback=None):
     lenth = len(liste)
 
     for num, en_title in enumerate(liste, 1):
         one_cat(en_title, num, lenth, uselabs=uselabs, callback=callback)
+
+
+# Legacy name
+ToMakeNewCat2222 = create_categories_from_list
