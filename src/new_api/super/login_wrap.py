@@ -31,7 +31,7 @@ def LoginWrap(sitecode, family, bots_login_cache, User_tables):
     else:
         login_bot = Login(sitecode, family=family)
         # ---
-        logger.debug(f"### <<purple>> LoginWrap make new bot for ({sitecode}.{family}.org|{username})", p=True)
+        logger.debug(f"### <<purple>> LoginWrap make new bot for ({sitecode}.{family}.org|{username})")
         # ---
         login_bot.add_users({family: User_tables}, lang=sitecode)
         # ---

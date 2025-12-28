@@ -102,6 +102,7 @@ def get_ar_list_from_en(encat, us_sql=True, wiki="en"):
     """
     # ---
     if us_sql is True and sql.GET_SQL():
+
         en_list = sql.Make_sql_1_rows(en_qua, wiki=f"{wiki}wiki")
     else:
         en_list = get_en_title(encat, wiki=wiki)
