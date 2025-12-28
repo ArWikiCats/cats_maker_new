@@ -121,13 +121,13 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
             # result = sasa[link1]['langlinks'][second_site_code]
             # ---
             if ar_to_match and ar_to_match != link1:
-                logger.output(f">> ar_to_match:({ar_to_match}) != ar:({link1}).")
+                logger.info(f">> ar_to_match:({ar_to_match}) != ar:({link1}).")
                 return False
         # ---
     if text and results == "":
         match = re.search(r"\[\[en:(Category\:.+?)\]\]", text)
         if match:
-            logger.output(f"FindEngInArwiki: {match.group(1)}.")
+            logger.info(f"FindEngInArwiki: {match.group(1)}.")
             results = match.group(1)
     # ---
     Sitelinks2 = {}
@@ -146,7 +146,7 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
         if tavr and "sitelinks" in tavr:
             # ---
             Sitelinks2 = tavr["sitelinks"]
-            logger.output("sitelinks 2020.")
+            logger.info("sitelinks 2020.")
     # ---
     if Sitelinks2 != {}:
         table = {}
@@ -157,14 +157,14 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
         if firstsite_code in table:
             link1_other = table[firstsite_code]
             if link1 != link1_other:
-                logger.output(f"link1 ({link1}) != link1_other ({link1_other}).")
+                logger.info(f"link1 ({link1}) != link1_other ({link1_other}).")
                 set_cache_L_C_N(tubb, False)
                 return False
         # ---
         oppsite_tubb = (results, second_site_code, firstsite_code, "en_links")
         set_cache_L_C_N(oppsite_tubb, link)
         set_cache_L_C_N(tubb, results)
-        logger.output(f" ({results}).")
+        logger.info(f" ({results}).")
         return results
     # ---
     set_cache_L_C_N(tubb, False)

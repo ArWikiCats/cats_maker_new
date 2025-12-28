@@ -23,23 +23,23 @@ class classgetURL:
 
     def open_it(self):
         if not self.url:
-            logger.output('open_url.py: self.url == ""')
+            logger.info('open_url.py: self.url == ""')
             return ""
         if "printurl" in sys.argv:
-            logger.output(f"getURL: {self.url}")
+            logger.info(f"getURL: {self.url}")
 
         try:
             req = self.session.get(self.url, timeout=10)
             # ---
             if 500 <= req.status_code < 600:
-                logger.output(f"received {req.status_code} status from {req.url}")
+                logger.info(f"received {req.status_code} status from {req.url}")
                 self.html = ""
             else:
                 # ---
                 self.html = req.text
 
         except requests.exceptions.ReadTimeout:
-            logger.output(f"ReadTimeout: {self.url}")
+            logger.info(f"ReadTimeout: {self.url}")
 
         except Exception as e:
             logger.exception(e)
@@ -71,5 +71,5 @@ def open_json_url(url, maxsleeps=0, **kwargs):
     try:
         return json.loads(js_text)
     except json.decoder.JSONDecodeError:
-        logger.output(f"open_url.open_json_url json.decoder.JSONDecodeError url {url}")
+        logger.info(f"open_url.open_json_url json.decoder.JSONDecodeError url {url}")
         return {}

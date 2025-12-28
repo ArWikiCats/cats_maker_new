@@ -19,7 +19,7 @@ def get_result(num):
         jsons = json.loads(result)
         rows = jsons["rows"]
     except json.decoder.JSONDecodeError:
-        logger.output(f" json.decoder.JSONDecodeError url {url}")
+        logger.info(f" json.decoder.JSONDecodeError url {url}")
     # ---
     return rows
 

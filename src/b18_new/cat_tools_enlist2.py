@@ -75,10 +75,10 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
     # ---
     encat = enpageTitle
     if not encat:
-        logger.output("<<lightblue>> No enpageTitle")
+        logger.info("<<lightblue>> No enpageTitle")
         return False
     # ---
-    logger.output("<<lightgreen>>* MakeLit ApiWay: ")
+    logger.info("<<lightgreen>>* MakeLit ApiWay: ")
     # count = 0
     # encat = encat.replace('[[', '').replace(']]', '').replace('Category:', '').replace('category:', '').strip()
     encat = encat.replace("[[", "").replace("]]", "").replace("Category:", "").replace("category:", "").strip()
@@ -88,16 +88,16 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
     UUX = get_arpage_inside_encat("Category:" + encat)
     # ---
     if UUX:
-        logger.output("arpage inside_encat: " + (",a: ".join(UUX)))
+        logger.info("arpage inside_encat: " + (",a: ".join(UUX)))
         for x in UUX:
             gent_faso_list.append(x.replace("_", " "))
     # ---
     if not gent_faso_list:
         gent_faso_list = get_ar_list_from_cat(encat, code="en", typee=Type)
     # ---
-    logger.output(f" MakeLitApi:  Way lenth : {len(gent_faso_list)}")
+    logger.info(f" MakeLitApi:  Way lenth : {len(gent_faso_list)}")
     if len(gent_faso_list) == 0:
-        logger.output(f'<<lightblue>> MakeLit ApiWay: No cats gent_faso_list == ["{len(gent_faso_list)}"] ')
+        logger.info(f'<<lightblue>> MakeLit ApiWay: No cats gent_faso_list == ["{len(gent_faso_list)}"] ')
         return False
     # ---
     for i in range(0, len(gent_faso_list), 50):
@@ -149,7 +149,7 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
         # ---
     # if not listenpageTitle:
     if len(listenpageTitle) == 0:
-        logger.output(f'<<lightblue>> MakeLit ApiWay : No cats listenpageTitle == ["{len(listenpageTitle)}"] ')
+        logger.info(f'<<lightblue>> MakeLit ApiWay : No cats listenpageTitle == ["{len(listenpageTitle)}"] ')
         return False
     # ---
     return listenpageTitle

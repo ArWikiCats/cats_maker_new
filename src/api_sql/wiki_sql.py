@@ -156,10 +156,10 @@ def sql_new(queries, wiki="", printqua=False, values=[]):
     host, dbs_p = make_labsdb_dbs_p(wiki)
     # ---
     if printqua or "printsql" in sys.argv:
-        logger.output(queries)
+        logger.info(queries)
     # ---
     if not GET_SQL():
-        logger.output("no GET_SQL()")
+        logger.info("no GET_SQL()")
         return []
     # ---
     start = tttime.time()
@@ -171,7 +171,7 @@ def sql_new(queries, wiki="", printqua=False, values=[]):
     # ---
     delta = int(final - start)
     # ---
-    logger.output(f'wiki_sql.py sql_new len(encats) = "{len(rows)}", in {delta} seconds')
+    logger.info(f'wiki_sql.py sql_new len(encats) = "{len(rows)}", in {delta} seconds')
     # ---
     return rows
 
@@ -241,25 +241,25 @@ if __name__ == "__main__":
     # ---
     # python3 core8/pwb.py api_sql/wiki_sql
     ss = sql_new(arqueries, wiki="ar")
-    logger.output(f"<<lightyellow>>{arqueries}")
+    logger.info(f"<<lightyellow>>{arqueries}")
     # ---
-    logger.output(f"wiki_sql.py test:: sql_new lenth:{len(ss)}")
+    logger.info(f"wiki_sql.py test:: sql_new lenth:{len(ss)}")
     for row in ss:
-        logger.output(f"a {str(row)}")
+        logger.info(f"a {str(row)}")
     # ---
     qua2 = "select page_title as title, page_namespace as ns from page where page_namespace in (14, 10, 828) limit 10;"
     # ---
     ss2 = sql_new_title_ns(qua2, wiki="en", t1="title", t2="ns")
-    logger.output(f"<<lightyellow>>{qua2}")
+    logger.info(f"<<lightyellow>>{qua2}")
     # ---
-    logger.output(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss2)}")
+    logger.info(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss2)}")
     for row in ss2:
-        logger.output(f"a {str(row)}")
+        logger.info(f"a {str(row)}")
     # ---
     ss3 = sql_new_title_ns(qua2, wiki="ar", t1="title", t2="ns")
-    logger.output(f"<<lightyellow>>{qua2}")
+    logger.info(f"<<lightyellow>>{qua2}")
     # ---
-    logger.output(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss3)}")
+    logger.info(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss3)}")
     for row in ss3:
-        logger.output(f"a {str(row)}")
+        logger.info(f"a {str(row)}")
 # ---

@@ -36,7 +36,7 @@ def wd_sparql_generator_url(quary, returnq=False):
     """
 
     # ---
-    logger.output(quary)
+    logger.info(quary)
     # ---
     items = []
     qlist = []
@@ -65,7 +65,7 @@ def wd_sparql_generator_url(quary, returnq=False):
     # ---
     ss = f"{lenth2} items found, {len(items)} items append, {menet}"
     # ---
-    logger.output(ss)
+    logger.info(ss)
     # ---
     return items
 
@@ -76,7 +76,7 @@ def sparql_generator_url(quary, printq=False, add_date=True, key="", geterror=Fa
         quary = f"{quary}\n#{str(menet)}"
     # ---
     if printq is True:
-        logger.output(quary)
+        logger.info(quary)
     # ---
     json1 = get_query_data(quary)
     # ---
@@ -123,7 +123,7 @@ def sparql_generator_url(quary, printq=False, add_date=True, key="", geterror=Fa
                     if result[vv]["value"] not in qdict[iid][vv]:
                         qdict[iid][vv].append(result[vv]["value"])
     # ---
-    logger.output(f"#sparql_generator_url:<<lightgreen>> {len(qlist)} items found. {menet}")
+    logger.info(f"#sparql_generator_url:<<lightgreen>> {len(qlist)} items found. {menet}")
     # ---
     if returndict:
         return qdict
@@ -169,7 +169,7 @@ def sparql_generator_big_results(spq, offset=0, limit=5000, alllimit=0):
     Keep = True
     off_set = offset if offset != 0 else 0
     # ---
-    logger.output(f'qua "{qua}"')
+    logger.info(f'qua "{qua}"')
     # ---
     while Keep:
         # ---
@@ -181,7 +181,7 @@ def sparql_generator_big_results(spq, offset=0, limit=5000, alllimit=0):
         if off_set != 0:
             quarry = f"{quarry} offset {str(off_set)}"
         # ---
-        logger.output(f'limit:"{limit}"\t offset:"{off_set}"')
+        logger.info(f'limit:"{limit}"\t offset:"{off_set}"')
         # ---
         generator = sparql_generator_url(quarry)
         # ---
@@ -192,15 +192,15 @@ def sparql_generator_big_results(spq, offset=0, limit=5000, alllimit=0):
         # ---
         if alllimit != 0:
             if off_set == alllimit or off_set > alllimit:
-                logger.output("Keep = False 1 ")
+                logger.info("Keep = False 1 ")
                 Keep = False
         # ---
         if not generator or generator == [] or "nokeep" in sys.argv:
-            logger.output("Keep = False 2 ")
+            logger.info("Keep = False 2 ")
             Keep = False
         # ---
         if limit == 0:
-            logger.output("Keep = False 3 ")
+            logger.info("Keep = False 3 ")
             Keep = False
     # ---
     return New_List

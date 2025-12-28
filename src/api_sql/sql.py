@@ -122,7 +122,7 @@ def Make_sql_2_rows(queries, wiki="", printqua=False):
     logger.debug(f"API/sql_py Make_sql_many_rows wiki '{dbs_p}'")
     # ---
     if printqua:
-        logger.output(queries)
+        logger.info(queries)
     # ---
     if not GET_SQL():
         return encats
@@ -144,7 +144,7 @@ def Make_sql_2_rows(queries, wiki="", printqua=False):
         encats[key] = value
     # ---
     delta = int(final - start)
-    logger.output(f'API/sql_py Make_sql_2_rows len(results) = "{len(encats)}", in {delta} seconds')
+    logger.info(f'API/sql_py Make_sql_2_rows len(results) = "{len(encats)}", in {delta} seconds')
     # ---
     return encats
 
@@ -156,10 +156,10 @@ def Make_sql_1_rows(queries, wiki="", printqua=False):
         wiki = "enwiki"
     host, dbs_p = make_labsdb_dbs_p(wiki)
     # ---
-    logger.debug(f"API/sql_py Make_sql_many_rows wiki '{dbs_p}'")
+    logger.info(f"API/sql_py Make_sql_many_rows wiki '{dbs_p}'")
     # ---
     if printqua:
-        logger.output(queries)
+        logger.info(queries)
     # ---
     if not GET_SQL():
         return encats
@@ -179,7 +179,7 @@ def Make_sql_1_rows(queries, wiki="", printqua=False):
         encats.append(en)
     # ---
     delta = int(final - start)
-    logger.output(f'API/sql_py Make_sql_2_rows len(results) = "{len(encats)}", in {delta} seconds')
+    logger.info(f'API/sql_py Make_sql_2_rows len(results) = "{len(encats)}", in {delta} seconds')
     # ---
     return encats
 
@@ -197,4 +197,4 @@ if __name__ == "__main__":
         """
     # ---
     ss = Make_sql_2_rows(arqueries, wiki="arwiki")
-    logger.output(f"sql py test:: Make_sql_2_rows lenth:{len(ss)}")
+    logger.info(f"sql py test:: Make_sql_2_rows lenth:{len(ss)}")

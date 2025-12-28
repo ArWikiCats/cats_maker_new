@@ -11,11 +11,11 @@ from ...helps import logger
 
 def loads_json(sparql):
     if not sparql or sparql.strip() == "":
-        logger.output('API/tools.py loads_json sparql == "" ')
+        logger.info('API/tools.py loads_json sparql == "" ')
         return {}
     # ---
     if "java.util.concurrent" in str(sparql):
-        logger.output("API/tools.py loads_json java.util.concurrent ")
+        logger.info("API/tools.py loads_json java.util.concurrent ")
         return {}
     # ---
     try:
@@ -28,8 +28,8 @@ def loads_json(sparql):
         if sparql.find("<!DOCTYPE html>") == -1:
             if len(sparql) > 1000:
                 sparql = sparql[:1000]
-            logger.output(sparql)
-        logger.output("API/tools.py loads_json json.loads(sparql) is False ")
+            logger.info(sparql)
+        logger.info("API/tools.py loads_json json.loads(sparql) is False ")
         return {}
     return {}
 
@@ -73,7 +73,7 @@ def new_split_dict_or_list(cat_m2, numb=100):
     final = time.time()
     delta = int(final - start)
     # ---
-    logger.output(f"new_split_dict_or_list, split {len(List)} list in {delta} seconds")
+    logger.info(f"new_split_dict_or_list, split {len(List)} list in {delta} seconds")
     # ---
     return List
 

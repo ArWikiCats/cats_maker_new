@@ -73,7 +73,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     langes = list(NewDesc.keys())
     # ---
     if len(langes) == 2 and "en-gb" in langes and "en-ca" in langes:
-        logger.output("wwdesc: only en-gb and en-ca, Skipp... ")
+        logger.info("wwdesc: only en-gb and en-ca, Skipp... ")
         return
     # ---
     # dlangs = ','.join(queries_list)
@@ -87,13 +87,13 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
         for ii in fixlang:
             if ii not in NewDesc.keys():
                 fixlang.remove(str(ii))
-                logger.output(f'remove "{ii}" from fixlang because it\'s not in NewDesc')
+                logger.info(f'remove "{ii}" from fixlang because it\'s not in NewDesc')
         # ---
         fixed = ",".join(fixlang)
         # ---
         summary = f"{summary}- fix descriptions:({len(fixlang)}: {str(fixed)})."
     # ---
-    logger.output(summary)
+    logger.info(summary)
     # ---
     if "workibrahem" in sys.argv:
         summary = ""
@@ -101,7 +101,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     skipplang = []
     # ---
     if queries_list == [] and fixlang == []:
-        logger.output("  *** no addedlangs")
+        logger.info("  *** no addedlangs")
         return
     # ---
     value = ""
@@ -115,26 +115,26 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
             logger.exception(e)
             value = ""
     # ---
-    logger.output(
+    logger.info(
         f'* wd_desc.py wwdesc "{qid}" try number:"{i}", len NewDesc:"{len(NewDesc)}", len queries_list:"{len(queries_list)}"'
     )
     # ---
-    logger.output(f'*work_api_desc {str(qid)} "{value}": try "{i}",{menet}:')
+    logger.info(f'*work_api_desc {str(qid)} "{value}": try "{i}",{menet}:')
     # ---
     if "printdisc" in sys.argv:
-        logger.output(data3)
+        logger.info(data3)
     # ---
     skipp = WD_API_Bot.New_Mult_Des_2(qid, data3, summary, "", return_result=True, ask=ask, tage=tage)
     # ---
     if not skipp:
-        logger.output("<<lightred>> - no skipp ")
+        logger.info("<<lightred>> - no skipp ")
         return
     # ---
     err_wait = "احترازًا من الإساء، يُحظر إجراء هذا الفعل مرات كثيرة في فترةٍ زمنية قصيرة، ولقد تجاوزت هذا الحد"
     # ---
     if "success" in skipp:
-        # logger.output(summary)
-        logger.output(f"<<lightgreen>> **{qid} true. {summary}")
+        # logger.info(summary)
+        logger.info(f"<<lightgreen>> **{qid} true. {summary}")
         return True, NewDesc
     # ---
     if ("using the same description text" in skipp) and ("associated with language code" in skipp):
@@ -143,26 +143,26 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
         # ---
         NewDesc2 = NewDesc
         if len(skipplang) != 0:
-            logger.output(f'skiping languages: "{str(skipplang)}"')
-            # logger.output(keys)
+            logger.info(f'skiping languages: "{str(skipplang)}"')
+            # logger.info(keys)
             for lango in skipplang:
                 if lango:
                     del NewDesc2[lango]
         # ---
         i += 1
-        logger.output(f"<<lightred>> try {i} again with remove skipplang ")
+        logger.info(f"<<lightred>> try {i} again with remove skipplang ")
         wwdesc(NewDesc2, qid, i, fixlang, ask=ask, tage=tage)
         # ---
     elif "wikibase-api-invalid-json" in skipp:
-        logger.output('<<lightred>> - "wikibase-api-invalid-json" ')
-        logger.output(NewDesc)
+        logger.info('<<lightred>> - "wikibase-api-invalid-json" ')
+        logger.info(NewDesc)
 
     elif err_wait in skipp:
-        logger.output(f'<<lightred>> {file_name} - "{err_wait} time.sleep(5) " ')
+        logger.info(f'<<lightred>> {file_name} - "{err_wait} time.sleep(5) " ')
         time.sleep(5)
 
     else:
-        logger.output(skipp)
+        logger.info(skipp)
 
 
 def work_api_desc(NewDesc, qid, fixlang=[]):
@@ -177,16 +177,16 @@ def work_api_desc(NewDesc, qid, fixlang=[]):
         lang = list(NewDesc.keys())[0]
         # ---
         if lang in lang_to_skip:
-            logger.output(f'work_api_desc:"{qid}" only en-gb and en-ca, Skipp... ')
+            logger.info(f'work_api_desc:"{qid}" only en-gb and en-ca, Skipp... ')
             return
         # ---
         onedesc = NewDesc[lang]["value"]
-        logger.output(f'work_api_desc:"{qid}" only one desc"{lang}:{onedesc}"')
+        logger.info(f'work_api_desc:"{qid}" only one desc"{lang}:{onedesc}"')
         WD_API_Bot.Des_API(qid, onedesc, lang)
         return
     # ---
     elif len(langes) == 2 and langes[0] in lang_to_skip and langes[1] in lang_to_skip:
-        logger.output(f'work_api_desc:"{qid}" only en-gb and en-ca, Skipp... ')
+        logger.info(f'work_api_desc:"{qid}" only en-gb and en-ca, Skipp... ')
         return
     # ---
     for fix in fixlang:

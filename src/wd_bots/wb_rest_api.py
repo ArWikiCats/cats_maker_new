@@ -83,7 +83,7 @@ def Get_one_qid_info(qid, only=None):
         url += "/" + only
     # ---
     if "printurl" in sys.argv:
-        logger.output(url)
+        logger.info(url)
     # ---
     result = get_rest_result_wrap(url)
     # ---
@@ -107,13 +107,13 @@ def Get_one_qid_info(qid, only=None):
 
 def Get_item_infos(qids):
     # ---
-    logger.output(f"Get_item_infos {len(qids)=}")
+    logger.info(f"Get_item_infos {len(qids)=}")
     # ---
     table = {}
     # ---
     for qid in qids:
         # ---
-        logger.output(f"Get_item_infos work for one qid: {qid}")
+        logger.info(f"Get_item_infos work for one qid: {qid}")
         # ---
         table[qid] = Get_one_qid_info(qid)
     # ---
@@ -138,14 +138,14 @@ def test():
     results = Get_item_infos(qids)
     # ---
     for q, taa in results.items():
-        logger.output(f"<<blue>>{q} :")
+        logger.info(f"<<blue>>{q} :")
         # ---
-        logger.output(f"{len(taa)=}")
-        logger.output(f"{len(q)=}")
+        logger.info(f"{len(taa)=}")
+        logger.info(f"{len(q)=}")
         # ---
         p373 = Get_P373(q)
         # ---
-        logger.output(f"<<purple>>{p373=}")
+        logger.info(f"<<purple>>{p373=}")
 
 
 if __name__ == "__main__":

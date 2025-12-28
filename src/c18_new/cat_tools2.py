@@ -19,7 +19,7 @@ if "-stubs" in sys.argv:
 
 def Categorized_Page_Generator(enpageTitle, typee):
     # ---
-    logger.output(f"Categorized_Page_Generator, enpageTitle:{enpageTitle}")
+    logger.info(f"Categorized_Page_Generator, enpageTitle:{enpageTitle}")
     # ---
     nss = "all"
     if typee == "cat":

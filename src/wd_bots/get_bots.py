@@ -235,7 +235,7 @@ def Get_Items_API_From_Qids(qids, props="", sitefilter=""):
     if sitefilter:
         params["sitefilter"] = sitefilter
     # ---
-    logger.output(f"<<purple>> Get_Items_API_From_Qids: {len(qids)=}")
+    logger.info(f"<<purple>> Get_Items_API_From_Qids: {len(qids)=}")
     # ---
     json1 = submitAPI(params)
     # ---
@@ -330,7 +330,7 @@ def Get_P373_API(q, titles="", sites=""):
             _type = datavalue.get("type", False)
             value = datavalue.get("value", "")
             if _type == "string" and value:
-                logger.output(value)
+                logger.info(value)
                 return value
     # ---
     return mainvalue
@@ -412,20 +412,20 @@ def test():
     qids = ["Q805", "Q4167836"]
     # ---
     for q in qids:
-        logger.output(f"<<blue>>_______\n{q} :")
+        logger.info(f"<<blue>>_______\n{q} :")
         # ---
         p1 = Get_Claim_API(q=q, p="P31")
         # ---
-        logger.output(f"P31: {p1=}")
+        logger.info(f"P31: {p1=}")
         # ---
         descr = Get_item_descriptions_or_labels(q)
         # ---
-        logger.output(f"<<purple>>{len(descr)=}")
+        logger.info(f"<<purple>>{len(descr)=}")
         # ---
         statements = Get_one_qid_info(q, only="statements")
         # ---
-        logger.output(f"{len(statements)=}")
-        # logger.output(statements)
+        logger.info(f"{len(statements)=}")
+        # logger.info(statements)
 
 
 if __name__ == "__main__":

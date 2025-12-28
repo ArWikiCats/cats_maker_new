@@ -45,9 +45,9 @@ def log_to_file(data, filename):
     try:
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
-            logger.output(f"<<green>> wrote to {filename}")
+            logger.info(f"<<green>> wrote to {filename}")
     except PermissionError:
-        logger.output(f"<<red>> PermissionError writing to {filename}")
+        logger.info(f"<<red>> PermissionError writing to {filename}")
         delete = True
     except Exception as e:
         logger.warning(e)
@@ -56,11 +56,11 @@ def log_to_file(data, filename):
         try:
             os.remove(filename)
             # ---
-            logger.output(f"<<lightgreen>> deleted {filename}")
+            logger.info(f"<<lightgreen>> deleted {filename}")
             # ---
             with open(filename, "w", encoding="utf-8") as f:
                 json.dump(data, f)
-                logger.output(f"<<green>> wrote to {filename}")
+                logger.info(f"<<green>> wrote to {filename}")
             # ---
             os.chmod(filename, statgroup)
         except Exception as e:

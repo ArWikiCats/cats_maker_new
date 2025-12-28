@@ -47,14 +47,14 @@ def get_listenpageTitle(artitle, enpageTitle1):
             # ---
             if fapages and fapages != []:
                 # Work_API = False
-                logger.output(f"<<lightgreen>>Adding {len(fapages)} pages to fapage lists<<default>>")
+                logger.info(f"<<lightgreen>>Adding {len(fapages)} pages to fapage lists<<default>>")
                 for pages in fapages:
-                    # logger.output( '<<lightgreen>>Adding ' + pages + ' to fapage lists<<default>>')
+                    # logger.info( '<<lightgreen>>Adding ' + pages + ' to fapage lists<<default>>')
                     if pages not in listenpageTitle:
                         listenpageTitle.append(pages)
     # ---
     if enpageTitle in pages_in_arcat_toMake:
-        logger.output(f'<<lightgreen>> pages_in_arcat_toMake Adding for cats: "{enpageTitle}" : ')
+        logger.info(f'<<lightgreen>> pages_in_arcat_toMake Adding for cats: "{enpageTitle}" : ')
         for cai in pages_in_arcat_toMake[enpageTitle]:
             if cai not in listenpageTitle:
                 listenpageTitle.append(cai)

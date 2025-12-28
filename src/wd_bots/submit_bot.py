@@ -47,7 +47,7 @@ def submitAPI(params):
         r22 = Session_t[1].post(mainurl, data=params, timeout=10, headers=headers)
 
     except requests.exceptions.ReadTimeout:
-        logger.output(f"ReadTimeout: {mainurl}")
+        logger.info(f"ReadTimeout: {mainurl}")
 
     except Exception as e:
         logger.exception(e)

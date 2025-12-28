@@ -11,7 +11,7 @@ from .load_data import cacaca
 
 
 def Make_Elff_temp(title):
-    logger.output(f" Make_Elff_temp :{title} ", "blue")
+    logger.info(f" Make_Elff_temp :{title} ", "blue")
 
     title = re.sub(r"الألفية الأولى", "الألفية 1", title)
     title = re.sub(r"الألفية الثانية", "الألفية 2", title)
@@ -40,7 +40,7 @@ def Make_Elff_temp(title):
             if bld == title:
                 bld = ""
             bld = bld.strip()
-            logger.output(f'Make_Elff_temp : elffs:"{elffs}",bef:"{bef}",In:"{In}",bld:"{bld}"')
+            logger.info(f'Make_Elff_temp : elffs:"{elffs}",bef:"{bef}",In:"{In}",bld:"{bld}"')
 
             temp = f"{xdx}بلد الألفية {elffs}"
             if not texx:
@@ -65,13 +65,13 @@ def Make_Elff_temp(title):
             Caas = True
             break
     if not Caas:
-        logger.output(" no Caas")
+        logger.info(" no Caas")
         return "{{تصنيف موسم}}", "تصنيف موسم"
 
-    logger.output(f' Make_Elff_temp:{title} , tex:"{teg}"', "blue")
+    logger.info(f' Make_Elff_temp:{title} , tex:"{teg}"', "blue")
     t_1 = f"تصنيف:{teg}الألفية"
     ttt = t_1 + r"\s*(\d|الأولى|الثانية|الثالثة|الرابعة|)\s*(في |)(.*|)$"
-    logger.output(f'ttt:"{ttt}" ')
+    logger.info(f'ttt:"{ttt}" ')
     elffs = re.sub(ttt, r"\g<1>", title)
     In = re.sub(ttt, r"\g<2>", title)
     bld = re.sub(ttt, r"\g<3>", title)
@@ -80,7 +80,7 @@ def Make_Elff_temp(title):
     if bld == title:
         bld = ""
 
-    logger.output(f'elffs:"{elffs}",bld:"{bld}"')
+    logger.info(f'elffs:"{elffs}",bld:"{bld}"')
 
     if not elffs:
         return "{{تصنيف موسم}}", "تصنيف موسم"

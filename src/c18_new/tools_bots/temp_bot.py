@@ -67,7 +67,7 @@ def templatequerymulti(enlink, sitecode):
     if cached is not None:
         return cached
     # ---
-    logger.output(f"<<lightblue>> templatequery {sitecode}:{enlink} . ")
+    logger.info(f"<<lightblue>> templatequery {sitecode}:{enlink} . ")
     # ---
     # prop= "templates|langlinks"
     prop = "templates"
