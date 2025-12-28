@@ -11,7 +11,13 @@ from datetime import datetime
 from ...wd_bots import NewHimoAPIBot
 from ...helps import logger
 
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot():
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
+
 
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
 # ---
@@ -114,7 +120,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     if "printdisc" in sys.argv:
         logger.info(data3)
     # ---
-    skipp = WD_API_Bot.New_Mult_Des_2(qid, data3, summary, "", return_result=True, ask=ask, tage=tage)
+    skipp = get_wd_api_bot().New_Mult_Des_2(qid, data3, summary, "", return_result=True, ask=ask, tage=tage)
     # ---
     if not skipp:
         logger.info("<<lightred>> - no skipp ")
@@ -172,7 +178,7 @@ def work_api_desc(NewDesc, qid, fixlang=[]):
         # ---
         onedesc = NewDesc[lang]["value"]
         logger.info(f'work_api_desc:"{qid}" only one desc"{lang}:{onedesc}"')
-        WD_API_Bot.Des_API(qid, onedesc, lang)
+        get_wd_api_bot().Des_API(qid, onedesc, lang)
         return
     # ---
     elif len(langes) == 2 and langes[0] in lang_to_skip and langes[1] in lang_to_skip:

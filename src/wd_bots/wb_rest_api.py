@@ -28,9 +28,17 @@ from ..helps import logger
 from . import NewHimoAPIBot
 
 # ---
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot():
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
 # ---
-get_rest_result = WD_API_Bot.get_rest_result
+
+
+def get_rest_result(url):
+    return get_wd_api_bot().get_rest_result(url)
 
 
 wd_cach = {}

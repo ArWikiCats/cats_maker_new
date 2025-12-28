@@ -6,7 +6,13 @@ from ...helps import logger
 from ..mk_bots.wd_desc import wwdesc
 from ..utils import tools, wikimedia_category_descraptions
 
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot():
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
+
 
 ns_text_tab_1 = {
     "0": "",
@@ -70,7 +76,7 @@ def Make_New_item(artitle, entitle, family=""):
 
     summary = f"Bot: New item from [[w:en:{entitle}|{enwiki}]]/[[w:ar:{artitle}|{arwiki}]]."
 
-    sao = WD_API_Bot.New_API(data, summary, returnid=True, nowait=True, tage="newitems")
+    sao = get_wd_api_bot().New_API(data, summary, returnid=True, nowait=True, tage="newitems")
 
     if sao and sao.startswith("Q"):
         add_desc_to_cat(sao)

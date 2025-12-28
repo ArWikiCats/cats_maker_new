@@ -11,7 +11,13 @@ from ..helps import logger
 from .mk_bots import no1help
 from ..utils.skip_cats import skip_encats
 
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot():
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
+
 
 find_title = [
     "إسرائيل",
@@ -127,11 +133,11 @@ def make_category(categories, enca, title, qid, family=""):
 
 def Log_to_wikidata(ar, enca, qid):
     if qid:
-        WD_API_Bot.Sitelink_API(qid, ar, "arwiki", nowait=True)
-        WD_API_Bot.Labels_API(qid, ar, "ar", False, nowait=True, tage="catelabels")
+        get_wd_api_bot().Sitelink_API(qid, ar, "arwiki", nowait=True)
+        get_wd_api_bot().Labels_API(qid, ar, "ar", False, nowait=True, tage="catelabels")
 
     else:
-        cd = WD_API_Bot.Sitelink_API("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)
+        cd = get_wd_api_bot().Sitelink_API("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)
         if cd is not True:
             no1help.Make_New_item(ar, enca, family="wikipedia")
 
@@ -148,7 +154,7 @@ def new_category(enca, title, categories, qid, family=""):
 
     if New_Cat is False or New_Cat is not True:
         logger.debug("no1: New_Cat is False")
-        WD_API_Bot.Labels_API(qid, title, "ar", True, nowait=True, tage="catelabels")
+        get_wd_api_bot().Labels_API(qid, title, "ar", True, nowait=True, tage="catelabels")
         logger.debug("return False")
         return False
 
