@@ -96,16 +96,6 @@ def get_one_temp_params(text, tempname="", templates=[], lowers=False, get_all_t
     return named
 
 
-def get_all_temps_params(text, templates=None, lowers=False):
-    # ---
-    if templates is None:
-        templates = []
-    # ---
-    tab = get_one_temp_params(text, templates=templates, lowers=lowers, get_all_temps=True)
-    # ---
-    return tab
-
-
 # ---
 test_text = """
 {{ص.م/صورة مضاعفة ويكي بيانات|معرف ويكي بيانات={{{معرف ويكي بيانات|}}}

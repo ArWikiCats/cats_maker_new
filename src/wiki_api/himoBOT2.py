@@ -234,55 +234,6 @@ def Get_Newpages(sitecode, family, limit="max", namespace="0", rcstart=""):
 
 
 @functools.lru_cache(maxsize=1000)
-def Get_page_qids(sitecode, titles):
-    _false = True
-    # logger.debug('himoBOT2.Get_page_qids for "%s:%s"' % ( sitecode, titles) )
-    if sitecode.endswith("wiki"):
-        sitecode = sitecode[:-4]
-    # ---
-    params = {
-        "action": "query",
-        "titles": titles,
-        "redirects": 1,
-        "prop": "pageprops",
-        "ppprop": "wikibase_item",
-        # "normalize": 1,
-    }
-    _sitewiki = f"{sitecode}wiki"
-    # ---
-    json1 = submitAPI(params, sitecode, "wikipedia")
-    if not json1:
-        return {}
-    # ---
-    Main_table = {}
-    js = json1.get("query", {})
-    # ---
-    for red in js.get("redirects", []):
-        redirects_table[red["from"]] = red["to"]
-        Main_table[red["from"]] = {
-            "isRedirectPage": True,
-            "missing": True,
-            "from": red["from"],
-            "to": red["to"],
-            "title": red["from"],
-            "ns": "",
-            "q": "",
-        }
-    # ---
-    for _id, kk in js.get("pages", {}).items():
-        if "title" in kk:
-            title = kk["title"]
-            Main_table[title] = {}
-            if "missing" in kk:
-                Main_table[title]["missing"] = True
-            Main_table[title]["ns"] = kk.get("ns", "")
-            Main_table[title]["pageid"] = kk.get("pageid", "")
-            Main_table[title]["q"] = kk.get("pageprops", {}).get("wikibase_item", "")
-    # ---
-    return Main_table
-
-
-@functools.lru_cache(maxsize=1000)
 def wordcount(title, ns="", sitecode=""):
     # ---
     if not sitecode:
@@ -547,18 +498,6 @@ def Get_page_Categories(sitecode, title, Workredirects=False, with_hidden=True):
     return Tables
 
 
-def purge_ar(title, sitecode):
-    params = {
-        "action": "purge",
-        "forcelinkupdate": 1,
-        "titles": title,
-        "utf8": 1,
-        # "forcerecursivelinkupdate": 1,
-    }
-    # ---
-    _json_purge = submitAPI(params, sitecode, "wikipedia", type="post")
-
-
 @functools.lru_cache(maxsize=1000)
 def Get_page_info_from_wikipedia_new(
     sitecode,
@@ -724,11 +663,6 @@ def Get_page_info_from_wikipedia(
     )
 
 
-@functools.lru_cache(maxsize=1000)
-def Get_page_info(sitecode, title, nohidden=False):
-    return Get_page_info_from_wikipedia_new(sitecode, title, nohidden=nohidden)
-
-
 def Search(title, lang="", family="", ns="", offset="", srlimit="max", RETURN_dict=False, addparams={}):
     # ---
     nsvalue = ns
@@ -778,31 +712,6 @@ def Search(title, lang="", family="", ns="", offset="", srlimit="max", RETURN_di
             Lidy.append(pag["title"])
     # ---
     return Lidy
-
-
-@functools.lru_cache(maxsize=1000)
-def Get_linterrors_for_pageid(pageid, sitecode="ar"):
-    # ---
-    params = {
-        "action": "query",
-        "lntcategories": "deletable-table-tag|html5-misnesting|misc-tidy-replacement-issues|multiline-html-table-in-list|multiple-unclosed-formatting-tags|pwrap-bug-workaround|self-closed-tag|tidy-font-bug|tidy-whitespace-bug|unclosed-quotes-in-heading|bogus-image-options|fostered|misnested-tag|multi-colon-escape|wikilink-in-extlink|missing-end-tag|obsolete-tag|stripped-tag",
-        "list": "linterrors",
-        # "lntlimit": Limit,
-        "lntpageid": int(pageid),
-    }
-    json1 = submitAPI(params, sitecode, "wikipedia")
-    # ---
-    if not json1:
-        return {}
-    # ---
-    linterrors = json1.get("query", {}).get("linterrors", {})
-    titles = list(linterrors)
-    # ---
-    # if len(titles) == 1 : titles = titles[x]
-    # ---
-    logger.debug(titles)
-    # ---
-    return titles
 
 
 @functools.lru_cache(maxsize=1000)
@@ -1077,11 +986,6 @@ def Get_PageText_with_timestamp(title, sitecode="", redirects=False, family="wik
 
 
 @functools.lru_cache(maxsize=1000)
-def Get_PageText_with_timestamp_and_user(title, sitecode="", redirects=False, family="wikipedia"):
-    return Get_PageText_with_timestamp(title, sitecode=sitecode, redirects=redirects, family=family, get_user=True)
-
-
-@functools.lru_cache(maxsize=1000)
 def GetPagelinks(title, sitecode=""):
     langcode = sitecode if sitecode else "ar"
     # ---
@@ -1118,11 +1022,6 @@ def GetPagelinks(title, sitecode=""):
     logger.debug(tab)
     # ---
     return tab
-
-
-@functools.lru_cache(maxsize=1000)
-def GetPageText(title, site, family="wikipedia"):
-    return GetarPageText(title, sitecode=site, family=family)
 
 
 @functools.lru_cache(maxsize=1000)

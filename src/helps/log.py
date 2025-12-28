@@ -15,10 +15,6 @@ class LoggerWrap:
         if disable_log:
             self._logger.disabled = True
 
-    def disable_logger(self, is_disabled: bool) -> None:
-        """Enable or disable the underlying logger dynamically."""
-        self._logger.disabled = is_disabled
-
     def logger(self) -> logging.Logger:
         """Expose the raw ``logging.Logger`` instance."""
         return self._logger
@@ -30,13 +26,6 @@ class LoggerWrap:
     def info(self, msg: str, *args, **kwargs) -> None:
         """Log an info message after formatting color codes."""
         self._logger.info(make_str(msg), *args, **kwargs)
-
-    def info_if_or_debug(self, msg: str, value: str) -> None:
-        """Log an info message if value is truthy, otherwise log a debug message."""
-        if value:
-            self._logger.info(make_str(msg))
-        else:
-            self._logger.debug(make_str(msg))
 
     def showDiff(self, oldtext: str, newtext: str) -> None:
         """Show the difference between two text strings using the logger."""
@@ -67,11 +56,6 @@ class LoggerWrap:
     def error(self, msg: str, *args, **kwargs) -> None:
         """Log an error message with formatted content."""
         self._logger.error(make_str(msg), *args, **kwargs)
-
-    def error_red(self, msg: str) -> None:
-        """Log an error message while forcing red coloring."""
-        text = f"<<red>> {str(msg)} <<default>>"
-        self._logger.error(make_str(text))
 
     def critical(self, msg: str, *args, **kwargs) -> None:
         """Log a critical message with formatted content."""

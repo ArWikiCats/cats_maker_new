@@ -119,32 +119,6 @@ def Get_Sitelinks_from_qid(ssite="", ids=""):
     return Get_Sitelinks_From_wikidata("", "", ssite=ssite, ids=ids)
 
 
-def Get_item_descriptions_or_labels_rest(q, ty="descriptions or labels"):
-    """Retrieve item descriptions or labels from a REST API.
-
-    This function fetches information for a given item identified by its QID
-    from a REST API. It allows the user to specify whether they want to
-    retrieve descriptions or labels. If the specified type is not valid, it
-    defaults to retrieving descriptions.
-
-    Args:
-        q (str): The QID of the item for which information is to be retrieved.
-        ty (str): The type of information to retrieve, either "descriptions"
-            or "labels". Defaults to "descriptions or labels".
-
-    Returns:
-        dict: A dictionary containing the requested item information.
-    """
-
-    # ---
-    if ty == "descriptions or labels" or ty not in ["descriptions", "labels"]:
-        ty = "descriptions"
-    # ---
-    q_infos = Get_one_qid_info(q)
-    # ---
-    return q_infos[ty]
-
-
 def Get_item_descriptions_or_labels(q, ty="descriptions or labels"):
     """Retrieve item descriptions or labels from a given entity ID.
 
@@ -398,44 +372,6 @@ def Get_Property_API(q="", p="", titles="", sites=""):
         listo.append(value)
     # ---
     return listo
-
-
-def Get_Claim_API_rest(q="", p="", return_claims=False):
-    """Retrieve claim information from the API.
-
-    This function interacts with the API to fetch claim statements based on
-    the provided query and parameter. It retrieves the statements associated
-    with the given query and extracts the relevant claim information. If
-    requested, it can return all claims associated with the specified
-    parameter.
-
-    Args:
-        q (str): The query identifier used to fetch claim statements.
-        p (str): The parameter used to filter the claims.
-        return_claims (bool): A flag indicating whether to return all claims or just the first claim.
-
-    Returns:
-        str: The content of the first claim if available, otherwise an empty string.
-        list: If return_claims is True, returns a list of claims associated with the
-            parameter.
-    """
-
-    # ---
-    statements = Get_one_qid_info(q, only="statements").get("statements", {})
-    # ---
-    logger.output(f"Get_Claim_API: {len(statements)=}")
-    # ---
-    claim = ""
-    # ---
-    claims = statements.get(p, [])
-    # ---
-    if return_claims:
-        return claims
-    # ---
-    if claims:
-        claim = claims[0].get("value", {}).get("content", "")
-    # ---
-    return claim
 
 
 def Get_Claim_API(q="", p="", return_claims=False):

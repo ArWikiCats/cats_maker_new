@@ -92,46 +92,6 @@ def make_sql_connect(query, db="", host="", update=False, Return=False, return_d
     return rows
 
 
-def Make_sql_many_rows(queries, wiki="", printqua=False):
-    rows = []
-    # ---
-    if not wiki:
-        wiki = "enwiki"
-    host, dbs_p = make_labsdb_dbs_p(wiki)
-    # ---
-    logger.debug(f"API/sql_py Make_sql_many_rows wiki '{dbs_p}'")
-    # ---
-    if not GET_SQL():
-        return rows
-    # ---
-    if printqua:
-        logger.output(queries)
-    # ---
-    start = tttime.time()
-    final = tttime.time()
-    # ---
-    TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
-    logger.debug(f'<<yellow>> API/sql_py Make_sql_many_rows 2 db:"{dbs_p}". {TTime}')
-    # ---
-    en_results = make_sql_connect(queries, host=host, db=dbs_p, Return={})
-    # ---
-    final = tttime.time()
-    # ---
-    for raw in en_results:
-        # if type(raw) == bytes:
-        # raw = raw.decode("utf-8")
-        raw2 = raw
-        # if type(raw2) == list or type(raw2) == tuple :
-        if isinstance(raw2, list):
-            raw = [Decode_bytes(x) for x in raw2]
-        rows.append(raw)
-    # ---
-    delta = int(final - start)
-    logger.output(f'API/sql_py Make_sql_many_rows len(encats) = "{len(rows)}", in {delta} seconds')
-    # ---
-    return rows
-
-
 def Make_sql_2_rows(queries, wiki="", printqua=False):
     """Retrieve and format SQL query results into a dictionary.
 
@@ -222,10 +182,6 @@ def Make_sql_1_rows(queries, wiki="", printqua=False):
     logger.output(f'API/sql_py Make_sql_2_rows len(results) = "{len(encats)}", in {delta} seconds')
     # ---
     return encats
-
-
-def Make_sql_1_row(queries, wiki="", printqua=False):
-    return Make_sql_1_rows(queries, wiki=wiki, printqua=printqua)
 
 
 if __name__ == "__main__":

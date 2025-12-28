@@ -9,12 +9,6 @@ import urllib.parse
 from ...helps import logger
 
 
-def MakeStrDes(NewDesc):
-    data4 = {"descriptions": NewDesc}
-    data4 = json.JSONEncoder().encode(data4)
-    return data4
-
-
 def loads_json(sparql):
     if not sparql or sparql.strip() == "":
         logger.output('API/tools.py loads_json sparql == "" ')
@@ -58,10 +52,6 @@ def quoteurl(fao):
         fao = fao.replace("ioioioioio", "%E2%80%93")
     # ---
     return fao
-
-
-def quote_str(string):
-    return quoteurl(string)
 
 
 def new_split_dict_or_list(cat_m2, numb=100):
@@ -110,9 +100,3 @@ def makejson(property, numeric):
             "type": "statement",
             "rank": "normal",
         }
-
-
-def Fix_Data_New(data2):
-    final = json.JSONEncoder().encode(data2)
-    print("API/tools.py: json.JSONEncoder().encode(data2)")
-    return final

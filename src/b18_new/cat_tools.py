@@ -103,23 +103,3 @@ def work_in_one_cat(cat, tabcat, en_site_code, pagetitle, en_cate_list):
             en_cate_list.append(ar_cat_for_cat)
     # ---
     return en_cate_list
-
-
-def work_in_all_cats(en_no_hidden, nocats2, en_site_code, pagetitle):
-    # ---
-    en_cate_list = []
-    catnumber = 0
-    # ---
-    for cat, tabcat in en_no_hidden.items():
-        cat = str(cat).replace("_", " ").strip()
-        # ---
-        catnumber += 1
-        logger.debug(f'>> {catnumber}/{len(en_no_hidden)} en cat:"{cat}" :')
-        # ---
-        if cat in nocats2:
-            logger.output(f"cat {cat} in nocats2 ")
-            continue
-        # ---
-        en_cate_list = work_in_one_cat(cat, tabcat, en_site_code, pagetitle, en_cate_list)
-    # ---
-    return en_cate_list
