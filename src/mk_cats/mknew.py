@@ -59,7 +59,9 @@ def ar_make_lab(title, **Kwargs):
         return ""
 
     if resolve_arabic_category_label:
-        return resolve_arabic_category_label(title)
+        label = resolve_arabic_category_label(title)
+        logger.warning(f'<<lightgreen>> Resolved label for "{title}": "{label}"')
+        return label
 
     return ""
 

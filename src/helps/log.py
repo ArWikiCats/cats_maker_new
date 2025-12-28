@@ -8,7 +8,7 @@ from .printe_helper import make_str
 class LoggerWrap:
     """Project-scoped logger with colorized helpers."""
 
-    def __init__(self, name: str, level: int = logging.INFO, disable_log: bool = False) -> None:
+    def __init__(self, name: str, disable_log: bool = False, level: int = logging.DEBUG) -> None:
         """Initialize the wrapped logger and optionally disable output."""
         self._logger = logging.getLogger(name)
 
@@ -30,6 +30,14 @@ class LoggerWrap:
 
             self._logger.addHandler(handler)
 
+    def setLevel(self, level: int|str) -> None:
+        """Enable or disable the underlying logger dynamically."""
+        self._logger.setLevel(level)
+
+    def disable_logger(self, is_disabled: bool) -> None:
+        """Enable or disable the underlying logger dynamically."""
+        self._logger.disabled = is_disabled
+
     def logger(self) -> logging.Logger:
         """Expose the raw ``logging.Logger`` instance."""
         return self._logger
@@ -42,6 +50,17 @@ class LoggerWrap:
         """Log an info message after formatting color codes."""
         self._logger.info(make_str(msg), *args, **kwargs)
 
+    def info_if_or_debug(self, msg: str, value: str) -> None:
+        """Log an info message if value is truthy, otherwise log a debug message."""
+        if value:
+            self._logger.info(make_str(msg))
+        else:
+            self._logger.debug(make_str(msg))
+
+    def output(self, msg: str, *args, **kwargs) -> None:
+        """Alias for info logging while preserving formatting."""
+        self._logger.info(make_str(msg), *args, **kwargs)
+
     def warning(self, msg: str, *args, **kwargs) -> None:
         """Log a warning message with formatted content."""
         self._logger.warning(make_str(msg), *args, **kwargs)
@@ -49,6 +68,11 @@ class LoggerWrap:
     def error(self, msg: str, *args, **kwargs) -> None:
         """Log an error message with formatted content."""
         self._logger.error(make_str(msg), *args, **kwargs)
+
+    def error_red(self, msg: str) -> None:
+        """Log an error message while forcing red coloring."""
+        text = f"<<red>> {str(msg)} <<default>>"
+        self._logger.error(make_str(text))
 
     def critical(self, msg: str, *args, **kwargs) -> None:
         """Log a critical message with formatted content."""
@@ -80,15 +104,11 @@ class LoggerWrap:
             else:
                 self._logger.warning(make_str(line))
 
-    def output(self, msg: str, *args, **kwargs) -> None:
-        """Alias for info logging while preserving formatting."""
-        self._logger.info(make_str(msg), *args, **kwargs)
+
+logger = LoggerWrap(__name__)
 
 
-logger = LoggerWrap("mknew")
-
-
-def config_logger(level: Optional[Union[int, str]] = None, name: str = "mknew") -> None:
+def config_logger(level: Optional[Union[int, str]] = None, name: str = __name__) -> None:
     """Configure the root logger with sensible defaults for the project."""
     global logger
     _levels = [
@@ -103,14 +123,7 @@ def config_logger(level: Optional[Union[int, str]] = None, name: str = "mknew") 
     if not level:
         level = logging.DEBUG
 
-    logger = LoggerWrap(name, level=level)
-
-    # logging.basicConfig(
-    #     filename=name,
-    #     level=level,
-    #     format="%(levelname)s - %(message)s",
-    #     datefmt="%Y-%m-%d %H:%M:%S",
-    # )
+    logger.setLevel(level)
 
 
 __all__ = [

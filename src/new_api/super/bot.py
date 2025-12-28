@@ -27,7 +27,7 @@ botname = "new_api"
 
 class LOGIN_HELPS(PARAMS_HELPS):
     def __init__(self) -> None:
-        # print("class LOGIN_HELPS:")
+        # logger.debug("class LOGIN_HELPS:")
         self.cookie_jar = False
         self.session = requests.Session()
         # ---
@@ -64,7 +64,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             langx = lang
         # ---
         if table["username"].find("bot") == -1 and family == "wikipedia":
-            print(f"add_User_tables: {family=}, {table['username']=}")
+            logger.info(f"add_User_tables: {family=}, {table['username']=}")
         # ---
         if family != "" and table["username"] != "" and table["password"] != "":
             # ---
@@ -152,7 +152,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         try:
             jsson1 = r11.json()
         except Exception as e:
-            print(r11.text)
+            logger.debug(r11.text)
             logger.warning(f"<<red>> Error getting login token: {e}")
             return ""
 
@@ -186,7 +186,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 r22 = req.json()
             except Exception as e:
                 logger.warning(f"{botname} {self.lang}.{self.family} error parsing login response: {e} - response: {getattr(req, 'text', '')}")
-                print(req.text)
+                logger.debug(req.text)
                 return False
         # ---
         login_result = r22.get("login", {}).get("result", "")
@@ -234,7 +234,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 json1 = req.json()
             except Exception as e:
                 logger.warning(f"{botname} {self.lang}.{self.family} error parsing userinfo response: {e} - response: {getattr(req, 'text', '')}")
-                print(req.text)
+                logger.debug(req.text)
                 return False
         # ---
         userinfo = json1.get("query", {}).get("userinfo", {})
@@ -243,7 +243,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # ---
         self.log_error(result_x, "userinfo")
         # ---
-        # print(json1)
+        # logger.debug(json1)
         # ---
         if "anon" in userinfo or "temp" in userinfo:
             return False
@@ -264,13 +264,13 @@ class LOGIN_HELPS(PARAMS_HELPS):
         self.cookie_jar = MozillaCookieJar(self.cookies_file)
         # ---
         if os.path.exists(self.cookies_file) and self.family != "mdwiki":
-            print("Load cookies from file, including session cookies")
+            logger.debug("Load cookies from file, including session cookies")
             try:
                 self.cookie_jar.load(ignore_discard=True, ignore_expires=True)
-                print("We have %d cookies" % len(self.cookie_jar))
+                logger.debug("We have %d cookies" % len(self.cookie_jar))
                 # ---
             except Exception as e:
-                print(e)
+                logger.warning(e)
         # ---
         seasons_by_lang[self.sea_key].cookies = self.cookie_jar
         # ---
@@ -367,7 +367,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # ---
         if req0.headers and req0.headers.get("x-database-lag"):
             logger.debug("<<red>> x-database-lag.. ")
-            print(req0.headers)
+            logger.debug(req0.headers)
             # raise
         # ---
         return req0
@@ -390,7 +390,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             # ---
             if code == "assertnameduserfailed":
                 # ---
-                print("assertnameduserfailed" * 10)
+                logger.warning("assertnameduserfailed" * 10)
                 # ---
                 del_cookies_file(self.cookies_file)
                 # ---
@@ -403,7 +403,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
     def get_rest_result(self, url) -> dict:
         # ---
-        print("get_rest_result:")
+        logger.debug("get_rest_result:")
         # ---
         if not seasons_by_lang.get(self.sea_key):
             self.make_new_session()
@@ -425,7 +425,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         try:
             result = req0.json()
         except Exception as e:
-            print(req0.text)
+            logger.debug(req0.text)
             logger.warning(f"{botname} {self.lang}.{self.family} error parsing rest response for url '{url}': {e}")
             return {}
         # ---

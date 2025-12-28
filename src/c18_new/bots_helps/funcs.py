@@ -18,22 +18,22 @@ def load_json(filename, empty_data="list"):
     data = {} if empty_data == "dict" else []
     # ---
     if "test" in sys.argv:
-        print(f"temps_params.py, jsonfile: {filename}")
+        logger.debug(f"temps_params.py, jsonfile: {filename}")
     # ---
     if not os.path.isfile(filename):
-        print(f"File not found: {filename}")
+        logger.warning(f"File not found: {filename}")
         try:
             with open(filename, "w", encoding="utf-8") as f:
                 json.dump(data, f)
             os.chmod(filename, statgroup)
         except Exception as e:
-            print(e)
+            logger.warning(e)
     # ---
     try:
         with open(filename, "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception as e:
-        print(e)
+        logger.warning(e)
     # ---
     return data
 

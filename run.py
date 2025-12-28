@@ -4,7 +4,6 @@ import sys
 import json
 import requests
 
-
 sys.argv.append("ask")
 sys.path.append("D:/categories_bot/make2_new")
 
@@ -14,9 +13,11 @@ except ImportError:
     new_all = None
 
 from src.helps.log import config_logger
+config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
+# config_logger("ERROR")
+
 from src.mk_cats import create_categories_from_list
 
-config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
 new_all_tab = {1: False}
 
 
