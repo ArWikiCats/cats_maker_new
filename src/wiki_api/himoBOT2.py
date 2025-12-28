@@ -17,6 +17,9 @@ Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
 redirects_table = {}
 
 Session = requests.Session()
+# Session.headers.update(
+#     {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
+# )
 
 
 def submitAPI(params, Code, family, printurl=False, type="get"):
@@ -52,15 +55,18 @@ def submitAPI(params, Code, family, printurl=False, type="get"):
     json1 = {}
     try:
         r22 = Session.post(mainurl, data=params, timeout=10)
-        json1 = r22.json()
 
     except requests.exceptions.ReadTimeout:
         logger.debug(f"ReadTimeout: {mainurl}")
 
     except Exception as e:
         logger.warning(f"<<red>> Error submitting to API: {e}")
-        json1 = {}
-    # ---
+
+    try:
+        json1 = r22.json()
+    except Exception as e:
+        logger.warning(f"<<red>> Error parsing API response: {e}")
+
     return json1
 
 
