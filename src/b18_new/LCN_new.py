@@ -111,7 +111,7 @@ class WikiApiHandler:
 
         count = self._increment_api_call()
 
-        logger.output(f"<<lightblue>> API CALL {count}: find_page_data for ({self.family}:{page_title}), prop: {props}")
+        logger.info(f"<<lightblue>> API CALL {count}: find_page_data for ({self.family}:{page_title}), prop: {props}")
 
         logger.debug(f" for page {site_code}:{page_title}")
 
@@ -126,7 +126,7 @@ class WikiApiHandler:
         query = api_response["query"]
 
         if "-1" in query["pages"]:
-            logger.output(f'Page not found (id: -1) for "{site_code}:{page_title}"')
+            logger.info(f'Page not found (id: -1) for "{site_code}:{page_title}"')
             self.deleted_pages.append(page_title)
             self.cache[cache_key] = False
             return False
@@ -200,14 +200,14 @@ class WikiApiHandler:
         Refactored version of find_Page_Cat_without_hidden.
         """
         if not page_title or "#" in page_title:
-            logger.output(f"(page_title == '{page_title}') or (page_title.find('#') != -1)")
+            logger.info(f"(page_title == '{page_title}') or (page_title.find('#') != -1)")
             return False
 
         cache_key = (page_title, site_code, "Cat_without_hidden", prop)
 
         logger.debug(f"<<lightgreen>>-----------\n find Page_Cat_without_hidden for {site_code}:{page_title} ")
         if cache_key in self.cache:
-            logger.output("get_cache_L_C_N(cache_key)")
+            logger.info("get_cache_L_C_N(cache_key)")
             return self.cache[cache_key]
 
         self.no_cat_pages.setdefault(page_title, [])
@@ -236,7 +236,7 @@ class WikiApiHandler:
 
         count = self._increment_api_call()
 
-        logger.output(f"<<lightblue>> API CALL {count}: find_non_hidden_categories for {site_code}:{page_title}")
+        logger.info(f"<<lightblue>> API CALL {count}: find_non_hidden_categories for {site_code}:{page_title}")
 
         # Submit the API request
         api_response = himoBOT2.submitAPI(params, site_code, self.family)
@@ -279,7 +279,7 @@ class WikiApiHandler:
                 self.cache[(cat_title, site_code, "templates")] = templates
 
             if "categories" in cat_data:
-                logger.output("<<lightred>> 'categories' in cat_data")
+                logger.info("<<lightred>> 'categories' in cat_data")
                 hidden += len([cat for cat in cat_data["categories"] if "hidden" in cat])
 
                 categories = [cat["title"] for cat in cat_data["categories"] if "hidden" not in cat]

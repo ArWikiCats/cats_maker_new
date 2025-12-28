@@ -40,7 +40,7 @@ def del_cookies_file(file_path):
             file.unlink(missing_ok=True)
             logger.debug(f"<<green>> unlink: file:{file}")
         except Exception as e:
-            logger.debug(f"<<red>> unlink: Exception:{e}")
+            logger.warning(f"<<red>> unlink: Exception:{e}")
 
 
 def get_file_name(lang, family, username) -> Path:

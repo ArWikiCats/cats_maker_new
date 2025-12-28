@@ -12,20 +12,20 @@ from ..new_api.page import MainPage
 def Add_To_Head(prependtext, summary, title, Ask, minor="", basetimestamp=""):
     # ---
     if not title.strip():
-        logger.output('** Add_To_Head ..  title == ""')
+        logger.info('** Add_To_Head ..  title == ""')
         return False
     # ---
     if not prependtext.strip():
-        logger.output('** Add_To_Head ..  prependtext == ""')
+        logger.info('** Add_To_Head ..  prependtext == ""')
         return False
     # ---
-    logger.output(f" Add_To_Head for Page {title}:")
+    logger.info(f" Add_To_Head for Page {title}:")
     # ---
     page = MainPage(title, "ar")
     text = page.get_text()
     # ---
     if not text:
-        logger.output(' text = "" ')
+        logger.info(' text = "" ')
         return
     # ---
     if not page.exists():
@@ -46,20 +46,20 @@ def Add_To_Head(prependtext, summary, title, Ask, minor="", basetimestamp=""):
 def Add_To_Bottom(appendtext, summary, title, Ask, family="", minor="", basetimestamp=""):
     # ---
     if not title.strip():
-        logger.output('** Add_To_Bottom ..  title == ""')
+        logger.info('** Add_To_Bottom ..  title == ""')
         return False
     # ---
     if not appendtext.strip():
-        logger.output('** Add_To_Bottom ..  appendtext == ""')
+        logger.info('** Add_To_Bottom ..  appendtext == ""')
         return False
     # ---
-    logger.output(f" Add_To_Bottom for Page {title}:")
+    logger.info(f" Add_To_Bottom for Page {title}:")
     # ---
     page = MainPage(title, "ar")
     text = page.get_text()
     # ---
     if not text:
-        logger.output(' text = "" ')
+        logger.info(' text = "" ')
         return
     # ---
     if not page.exists():
@@ -78,21 +78,21 @@ def Add_To_Bottom(appendtext, summary, title, Ask, family="", minor="", basetime
 
 
 def create_Page(text, summary, title, ask, sleep=0, family="", duplicate4="", minor=""):
-    logger.output(f" create Page {title}:")
+    logger.info(f" create Page {title}:")
     # ---
     if title.startswith("نقاش القالب:") and title.endswith("/ملعب"):
-        logger.output(" skip make talk to sandboxes..")
+        logger.info(" skip make talk to sandboxes..")
         return False
     # ---
     if not text:
-        logger.output(' text != "" ')
+        logger.info(' text != "" ')
         return False
     # ---
     page = MainPage(title, "ar")
     page_text = page.get_text()
     # ---
     if page_text:
-        logger.output(' text != "" ')
+        logger.info(' text != "" ')
         return False
     # ---
     if page.exists():
@@ -130,7 +130,7 @@ def page_put(
     text = page.get_text()
     # ---
     if not text:
-        logger.output(' text = "" ')
+        logger.info(' text = "" ')
         return
     # ---
     if not page.exists():

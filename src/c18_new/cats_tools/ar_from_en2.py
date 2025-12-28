@@ -54,7 +54,7 @@ def Get_ar_list_title_from_en_list(enlist, wiki="en"):
 
                 new_ar_list.append(tat)
     # ---
-    logger.output(
+    logger.info(
         f"<<lightyellow>> Get_ar_list_title_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}"
     )
     # ---
@@ -62,6 +62,8 @@ def Get_ar_list_title_from_en_list(enlist, wiki="en"):
 
 
 def get_en_title(enpageTitle, wiki="en"):
+    # ---
+    logger.info(f"<<lightyellow>> get_en_title from category: {enpageTitle} <<default>>")
     # ---
     nss = [0, 14, 100]
     # ---

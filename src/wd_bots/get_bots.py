@@ -12,13 +12,6 @@ from functools import lru_cache
 
 from ..helps import logger
 from .submit_bot import submitAPI
-from .wb_rest_api import Get_one_qid_info
-
-# from ....wd_bots.bot_wd import WD_Functions
-# wd_bot = WD_Functions()
-
-# wd_bot.Get_item_descriptions_or_labels(session_post, Qid, "descriptions")
-# wd_bot.Get_Property_API(self.session_post, q=Qid, p="P1705")
 
 
 def format_sitelinks(sitelinks):
@@ -235,7 +228,7 @@ def Get_Items_API_From_Qids(qids, props="", sitefilter=""):
     if sitefilter:
         params["sitefilter"] = sitefilter
     # ---
-    logger.output(f"<<purple>> Get_Items_API_From_Qids: {len(qids)=}")
+    logger.info(f"<<purple>> Get_Items_API_From_Qids: {len(qids)=}")
     # ---
     json1 = submitAPI(params)
     # ---
@@ -294,8 +287,6 @@ def Get_P373_API(q, titles="", sites=""):
 
     # url =https://www.wikidata.org/w/api.php?action=wbgetentities&ids=Q805&utf8=1&property=P31&format=json
     # ---
-    # if q != "": return wb_rest_api.Get_P373(q)
-    # ---
     P = "P373"
     # ---
     params = {
@@ -330,7 +321,7 @@ def Get_P373_API(q, titles="", sites=""):
             _type = datavalue.get("type", False)
             value = datavalue.get("value", "")
             if _type == "string" and value:
-                logger.output(value)
+                logger.info(value)
                 return value
     # ---
     return mainvalue
@@ -404,29 +395,3 @@ def Get_Claim_API(q="", p="", return_claims=False):
         claim = pap[0]
     # ---
     return claim
-
-
-def test():
-    # python3 core8/pwb.py wd_api/wd_bots/get_bots
-    # ---
-    qids = ["Q805", "Q4167836"]
-    # ---
-    for q in qids:
-        logger.output(f"<<blue>>_______\n{q} :")
-        # ---
-        p1 = Get_Claim_API(q=q, p="P31")
-        # ---
-        logger.output(f"P31: {p1=}")
-        # ---
-        descr = Get_item_descriptions_or_labels(q)
-        # ---
-        logger.output(f"<<purple>>{len(descr)=}")
-        # ---
-        statements = Get_one_qid_info(q, only="statements")
-        # ---
-        logger.output(f"{len(statements)=}")
-        # logger.output(statements)
-
-
-if __name__ == "__main__":
-    test()

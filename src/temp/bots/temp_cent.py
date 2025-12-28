@@ -11,7 +11,7 @@ from .load_data import Baco_centries, cacaca
 
 
 def Make_Cent_temp(title):
-    logger.output(f" Make_Cent_temp :{title} ", "blue")
+    logger.info(f" Make_Cent_temp :{title} ", "blue")
     Caa = False
     tex = ""
     title = re.sub(r"_", " ", title)
@@ -35,7 +35,7 @@ def Make_Cent_temp(title):
             if bld == title:
                 bld = ""
             bld = bld.strip()
-            logger.output(f'dee:"{dee}",bef:"{bef}",In:"{In}",bld:"{bld}"')
+            logger.info(f'dee:"{dee}",bef:"{bef}",In:"{In}",bld:"{bld}"')
 
             sss, ass = "", ""
             if bld:
@@ -60,7 +60,7 @@ def Make_Cent_temp(title):
             Caa = True
 
     if Caa:
-        logger.output(f' Make Cent_temp:{title} , tex:"{tex}"', "blue")
+        logger.info(f' Make Cent_temp:{title} , tex:"{tex}"', "blue")
         t_1 = f"تصنيف:{tex}القرن "
         ttt = t_1 + r"(\d+)\s*( ق م| ق\.م|)\s*(في |)(.*|)$"
 
@@ -74,9 +74,9 @@ def Make_Cent_temp(title):
             bld = ""
 
         elff = 0
-        logger.output(f'cent:"{cent}",bld:"{bld}"')
+        logger.info(f'cent:"{cent}",bld:"{bld}"')
         if cent in Baco_centries:
-            logger.output(f"cent {cent} in Baco_centries")
+            logger.info(f"cent {cent} in Baco_centries")
             elff = Baco_centries[cent]
             cent = int(cent)
 

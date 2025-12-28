@@ -51,7 +51,7 @@ def get_SubSub_value(key):
 
 def add_SubSub(List, hhh):
     for catj in List:
-        logger.output(f"SubSub[{catj}].append( {hhh} )")
+        logger.info(f"SubSub[{catj}].append( {hhh} )")
         catj_u = str(catj)
         if catj_u not in SubSub:
             SubSub[catj_u] = []
@@ -67,7 +67,7 @@ def work_in_one_cat(cat, tabcat, en_site_code, pagetitle, en_cate_list):
         tupl = (cat, en_site_code, "ar", "en_links")
         daaa = get_cache_L_C_N(tupl)
         if daaa:
-            logger.output(f'\t<<lightpurple>> New way for "{cat}" find "{daaa}"')
+            logger.info(f'\t<<lightpurple>> New way for "{cat}" find "{daaa}"')
             ar_cat_for_cat = daaa
     # ---
     if not ar_cat_for_cat:

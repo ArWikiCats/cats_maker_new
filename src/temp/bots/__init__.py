@@ -20,8 +20,8 @@ from .temp_years import Make_years_temp
 
 def main_make_temp(enca, title) -> tuple[str, str]:
     title = re.sub(r"_", " ", title)
-    logger.output("=====================")
-    logger.output(f'main: title:"{title}"')
+    logger.info("=====================")
+    logger.info(f'main: title:"{title}"')
 
     if title.find("فيروس كورونا") != -1:
         return "", ""
@@ -71,7 +71,7 @@ def main_make_temp(enca, title) -> tuple[str, str]:
 
     for texd in ["تصنيف:تأسيسات عقد", "تصنيف:انحلالات عقد", "تصنيف:عقد"]:
         if title.startswith(texd):
-            logger.output(f'title.startswith("{texd}" ):')
+            logger.info(f'title.startswith("{texd}" ):')
             return MakedecadesTemp(title)
 
     for tex in cacaca:

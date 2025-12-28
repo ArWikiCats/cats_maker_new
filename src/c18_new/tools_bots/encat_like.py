@@ -13,7 +13,7 @@ from ..log import logger
 
 def get_en_categories_like(mo, mo2="", limit="600", off=0):
     # ---
-    logger.output(f"<<lightred>> sql . get_en_categories_like {mo}")
+    logger.info(f"<<lightred>> sql . get_en_categories_like {mo}")
     # ---
     if not mo.strip():
         return False
@@ -74,12 +74,10 @@ def get_en_categories_like(mo, mo2="", limit="600", off=0):
         {off_line}
     """
     # ---
-    logger.output(Queris)
+    logger.info(Queris)
     # ---
     result = wiki_sql.sql_new(Queris, wiki="enwiki", printqua=False)
     # ---
     result = [x["category_title"].replace("_", " ") for x in result]
-    # ---
-    # result = sql.Make_sql_1_row(Queris, wiki="enwiki")
     # ---
     return result

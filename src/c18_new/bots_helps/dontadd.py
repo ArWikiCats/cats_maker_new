@@ -45,20 +45,20 @@ def get_pages_nocat():
     # ---
     if "testadd" not in sys.argv:
         if str(Dir).find("/data/project/") == -1 and str(Dir).find("/mnt/") == -1:
-            logger.output("dont get dontadd list in local server")
+            logger.info("dont get dontadd list in local server")
             return Dont_add_to_pages
     # ---
-    # logger.output("makenew to Dont_add_to_pages...")
+    # logger.info("makenew to Dont_add_to_pages...")
     # ---
     encats = from_sql()
     # ---
     Dont_add_to_pages = encats
     # ---
     if not Dont_add_to_pages:
-        logger.output("Dont_add_to_pages is empty")
+        logger.info("Dont_add_to_pages is empty")
         return Dont_add_to_pages
     # ---
-    logger.output(f"len Dont_add_to_pages : {len(Dont_add_to_pages)}")
+    logger.info(f"len Dont_add_to_pages : {len(Dont_add_to_pages)}")
     # ---
     log_to_file(Dont_add_to_pages, filename_json)
     # ---
@@ -76,7 +76,7 @@ def Dont_add_to_pages_def():
     today = datetime.today().strftime("%Y-%m-%d")
     # ---
     if date != today or not Dont_add_to_pages:
-        logger.output(f"<<purple>> last modified: {date} , today: {today}, len: {len(Dont_add_to_pages)} ")
+        logger.info(f"<<purple>> last modified: {date} , today: {today}, len: {len(Dont_add_to_pages)} ")
         Dont_add_to_pages = get_pages_nocat()
     # ---
     return Dont_add_to_pages
@@ -84,4 +84,4 @@ def Dont_add_to_pages_def():
 
 if __name__ == "__main__":
     u = Dont_add_to_pages_def()
-    logger.output(f"len Dont_add_to_pages : {len(u)}")
+    logger.info(f"len Dont_add_to_pages : {len(u)}")

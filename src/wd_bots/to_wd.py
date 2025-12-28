@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+"""
+Wikidata functions for cats_maker_new bot
+"""
+import functools
+from . import NewHimoAPIBot
+from ..helps import logger
+from .wd_desc import wwdesc
 
 wikimedia_category_descraptions = {  # Wikimedia category
     "ace": "kawan Wikimèdia",
@@ -100,3 +107,82 @@ wikimedia_category_descraptions = {  # Wikimedia category
     "zh-sg": "维基媒体分类",
     "zh-tw": "維基媒體分類",
 }
+
+
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot() -> NewHimoAPIBot:
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
+
+
+def add_label(qid, ar_title) -> None:
+    get_wd_api_bot().Labels_API(qid, ar_title, "ar", True, nowait=True, tage="catelabels")
+
+
+def makejson(property, numeric):
+    # ---
+    if numeric:
+        numeric = numeric.replace("Q", "")
+        Q = f"Q{numeric}"
+        return {
+            "mainsnak": {
+                "snaktype": "value",
+                "property": property,
+                "datavalue": {
+                    "value": {
+                        "entity-type": "item",
+                        "numeric-id": numeric,
+                        "id": Q,
+                    },
+                    "type": "wikibase-entityid",
+                },
+                "datatype": "wikibase-item",
+            },
+            "type": "statement",
+            "rank": "normal",
+        }
+
+
+def Make_New_item(artitle, entitle, family=""):
+    logger.debug(f'<<lightgreen>>* Make_New_item:ar:"{artitle}", english:"{entitle}".')
+
+    enwiki = "enwiki"
+    arwiki = "arwiki"
+
+    if family and family != "wikipedia":
+        enwiki = f"en{family}"
+        arwiki = f"ar{family}"
+
+    data = {
+        "sitelinks": {
+            enwiki: {"site": enwiki, "title": entitle},
+            arwiki: {"site": arwiki, "title": artitle}
+        },
+        "labels": {
+            "ar": {"language": "ar", "value": artitle},
+            "en": {"language": "en", "value": entitle}
+        },
+        "claims": {
+            "P31": [makejson("P31", "Q4167836")]
+        }
+    }
+
+    summary = f"Bot: New item from [[w:en:{entitle}|{enwiki}]]/[[w:ar:{artitle}|{arwiki}]]."
+
+    new_item_id = get_wd_api_bot().New_API(data, summary, returnid=True, nowait=True, tage="newitems")
+
+    if new_item_id and new_item_id.startswith("Q"):
+        NewDesc = {
+            lang: {"language": lang, "value": value} for lang, value in wikimedia_category_descraptions.items()
+        }
+        wwdesc(NewDesc, new_item_id, 1, [], tage="newitems")
+
+
+def Log_to_wikidata(ar, enca, qid):
+    if qid:
+        get_wd_api_bot().Sitelink_API(qid, ar, "arwiki", nowait=True)
+        get_wd_api_bot().Labels_API(qid, ar, "ar", False, nowait=True, tage="catelabels")
+
+    else:
+        cd = get_wd_api_bot().Sitelink_API("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)
+        if cd is not True:
+            Make_New_item(ar, enca, family="wikipedia")

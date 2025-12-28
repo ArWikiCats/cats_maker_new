@@ -599,34 +599,3 @@ def make_text(enca, title, Qid):
         text += "\n%s" % ff
 
     return text
-
-
-def test():
-    # python3 core8/pwb.py mk_cats/categorytext q:Q8111513 ar:تصنيف:1839_في_بوليفيا en:Category:1839_in_Bolivia
-    # python3 core8/pwb.py mk_cats/categorytext q:Q8174178 ar:تصنيف:1992_في_تنس_الريشة en:Category:1992_in_badminton
-    # python3 core8/pwb.py mk_cats/categorytext q: ar: en:
-    # python3 core8/pwb.py mk_cats/categorytext q: ar: en:
-    # python3 core8/pwb.py mk_cats/categorytext q: ar: en:
-    # python3 core8/pwb.py mk_cats/categorytext q: ar: en:
-
-    q = ""
-    ar = ""
-    en = ""
-    for arg in sys.argv:
-        arg, _, value = arg.partition(":")
-
-        if arg == "q":
-            q = value
-
-        if arg == "ar":
-            ar = value.replace("_", " ")
-
-        if arg == "en":
-            en = value.replace("_", " ")
-
-    iop = make_text(en, ar, q)
-    logger.info(iop)
-
-
-if __name__ == "__main__":
-    test()

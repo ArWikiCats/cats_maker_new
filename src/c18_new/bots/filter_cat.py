@@ -49,7 +49,7 @@ def filter_cats_text(final_cats, ns, text_new):
         # ---
         if ns not in [10, 14]:
             if item.startswith("تصنيف:قوالب") or item.startswith("تصنيف:صناديق تصفح"):
-                logger.output(f"remove templates cat {item}. ")
+                logger.info(f"remove templates cat {item}. ")
                 if item in final_cats:
                     final_cats.remove(item)
                 continue
@@ -61,13 +61,13 @@ def filter_cats_text(final_cats, ns, text_new):
             continue
         # ---
         if item in Skippe_Cat:
-            logger.output(f"<<lightred>>Category {item} in Skippe_Cat")
+            logger.info(f"<<lightred>>Category {item} in Skippe_Cat")
             if item in final_cats:
                 final_cats.remove(item)
             continue
         # ---s
         if item in LCN_new.deleted_pages:
-            logger.output(f"<<lightred>>Category {item} had in LCN_new.deleted_pages")
+            logger.info(f"<<lightred>>Category {item} had in LCN_new.deleted_pages")
             if item in final_cats:
                 final_cats.remove(item)
             continue
@@ -89,7 +89,7 @@ def filter_cats_text(final_cats, ns, text_new):
             if item.find(rr) != -1:
                 if item in final_cats:
                     final_cats.remove(item)
-                logger.output(f"Remove cat:{item} it has {rr}")
+                logger.info(f"Remove cat:{item} it has {rr}")
                 continue
         # ---
         if textremove.find(item + "]]") != -1 or textremove.find(item + "|") != -1:
@@ -103,16 +103,16 @@ def filter_cats_text(final_cats, ns, text_new):
     for item in final_cats[:]:
         cat_template = False
         if safo and item in safo:
-            logger.output(f'<<lightgreen>> find "{item}" item in safo :')
+            logger.info(f'<<lightgreen>> find "{item}" item in safo :')
             logger.debug(safo[item])
             cat_template = safo[item].get("templates", "")
         else:
-            logger.output(f'<<lightred>> Cant find "{item}" item at safo ')
+            logger.info(f'<<lightred>> Cant find "{item}" item at safo ')
             cat_template = templatequery(item, "ar")
         # ---
         if cat_template:
             if ("قالب:تحويل تصنيف" in cat_template) or ("قالب:delete" in cat_template) or ("قالب:حذف" in cat_template):
-                logger.output(
+                logger.info(
                     f"<<lightred>>Category {item} had {{{{تحويل تصنيف}}}} or {{{{delete}}}} so it is skipped! please edit en.wiki interwiki"
                 )
                 if item in final_cats:
@@ -120,19 +120,19 @@ def filter_cats_text(final_cats, ns, text_new):
                 continue
             # ---
             if "-stubs" not in sys.argv and "قالب:تصنيف مخفي" in cat_template:
-                logger.output(f"<<lightred>>Category {item} had {{{{تصنيف مخفي}}}} so it is skipped! ")
+                logger.info(f"<<lightred>>Category {item} had {{{{تصنيف مخفي}}}} so it is skipped! ")
                 if item in final_cats:
                     final_cats.remove(item)
                 continue
             # ---
             if "قالب:تصنيف تتبع" in cat_template:
-                logger.output(f"<<lightred>>Category {item} had {{{{تصنيف تتبع}}}} so it is skipped! ")
+                logger.info(f"<<lightred>>Category {item} had {{{{تصنيف تتبع}}}} so it is skipped! ")
                 if item in final_cats:
                     final_cats.remove(item)
                 continue
     # ---
     fff = len_first - len(final_cats)
     # ---
-    logger.output(f"len removed items: {fff} ")
+    logger.info(f"len removed items: {fff} ")
     # ---
     return final_cats

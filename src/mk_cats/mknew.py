@@ -14,13 +14,15 @@ from ..b18_new.LCN_new import find_LCN, find_Page_Cat_without_hidden
 from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import himoBOT2
-from . import no_1
+from ..wd_bots import to_wd
 from ..helps import logger
 from .mk_bots import filter_en
-from ..utils.skip_cats import NO_Templates_lower, skip_encats
+from .create_category_page import new_category
+from .utils.check_en import check_en_temps
 
 try:
-    from ArWikiCats import resolve_arabic_category_label  # type: ignore
+    from ArWikiCats import resolve_arabic_category_label, config_logger  # type: ignore
+    config_logger("ERROR")
 except ImportError:
     resolve_arabic_category_label = None
 
@@ -57,7 +59,9 @@ def ar_make_lab(title, **Kwargs):
         return ""
 
     if resolve_arabic_category_label:
-        return resolve_arabic_category_label(title)
+        label = resolve_arabic_category_label(title)
+        logger.warning(f'<<lightgreen>> Resolved label for "{title}": "{label}"')
+        return label
 
     return ""
 
@@ -84,30 +88,6 @@ def scan_ar_title(title):
         else:
             NewCat_Done[cat3] = 1
     return True
-
-
-def check_en_temps(en_title):
-    keep = True
-
-    ioio = find_LCN(en_title, prop="templates|categories", first_site_code=wiki_site_en["code"])
-
-    if not ioio:
-        return keep
-
-    cacr = ioio.get(en_title, {}).get("templates")
-
-    if not cacr:
-        return keep
-
-    for target_temp in cacr:
-        target_temp2 = target_temp.lower().replace("template:", "")
-        if target_temp2 in NO_Templates_lower:
-            tempno = target_temp2
-            logger.warning(f'page has:"{tempno}" in NO_Templates_lower ')
-            keep = False
-            break
-
-    return keep
 
 
 def check_if_artitle_exists(en_title_1, test_title):
@@ -221,7 +201,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
 
     # إنشاء التصنيف وإضافته للصفحات
 
-    hhh = no_1.new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
+    hhh = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
 
     if hhh:
         add_to_final_list(members, ar_title, callback=callback)
@@ -233,17 +213,14 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         if listen != []:
             add_to_final_list(listen, ar_title, callback=callback)
 
-        no_1.Log_to_wikidata(ar_title, en_page_title, qid)
-
+        to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
+    else:
+        to_wd.add_label(qid, ar_title)
     return en_cats_of_new_cat
 
 
-def no_work(cat, arlab, num, lenth, callback=None):
-    logger.debug(f"*no_work: <<lightred>> {num}/{lenth} cat: {cat}, arlab: {arlab}")
-
-    if cat in skip_encats:
-        logger.debug(f"<<lightred>> cat: {cat} in skip_encats")
-        return False
+def process_catagories(cat, arlab, num, lenth, callback=None):
+    logger.debug(f"*process_catagories: <<lightred>> {num}/{lenth} cat: {cat}, arlab: {arlab}")
 
     ma_table = make_ar(cat, arlab, callback=callback)
 
@@ -252,10 +229,10 @@ def no_work(cat, arlab, num, lenth, callback=None):
             break
 
         logger.debug("===========================")
-        logger.debug(f"**no_work: range: {i} of {Range[1]}: for {len(ma_table)} cats.")
+        logger.debug(f"**process_catagories: range: {i} of {Range[1]}: for {len(ma_table)} cats.")
         logger.debug("===========================")
 
-        qxz = []
+        enriched_titles = []
         number = 0
 
         for title in ma_table:
@@ -275,11 +252,11 @@ def no_work(cat, arlab, num, lenth, callback=None):
             if not en_list:
                 continue
 
-            taso2 = make_ar(title, labe, callback=callback)
+            enriched_article_list = make_ar(title, labe, callback=callback)
 
-            qxz.extend(taso2)
+            enriched_titles.extend(enriched_article_list)
 
-        ma_table = list(set(qxz))
+        ma_table = list(set(enriched_titles))
 
     logger.debug("<<lightred>> tago done........... ")
 
@@ -291,44 +268,43 @@ def one_cat(en_title, num, lenth, sugust="", uselabs=False, callback=None):
 
     if not en_title.strip():
         logger.warning("<<lightred>> en_title is empty. return")
-        return
-
-    if en_title in skip_encats:
-        logger.warning(f"<<lightred>> en_title: {en_title} in skip_encats")
         return False
 
     if en_title in DONE_D:
         logger.warning(f'en_title:"{en_title}" in DONE_D ')
-        return
+        return False
 
     DONE_D.append(en_title)
     labb = ar_make_lab(en_title)
 
     logger.debug(f"{num}/{lenth} {en_title=}, {sugust=}, {labb=}")
 
-    keep_work = check_en_temps(en_title)
-
-    if not keep_work:
-        logger.warning("<<lightred>> check_en_temps failed.")
-        return
-
     labb = labb or sugust
 
     if not labb:
         logger.warning("<<lightred>> labb is empty.")
-        return
+        return False
+
+    if not check_en_temps(en_title):
+        logger.warning("<<lightred>> check_en_temps failed.")
+        return False
 
     en_list = get_ar_list_from_en(en_title, us_sql=True, wiki="en")
 
     if not en_list:
         logger.warning("<<lightred>> en_list is empty. return")
-        return
+        return False
 
-    no_work(en_title, labb, num, lenth, callback=callback)
+    return process_catagories(en_title, labb, num, lenth, callback=callback)
 
 
-def ToMakeNewCat2222(liste, uselabs=False, callback=None):
+def create_categories_from_list(liste, uselabs=False, callback=None):
     lenth = len(liste)
 
     for num, en_title in enumerate(liste, 1):
         one_cat(en_title, num, lenth, uselabs=uselabs, callback=callback)
+
+
+# Legacy name
+ToMakeNewCat2222 = create_categories_from_list
+no_work = process_catagories

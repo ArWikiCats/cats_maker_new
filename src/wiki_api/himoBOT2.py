@@ -4,7 +4,6 @@
 import functools
 import re
 import sys
-from datetime import datetime as datetime2
 from urllib.parse import urlencode
 
 import requests
@@ -16,7 +15,14 @@ Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
 
 redirects_table = {}
 
-Session = requests.Session()
+
+@functools.lru_cache(maxsize=1)
+def _load_session() -> requests.Session:
+    Session = requests.Session()
+    Session.headers.update(
+        {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
+    )
+    return Session
 
 
 def submitAPI(params, Code, family, printurl=False, type="get"):
@@ -49,18 +55,23 @@ def submitAPI(params, Code, family, printurl=False, type="get"):
         url2 = url.replace("&format=json", "").replace("?format=json", "?")
         logger.debug(f"printboturl: {url2}")
     # ---
+    Session = _load_session()
+    # ---
     json1 = {}
     try:
         r22 = Session.post(mainurl, data=params, timeout=10)
-        json1 = r22.json()
 
     except requests.exceptions.ReadTimeout:
         logger.debug(f"ReadTimeout: {mainurl}")
 
     except Exception as e:
-        logger.warning(e)
-        json1 = {}
-    # ---
+        logger.warning(f"<<red>> Error submitting to API: {e}")
+
+    try:
+        json1 = r22.json()
+    except Exception as e:
+        logger.warning(f"<<red>> Error parsing API response: {e}")
+
     return json1
 
 

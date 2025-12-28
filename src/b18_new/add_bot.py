@@ -16,10 +16,10 @@ def add_to_page(page_title, arcat, callback=None):
     # ---
     start = time.time()
     # ---
-    logger.output(f"add_to_page page_title:{page_title} , cat:{arcat}")
+    logger.info(f"add_to_page page_title:{page_title} , cat:{arcat}")
     # ---
     if page_title in Dont_add_to_pages:
-        logger.output(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
+        logger.info(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
         return ""
     # ---
     arcat = arcat.replace("_", " ")
@@ -34,7 +34,7 @@ def add_to_page(page_title, arcat, callback=None):
     ns = page.namespace()
     # ---
     if not text:
-        logger.output(' text = "" ')
+        logger.info(' text = "" ')
         return
     # ---
     if page.isRedirect():
@@ -54,7 +54,7 @@ def add_to_page(page_title, arcat, callback=None):
     categories = page.get_categories(with_hidden=False)
     # ---
     if text.find(f"[[{arcat}]]") != -1 or text.find(f"[[{arcat}|") != -1:
-        logger.output(" text.find( final_categories.strip() ) != -1 ")
+        logger.info(" text.find( final_categories.strip() ) != -1 ")
         return
     # ---
     newtext = text
@@ -81,11 +81,11 @@ def add_to_page(page_title, arcat, callback=None):
             try:
                 callback(page_title)
             except Exception as e:
-                logger.output(f"<<lightred>> Error in callback: {e}")
+                logger.info(f"<<lightred>> Error in callback: {e}")
     # ---
     final = time.time()
     delta = int(final - start)
-    logger.output(f"add_bot.py done in {delta} seconds")
+    logger.info(f"add_bot.py done in {delta} seconds")
 
 
 def add_to_final_list(final_list, title, callback=None):
@@ -97,5 +97,5 @@ def add_to_final_list(final_list, title, callback=None):
     # ---
     if final_list:
         for n, page in enumerate(final_list, start=1):
-            logger.output(f"<<yellow>> add_to_final_list cat:{title} page:{page} n:{n}/{len(final_list)}")
+            logger.info(f"<<yellow>> add_to_final_list cat:{title} page:{page} n:{n}/{len(final_list)}")
             add_to_page(page, title, callback=callback)

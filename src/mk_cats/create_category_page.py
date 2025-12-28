@@ -4,23 +4,18 @@
 
 
 """
-from ..wd_bots import NewHimoAPIBot
 from ..wiki_api import arAPI
-from . import categorytext
 from ..helps import logger
-from .mk_bots import no1help
 from ..utils.skip_cats import skip_encats
 
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
+from . import categorytext
 
 find_title = [
     "إسرائيل",
     "إرهاب",
 ]
-Cate_Created = {}
 dump = {}
 dump["new"] = []
-done_list = []
 
 
 def add_text_to_cat(text, categories, enca, title, qid, family=""):
@@ -125,17 +120,6 @@ def make_category(categories, enca, title, qid, family=""):
     return New_Cat
 
 
-def Log_to_wikidata(ar, enca, qid):
-    if qid:
-        WD_API_Bot.Sitelink_API(qid, ar, "arwiki", nowait=True)
-        WD_API_Bot.Labels_API(qid, ar, "ar", False, nowait=True, tage="catelabels")
-
-    else:
-        cd = WD_API_Bot.Sitelink_API("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)
-        if cd is not True:
-            no1help.Make_New_item(ar, enca, family="wikipedia")
-
-
 def new_category(enca, title, categories, qid, family=""):
     logger.debug(f'<<lightgreen>>* make ar cat:"{title}", for english:"{enca}". ')
 
@@ -148,16 +132,7 @@ def new_category(enca, title, categories, qid, family=""):
 
     if New_Cat is False or New_Cat is not True:
         logger.debug("no1: New_Cat is False")
-        WD_API_Bot.Labels_API(qid, title, "ar", True, nowait=True, tage="catelabels")
         logger.debug("return False")
         return False
 
-    Cate_Created[enca] = title
-
-    # log_catlinks.log_it(title, enca, qid)
-
     return True
-
-
-if __name__ == "__main__":
-    logger.debug("xx")

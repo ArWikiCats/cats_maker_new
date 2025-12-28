@@ -61,7 +61,7 @@ class PARAMS_HELPS:
 
             return data
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"<<red>> Error parsing response data: {e}")
             text = str(req0.text).strip()
 
         valid_text = text.startswith("{") and text.endswith("}")

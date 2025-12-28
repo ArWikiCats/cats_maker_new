@@ -1,59 +1,12 @@
 """
-Usage:
-# ---
-from .mdwiki_page import MainPage
-page      = MainPage(title, 'www', family='mdwiki')
-# ---
-from .page import MainPage
-page      = MainPage(title, 'ar', family='wikipedia')
-# ---
-'''
-if not page.exists(): return
-# ---
-page_edit = page.can_edit(script='fixref|cat|stub|tempcat|portal')
-if not page_edit: return
-# ---
-if page.isDisambiguation() :  return
-# ---
-if page.isRedirect() :  return
-# target = page.get_redirect_target()
-# ---
-text        = page.get_text()
-ns          = page.namespace()
-links       = page.page_links()
-categories  = page.get_categories(with_hidden=False)
-langlinks   = page.get_langlinks()
-wiki_links  = page.get_wiki_links_from_text()
-refs        = page.Get_tags(tag='ref')# for x in ref: name, contents = x.name, x.contents
-words       = page.get_words()
-templates   = page.get_templates()
-temps_API   = page.get_templates_API()
-save_page   = page.save(newtext='', summary='', nocreate=1, minor='')
-create      = page.Create(text='', summary='')
-# ---
-create_data = page.get_create_data() # { "timestamp" : "", "user" : "", "anon" : "" }
-# ---
-extlinks    = page.get_extlinks()
-back_links  = page.page_backlinks()
-text_html   = page.get_text_html()
-hidden_categories= page.get_hidden_categories()
-flagged     = page.is_flagged()
-timestamp   = page.get_timestamp()
-user        = page.get_user()
-userinfo    = page.get_userinfo() # "id", "name", "groups"
-revisions   = page.get_revisions(rvprops=['content'])
-purge       = page.purge()
-'''
 
 """
-import os
 import sys
-from warnings import warn
 
 import wikitextparser as wtp
 
 from ....helps import logger
-from ...api_utils import botEdit, txtlib
+from ...api_utils import botEdit
 from ...api_utils.ask_bot import ASK_BOT
 from ...api_utils.lang_codes import change_codes
 from .ar_err import find_edit_error
@@ -662,12 +615,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
         if not self.user:
             self.get_text()
         return self.user
-
-    def get_templates(self):
-        if not self.text:
-            self.text = self.get_text()
-        self.template_data.templates = txtlib.extract_templates_and_params(self.text)
-        return self.template_data.templates
 
     def save(self, newtext="", summary="", nocreate=1, minor="0", tags="", nodiff=False, ASK=False):
         """

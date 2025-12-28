@@ -7,7 +7,7 @@ from ..c18_new.bots.cat_tools_argv import EEn_site, FR_site, use_sqldb
 from ..c18_new.cats_tools.en_link_bot import english_page_link
 from ..c18_new.tools_bots.sql_bot import MySQLdb_finder_New
 from . import sql_cat
-from ..api_sql import sql
+from ..api_sql import wiki_sql
 
 from ..helps import logger
 
@@ -37,7 +37,7 @@ def get_listenpageTitle(artitle, enpageTitle1):
         # xsfg = False
         fapages = []
         # ---
-        if sql.GET_SQL() and use_sqldb[1]:
+        if wiki_sql.GET_SQL() and use_sqldb[1]:
             cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
             # ---
             try:
@@ -47,14 +47,14 @@ def get_listenpageTitle(artitle, enpageTitle1):
             # ---
             if fapages and fapages != []:
                 # Work_API = False
-                logger.output(f"<<lightgreen>>Adding {len(fapages)} pages to fapage lists<<default>>")
+                logger.info(f"<<lightgreen>>Adding {len(fapages)} pages to fapage lists<<default>>")
                 for pages in fapages:
-                    # logger.output( '<<lightgreen>>Adding ' + pages + ' to fapage lists<<default>>')
+                    # logger.info( '<<lightgreen>>Adding ' + pages + ' to fapage lists<<default>>')
                     if pages not in listenpageTitle:
                         listenpageTitle.append(pages)
     # ---
     if enpageTitle in pages_in_arcat_toMake:
-        logger.output(f'<<lightgreen>> pages_in_arcat_toMake Adding for cats: "{enpageTitle}" : ')
+        logger.info(f'<<lightgreen>> pages_in_arcat_toMake Adding for cats: "{enpageTitle}" : ')
         for cai in pages_in_arcat_toMake[enpageTitle]:
             if cai not in listenpageTitle:
                 listenpageTitle.append(cai)

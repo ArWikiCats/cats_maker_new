@@ -198,7 +198,7 @@ def add_direct(text, Final_Categories):
 def find_doc_and_add(Final_Categories, title, create=False):
     # ---
     if any(x in title for x in ["/ملعب", "/مختبر"]):
-        logger.output(f"Skipping {title=}")
+        logger.info(f"Skipping {title=}")
         return False
     # ---
     doc_title = f"{title}/شرح"
@@ -207,7 +207,7 @@ def find_doc_and_add(Final_Categories, title, create=False):
     text = page.get_text()
     # ---
     if not text and not create:
-        logger.output(f' text = "" {doc_title=}')
+        logger.info(f' text = "" {doc_title=}')
         return False
     # ---
     if page.isRedirect():
@@ -217,7 +217,7 @@ def find_doc_and_add(Final_Categories, title, create=False):
         return False
     # ---
     if not page.exists() and not create:
-        logger.output(f" not exists {doc_title=}")
+        logger.info(f" not exists {doc_title=}")
         return False
     # ---
     page_edit = page.can_edit(script="cat")
@@ -253,7 +253,7 @@ def add_text_to_template(text, Final_Categories, title):
         str: The text with the final categories added.
     """
     # ---
-    logger.output("page.namespace() == 10 ")
+    logger.info("page.namespace() == 10 ")
     # ---
     if title.endswith("/شرح"):
         text = add_to_doc_page(text, Final_Categories)

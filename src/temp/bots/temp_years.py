@@ -9,7 +9,7 @@ from .load_data import cacaca, years_Baco
 
 
 def Make_years_temp(title, tex, return_title=False):
-    logger.output(f' Make_years_temp:{title} , tex:"{tex}"', "blue")
+    logger.info(f' Make_years_temp:{title} , tex:"{tex}"', "blue")
     if title.find("ق م") != -1 or title.find("ق.م") != -1:
         if return_title:
             return "", ""
@@ -25,10 +25,10 @@ def Make_years_temp(title, tex, return_title=False):
         ye = ""
     Y, YY = "", ""
     template = f"{cacaca[tex]}بلد"
-    logger.output(f" Make_years_temp:{title} , ye:{ye}, tex:{tex}", "blue")
+    logger.info(f" Make_years_temp:{title} , ye:{ye}, tex:{tex}", "blue")
 
     if ye in years_Baco:
-        logger.output(f"ye in years_Baco {years_Baco[ye]}")
+        logger.info(f"ye in years_Baco {years_Baco[ye]}")
         if len(ye) == 4:
             Y = ye[3]
             YY = ye[0] + ye[1] + ye[2]
@@ -45,11 +45,11 @@ def Make_years_temp(title, tex, return_title=False):
             bld = f"{bld}|في="
 
         text = f"{{{{{template}|{YY}|{Y}|{bld}}}}}"  # noqa
-        logger.output(f' Y:"{YY}" ,YY:"{Y}", bld:"{bld}" ', "red")
+        logger.info(f' Y:"{YY}" ,YY:"{Y}", bld:"{bld}" ', "red")
         if not bld:
             template = f"{cacaca[tex]}سنة"
             text = f"{{{{{template}|{YY}|{Y}}}}}"  # noqa
-        logger.output(text)
+        logger.info(text)
 
         if return_title:
             return text, template

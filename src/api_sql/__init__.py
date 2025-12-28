@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from .db_bot import LiteDB
-from .pymysql_bot import sql_connect_pymysql
+from .lite_db_bot import LiteDB
+from .sql_qu import sql_connect_pymysql
 
 __all__ = [
     "LiteDB",

@@ -12,7 +12,7 @@ from .load_data import Baco_decades, cacaca
 
 def MakedecadesTemp(title):
     Caa = False
-    logger.output(f" MakedecadesTemp :{title} ", "blue")
+    logger.info(f" MakedecadesTemp :{title} ", "blue")
     tex = ""
     title = re.sub(r"_", " ", title)
 
@@ -53,7 +53,7 @@ def MakedecadesTemp(title):
                     Qrn = str(Baco_decades[dee])
                     _Dee = dee
 
-                    logger.output(f'Dee:"{dee}",bef:"{bef}",In:"{In}",bld:"{bld}"')
+                    logger.info(f'Dee:"{dee}",bef:"{bef}",In:"{In}",bld:"{bld}"')
 
                     temp = f"{ssss}عقد"
                     if not texx:
@@ -61,18 +61,18 @@ def MakedecadesTemp(title):
                     text = f"{{{{{temp}|قرن={Qrn}|عقد={dee}{ass}}}}}"  # noqa
                     return text, temp
                 else:
-                    logger.output(f"dee {dee} not in Baco_decades")
+                    logger.info(f"dee {dee} not in Baco_decades")
         else:
-            logger.output(f"test = '{test}' ")
+            logger.info(f"test = '{test}' ")
 
     for texx in cacaca:
         p_2 = f"تصنيف:{texx}عقد"
         if title.startswith(p_2):
             tex = texx
-            logger.output(f' MakedecadesTemp:{title} , texx:"{texx}"', "blue")
+            logger.info(f' MakedecadesTemp:{title} , texx:"{texx}"', "blue")
 
     if Caa:
-        logger.output(f' Caa: MakedecadesTemp:{title} , tex:"{tex}"', "blue")
+        logger.info(f' Caa: MakedecadesTemp:{title} , tex:"{tex}"', "blue")
         t_1 = f"تصنيف:{tex}عقد "
         ttt = t_1 + r"(\d+)\s*(في |)(.*|)$"
 
@@ -83,7 +83,7 @@ def MakedecadesTemp(title):
             decade_ = ""
         if bld == title:
             bld = ""
-        logger.output(f" decade_:'{decade_}' , bld:'{bld}' ", "blue")
+        logger.info(f" decade_:'{decade_}' , bld:'{bld}' ", "blue")
         Y, YY = "", ""
 
         template = f"{cacaca[tex]}بلد عقد"
@@ -105,9 +105,9 @@ def MakedecadesTemp(title):
                 Y, YY = "", ""
                 dex = decade2
             else:
-                logger.output(f' len(decade2) :"{len(decade2)}".', "red")
+                logger.info(f' len(decade2) :"{len(decade2)}".', "red")
 
-            logger.output(f" Y:{Y} , YY:{YY} ,len(decade2): {len(decade2)}.", "red")
+            logger.info(f" Y:{Y} , YY:{YY} ,len(decade2): {len(decade2)}.", "red")
 
             sus = ""
             if not In:
@@ -124,5 +124,5 @@ def MakedecadesTemp(title):
 
             return text, template
         else:
-            logger.output(f"decade_ {decade_} not in Baco_decades")
+            logger.info(f"decade_ {decade_} not in Baco_decades")
     return "{{تصنيف موسم}}", "تصنيف موسم"

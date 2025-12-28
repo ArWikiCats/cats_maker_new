@@ -86,7 +86,7 @@ def Make_sql(queries, wiki="", printqua=False):
     host, dbs_p = wiki_sql.make_labsdb_dbs_p(wiki)
     # ---
     if printqua:
-        logger.output(queries)
+        logger.info(queries)
     # ---
     TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
     logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {TTime}')
@@ -143,7 +143,7 @@ def MySQLdb_finder_New(encatTitle, arcatTitle):
     # ---
     delta = int(time.time() - start)
     # ---
-    logger.output(f'sql_bot.py: MySQLdb_finder_New len(final_cat) = "{len(final_cat)}", in {delta} seconds')
+    logger.info(f'sql_bot.py: MySQLdb_finder_New len(final_cat) = "{len(final_cat)}", in {delta} seconds')
     # ---
     if final_cat:
         return final_cat
@@ -153,7 +153,7 @@ def MySQLdb_finder_New(encatTitle, arcatTitle):
 
 def find_sql(enpageTitle):
     # ---
-    logger.output(f"find_sql, enpageTitle:'{enpageTitle}'")
+    logger.info(f"find_sql, enpageTitle:'{enpageTitle}'")
     # ---
     if not wiki_sql.GET_SQL():
         return []
@@ -175,6 +175,6 @@ def find_sql(enpageTitle):
         listenpageTitle.append(pages)
         # ---
         if numbrr < 30:
-            logger.output("<<lightgreen>> Adding " + pages + " to fa lists from en category. <<default>>")
+            logger.info("<<lightgreen>> Adding " + pages + " to fa lists from en category. <<default>>")
     # ---
     return listenpageTitle

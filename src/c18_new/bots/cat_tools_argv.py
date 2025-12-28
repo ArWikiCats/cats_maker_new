@@ -39,7 +39,7 @@ for arg in sys.argv:
         EEn_site["family"] = "commons"
         EEn_site["code"] = "commons"
         # ---
-        logger.output(f"<<lightred>> EEn_site[family] = {EEn_site['family']}.")
+        logger.info(f"<<lightred>> EEn_site[family] = {EEn_site['family']}.")
     # ---
     # python3 core8/pwb.py c18/cat -family:wikiquote -newpages:20
     if arg == "-family" or arg == "family":
@@ -52,18 +52,18 @@ for arg in sys.argv:
             AAr_site["family"] = "wikiquote"
             AAr_site["code"] = "ar"
             # ---
-            logger.output(f'<<lightred>> EEn_site["family"] = {EEn_site["family"]}.')
-            logger.output(f'<<lightred>> AAr_site["family"] = {AAr_site["family"]}.')
+            logger.info(f'<<lightred>> EEn_site["family"] = {EEn_site["family"]}.')
+            logger.info(f'<<lightred>> AAr_site["family"] = {AAr_site["family"]}.')
             Use_Labels[1] = True
-            logger.output("<<lightred>> -------------------------------")
-            logger.output("<<lightred>> Use_Labels.")
+            logger.info("<<lightred>> -------------------------------")
+            logger.info("<<lightred>> Use_Labels.")
     # ---
     if arg == "-uselang" or arg == "uselang":
         # ---
         EEn_site["family"] = "wikipedia"
         EEn_site["code"] = value
         # ---
-        logger.output("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
+        logger.info("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
         Make_New_Cat[1] = False
     # ---
     # python3 core8/pwb.py c18/cat -page:شوليه_باي_دي_لا_لورا_2018 -slang:fr
@@ -75,27 +75,27 @@ for arg in sys.argv:
         FR_site["family"] = "wikipedia"
         FR_site["code"] = value
         # ---
-        logger.output("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
-        logger.output('<<lightred>> FR_site["family"] = {}:{}.'.format(value, FR_site["family"]))
+        logger.info("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
+        logger.info('<<lightred>> FR_site["family"] = {}:{}.'.format(value, FR_site["family"]))
         Make_New_Cat[1] = False
     # ---
     if arg == "usesql":
         use_sqldb[1] = True
-        logger.output("<<lightred>> use My SQl .")
+        logger.info("<<lightred>> use My SQl .")
     # ---
     if arg == "-nosql":
         use_sqldb[1] = False
-        logger.output("<<lightred>> dont_use_sqldb .")
+        logger.info("<<lightred>> dont_use_sqldb .")
     # ---
     if arg == "-dontMakeNewCat" or arg == "-dontmakenewcat":
         Make_New_Cat[1] = False
-        logger.output("<<lightred>> -------------------------------")
-        logger.output("<<lightred>> dont New Categories.")
+        logger.info("<<lightred>> -------------------------------")
+        logger.info("<<lightred>> dont New Categories.")
     # ---
     if arg == "-uselabels":
         Use_Labels[1] = True
-        logger.output("<<lightred>> -------------------------------")
-        logger.output("<<lightred>> Use_Labels.")
+        logger.info("<<lightred>> -------------------------------")
+        logger.info("<<lightred>> Use_Labels.")
 
 if To[1] != 0:
     To[1] = To[1] + offseet[1]

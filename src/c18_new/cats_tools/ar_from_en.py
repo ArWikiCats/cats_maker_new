@@ -31,10 +31,10 @@ def make_ar_list_from_en_cat(encat):
 
     # ---
     if not encat:
-        logger.output("<<lightblue>> No encat")
+        logger.info("<<lightblue>> No encat")
         return False
     # ---
-    logger.output(f'<<lightgreen>>* make_ar_list_from_en_cat: cat:"{encat}" ')
+    logger.info(f'<<lightgreen>>* make_ar_list_from_en_cat: cat:"{encat}" ')
     # count = 0
     encat = (
         encat.replace("[[", "")
@@ -61,14 +61,14 @@ def make_ar_list_from_en_cat(encat):
         UUX = get_arpage_inside_encat("Category:" + enpageTitle)
         # ---
         if UUX:
-            logger.output("arpage inside_encat: " + (",a: ".join(UUX)))
+            logger.info("arpage inside_encat: " + (",a: ".join(UUX)))
             for x in UUX:
                 gent_faso_list.append(x.replace("_", " "))
         # ---
         if not gent_faso_list:
             gent_faso_list = get_ar_list_from_cat(encat, code="en", typee="all")
         # ---
-        logger.output(f" make_ar_list_from_en_cat lenth : {len(gent_faso_list)}")
+        logger.info(f" make_ar_list_from_en_cat lenth : {len(gent_faso_list)}")
         # ---
         new_ll = Get_ar_list_from_en_list(gent_faso_list)
         # ---
@@ -81,9 +81,9 @@ def make_ar_list_from_en_cat(encat):
             listenpageTitle.append(cdv)
     # ---
     if len(listenpageTitle) == 0:
-        logger.output("<<lightblue>>make_ar_list_from_en_cat No cats listenpageTitle = [] ")
+        logger.info("<<lightblue>>make_ar_list_from_en_cat No cats listenpageTitle = [] ")
     # ---
-    logger.output(f"<<lightblue>> end of make_ar_list_from_en_cat, lenth:{len(listenpageTitle)}")
+    logger.info(f"<<lightblue>> end of make_ar_list_from_en_cat, lenth:{len(listenpageTitle)}")
     return listenpageTitle
 
 
@@ -129,7 +129,7 @@ def Get_ar_list_from_en_list(enlist):
                 logger.debug(f"<<lightblue>>Adding {tat} from En_title_for_ar page {xen}<<default>>")
                 new_ar_list.append(tat)
     # ---
-    logger.output(f"<<lightyellow>> Get_ar_list_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
+    logger.info(f"<<lightyellow>> Get_ar_list_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
     # ---
     new_ar_list = list(set(new_ar_list))
     # ---

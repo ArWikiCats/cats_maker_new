@@ -6,38 +6,23 @@ https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=Q4167836
 https://www.wikidata.org/w/rest.php/wikibase/v1/entities/items/Q42
 https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 
-python3 core8/pwb.py wd_api/wd_bots/wb_rest_api
-
-Usage:
-
-from .wd_bots import wb_rest_api
-# infos = wb_rest_api.Get_item_infos(qids)
-# q_infos = wb_rest_api.Get_one_qid_info(qid, only="sitelinks|labels|descriptions|aliases|statements")
-# p373 wb_rest_api.Get_P373(qid)
-
-
 """
 
 import sys
-
 from ..helps import logger
-
-# ---
-# get_rest_result = login_bot.get_rest_result
-# ---
 from . import NewHimoAPIBot
-
-# ---
-WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
-# ---
-get_rest_result = WD_API_Bot.get_rest_result
-
+import functools
 
 wd_cach = {}
 
 
-def get_rest_result_wrap(url):
-    return get_rest_result(url)
+@functools.lru_cache(maxsize=1)
+def get_wd_api_bot():
+    return NewHimoAPIBot(Mr_or_bot="bot", www="www")
+
+
+def get_rest_result(url):
+    return get_wd_api_bot().get_rest_result(url)
 
 
 def Get_one_qid_info(qid, only=None):
@@ -83,9 +68,9 @@ def Get_one_qid_info(qid, only=None):
         url += "/" + only
     # ---
     if "printurl" in sys.argv:
-        logger.output(url)
+        logger.info(url)
     # ---
-    result = get_rest_result_wrap(url)
+    result = get_rest_result(url)
     # ---
     if only in props:
         result = {only: result}
@@ -107,13 +92,13 @@ def Get_one_qid_info(qid, only=None):
 
 def Get_item_infos(qids):
     # ---
-    logger.output(f"Get_item_infos {len(qids)=}")
+    logger.info(f"Get_item_infos {len(qids)=}")
     # ---
     table = {}
     # ---
     for qid in qids:
         # ---
-        logger.output(f"Get_item_infos work for one qid: {qid}")
+        logger.info(f"Get_item_infos work for one qid: {qid}")
         # ---
         table[qid] = Get_one_qid_info(qid)
     # ---
@@ -130,23 +115,3 @@ def Get_P373(qid):
         value = infos.get("sitelinks", {}).get("commonswiki", "").replace("Category:", "")
     # ---
     return value
-
-
-def test():
-    qids = ["Q805", "Q4167836"]
-    # ---
-    results = Get_item_infos(qids)
-    # ---
-    for q, taa in results.items():
-        logger.output(f"<<blue>>{q} :")
-        # ---
-        logger.output(f"{len(taa)=}")
-        logger.output(f"{len(q)=}")
-        # ---
-        p373 = Get_P373(q)
-        # ---
-        logger.output(f"<<purple>>{p373=}")
-
-
-if __name__ == "__main__":
-    test()
