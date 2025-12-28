@@ -7,7 +7,7 @@ from ..c18_new.bots.cat_tools_argv import EEn_site, FR_site, use_sqldb
 from ..c18_new.cats_tools.en_link_bot import english_page_link
 from ..c18_new.tools_bots.sql_bot import MySQLdb_finder_New
 from . import sql_cat
-from ..api_sql import sql
+from ..api_sql import wiki_sql
 
 from ..helps import logger
 
@@ -37,7 +37,7 @@ def get_listenpageTitle(artitle, enpageTitle1):
         # xsfg = False
         fapages = []
         # ---
-        if sql.GET_SQL() and use_sqldb[1]:
+        if wiki_sql.GET_SQL() and use_sqldb[1]:
             cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
             # ---
             try:
