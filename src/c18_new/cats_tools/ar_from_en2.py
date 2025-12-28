@@ -2,7 +2,7 @@
 """
 
 """
-from ...b18_new.LC_API_bot import find_LCN
+from ...b18_new.LCN_new import find_LCN
 from ..bots.cat_tools_argv import EEn_site, FR_site
 from ..log import logger
 from .en_link_bot import en_title_for_arpage_cache

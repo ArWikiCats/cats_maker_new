@@ -5,7 +5,7 @@ from ..tools_bots.temp_bot import templatequery, templatequerymulti
 """
 from collections import defaultdict
 
-from ...b18_new.LC_API_bot import find_LCN, get_cache_L_C_N, set_cache_L_C_N
+from ...b18_new.LCN_new import find_LCN, get_cache_L_C_N, set_cache_L_C_N
 from ..log import logger
 
 templatequery_cache = defaultdict(dict)

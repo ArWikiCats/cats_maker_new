@@ -6,7 +6,7 @@ import sys
 
 from ..utils.skip_cats import global_False_entemps as NO_Templates
 from ..helps import logger
-from .LC_API_bot import add_to_No_Cat_, get_cache_L_C_N
+from .LCN_new import add_to_No_Cat_, get_cache_L_C_N
 
 SubSub = {}
 # ---
