@@ -10,7 +10,7 @@ import functools
 
 
 @functools.lru_cache(maxsize=1)
-def get_wd_api_bot():
+def get_wd_api_bot() -> NewHimoAPIBot:
     return NewHimoAPIBot(Mr_or_bot="bot", www="www")
 
 
@@ -43,6 +43,30 @@ for ns, title in ns_text_tab_1.items():
     ns_text_tab[str(ns)] = title
 
 
+def makejson(property, numeric):
+    # ---
+    if numeric:
+        numeric = numeric.replace("Q", "")
+        Q = f"Q{numeric}"
+        return {
+            "mainsnak": {
+                "snaktype": "value",
+                "property": property,
+                "datavalue": {
+                    "value": {
+                        "entity-type": "item",
+                        "numeric-id": numeric,
+                        "id": Q,
+                    },
+                    "type": "wikibase-entityid",
+                },
+                "datatype": "wikibase-item",
+            },
+            "type": "statement",
+            "rank": "normal",
+        }
+
+
 def add_desc_to_cat(q):
     NewDesc = {}
     addedlangs = []
@@ -66,7 +90,7 @@ def Make_New_item(artitle, entitle, family=""):
     data = {}
     data["sitelinks"] = {}
     data["claims"] = {}
-    data["claims"]["P31"] = [tools.makejson("P31", "Q4167836")]  # تصنيف
+    data["claims"]["P31"] = [makejson("P31", "Q4167836")]  # تصنيف
     data["labels"] = {}
     data["sitelinks"][enwiki] = {"site": enwiki, "title": entitle}
     data["sitelinks"][arwiki] = {"site": arwiki, "title": artitle}
@@ -80,15 +104,3 @@ def Make_New_item(artitle, entitle, family=""):
 
     if sao and sao.startswith("Q"):
         add_desc_to_cat(sao)
-
-
-def add_ns(arlist):
-    new = []
-
-    for x, ns in arlist.items():
-        if ns in ns_text_tab:
-            x = f"{ns_text_tab[ns]}:{x}"
-
-        new.append(x.replace("_", " "))
-
-    return new
