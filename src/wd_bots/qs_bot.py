@@ -110,7 +110,7 @@ def QS_line(line, user="Mr. Ibrahem"):
             logfile.write(lli)
         logfile.close()
     except Exception as e:
-        logger.warning(e)
+        logger.warning(f"<<red>> Error writing to QS log file: {e}")
     # ---
     # if "try2020" in sys.argv: return csdhg
     # ---

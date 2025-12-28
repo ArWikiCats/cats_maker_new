@@ -58,7 +58,7 @@ def submitAPI(params, Code, family, printurl=False, type="get"):
         logger.debug(f"ReadTimeout: {mainurl}")
 
     except Exception as e:
-        logger.warning(e)
+        logger.warning(f"<<red>> Error submitting to API: {e}")
         json1 = {}
     # ---
     return json1
