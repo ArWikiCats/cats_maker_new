@@ -144,7 +144,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 )
             # ---
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"<<red>> Error getting login token: {e}")
             return ""
 
         jsson1 = {}
@@ -153,7 +153,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             jsson1 = r11.json()
         except Exception as e:
             print(r11.text)
-            logger.warning(e)
+            logger.warning(f"<<red>> Error getting login token: {e}")
             return ""
 
         return jsson1.get("query", {}).get("tokens", {}).get("logintoken") or ""

@@ -50,7 +50,7 @@ def log_to_file(data, filename):
         logger.info(f"<<red>> PermissionError writing to {filename}")
         delete = True
     except Exception as e:
-        logger.warning(e)
+        logger.warning(f"<<red>> Error writing to {filename}: {e}")
     # ---
     if delete:
         try:
@@ -64,4 +64,4 @@ def log_to_file(data, filename):
             # ---
             os.chmod(filename, statgroup)
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"<<red>> Error deleting/writing to {filename}: {e}")
