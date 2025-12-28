@@ -21,7 +21,8 @@ from ..utils.skip_cats import NO_Templates_lower, skip_encats
 from .create_category_page import new_category
 
 try:
-    from ArWikiCats import resolve_arabic_category_label  # type: ignore
+    from ArWikiCats import resolve_arabic_category_label, config_logger  # type: ignore
+    config_logger("ERROR")
 except ImportError:
     resolve_arabic_category_label = None
 
