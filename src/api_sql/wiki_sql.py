@@ -228,38 +228,3 @@ def sql_new_title_ns(queries, wiki="", t1="page_title", t2="page_namespace"):
             newlist.append(row)
     # ---
     return newlist
-
-
-if __name__ == "__main__":
-    # ---
-    arqueries = """
-    select CONCAT("تصنيف:", page_title) as title, page_namespace
-    from page
-    where page_namespace = 14
-    limit 5;
-    """
-    # ---
-    # python3 core8/pwb.py api_sql/wiki_sql
-    ss = sql_new(arqueries, wiki="ar")
-    logger.info(f"<<lightyellow>>{arqueries}")
-    # ---
-    logger.info(f"wiki_sql.py test:: sql_new lenth:{len(ss)}")
-    for row in ss:
-        logger.info(f"a {str(row)}")
-    # ---
-    qua2 = "select page_title as title, page_namespace as ns from page where page_namespace in (14, 10, 828) limit 10;"
-    # ---
-    ss2 = sql_new_title_ns(qua2, wiki="en", t1="title", t2="ns")
-    logger.info(f"<<lightyellow>>{qua2}")
-    # ---
-    logger.info(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss2)}")
-    for row in ss2:
-        logger.info(f"a {str(row)}")
-    # ---
-    ss3 = sql_new_title_ns(qua2, wiki="ar", t1="title", t2="ns")
-    logger.info(f"<<lightyellow>>{qua2}")
-    # ---
-    logger.info(f"wiki_sql.py test:: sql_new_title_ns lenth:{len(ss3)}")
-    for row in ss3:
-        logger.info(f"a {str(row)}")
-# ---

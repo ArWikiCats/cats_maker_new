@@ -2,7 +2,6 @@
 
 """
 # ---
-import os
 import sys
 
 from ..new_api import LoginWrap, User_tables_bot

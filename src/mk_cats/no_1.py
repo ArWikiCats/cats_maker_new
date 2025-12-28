@@ -160,10 +160,4 @@ def new_category(enca, title, categories, qid, family=""):
 
     Cate_Created[enca] = title
 
-    # log_catlinks.log_it(title, enca, qid)
-
     return True
-
-
-if __name__ == "__main__":
-    logger.debug("xx")

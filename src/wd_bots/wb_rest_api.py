@@ -6,46 +6,23 @@ https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=Q4167836
 https://www.wikidata.org/w/rest.php/wikibase/v1/entities/items/Q42
 https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 
-python3 core8/pwb.py wd_api/wd_bots/wb_rest_api
-
-Usage:
-
-from .wd_bots import wb_rest_api
-# infos = wb_rest_api.Get_item_infos(qids)
-# q_infos = wb_rest_api.Get_one_qid_info(qid, only="sitelinks|labels|descriptions|aliases|statements")
-# p373 wb_rest_api.Get_P373(qid)
-
-
 """
 
 import sys
-
 from ..helps import logger
-
-# ---
-# get_rest_result = login_bot.get_rest_result
-# ---
 from . import NewHimoAPIBot
-
-# ---
 import functools
+
+wd_cach = {}
 
 
 @functools.lru_cache(maxsize=1)
 def get_wd_api_bot():
     return NewHimoAPIBot(Mr_or_bot="bot", www="www")
-# ---
 
 
 def get_rest_result(url):
     return get_wd_api_bot().get_rest_result(url)
-
-
-wd_cach = {}
-
-
-def get_rest_result_wrap(url):
-    return get_rest_result(url)
 
 
 def Get_one_qid_info(qid, only=None):
@@ -93,7 +70,7 @@ def Get_one_qid_info(qid, only=None):
     if "printurl" in sys.argv:
         logger.info(url)
     # ---
-    result = get_rest_result_wrap(url)
+    result = get_rest_result(url)
     # ---
     if only in props:
         result = {only: result}
@@ -138,23 +115,3 @@ def Get_P373(qid):
         value = infos.get("sitelinks", {}).get("commonswiki", "").replace("Category:", "")
     # ---
     return value
-
-
-def test():
-    qids = ["Q805", "Q4167836"]
-    # ---
-    results = Get_item_infos(qids)
-    # ---
-    for q, taa in results.items():
-        logger.info(f"<<blue>>{q} :")
-        # ---
-        logger.info(f"{len(taa)=}")
-        logger.info(f"{len(q)=}")
-        # ---
-        p373 = Get_P373(q)
-        # ---
-        logger.info(f"<<purple>>{p373=}")
-
-
-if __name__ == "__main__":
-    test()

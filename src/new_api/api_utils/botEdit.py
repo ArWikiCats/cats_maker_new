@@ -334,18 +334,3 @@ def bot_May_Edit(text="", title_page="", botjob="all", page=False, delay=0):
             return False
     # ---
     return check_it
-
-
-# ---
-# python3 core8/pwb.py API/botEdit
-# ---
-if __name__ == "__main__":
-    texts = """
-{{Bots|deny=all}}
-{{يتيمة|تاريخ=مايو 2020}}
-{{صندوق معلومات شخص
-| الصورة = Correggio, Alexandru Bogdan-Piteşti.jpg
-}}"""
-    fg = bot_May_Edit(text=texts)
-    print(fg)
-# ---
