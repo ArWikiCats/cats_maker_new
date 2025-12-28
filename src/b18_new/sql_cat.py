@@ -5,7 +5,7 @@
 import sys
 
 from pymysql.converters import escape_string
-from ..api_sql import sql, wiki_sql
+from ..api_sql import wiki_sql
 from ..c18_new.cats_tools.ar_from_en2 import get_en_title
 from ..helps import logger
 from ..utils.skip_cats import global_False_entemps
