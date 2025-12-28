@@ -5,7 +5,10 @@ import sys
 sys.argv.append("ask")
 sys.path.append("D:/categories_bot/make2_new")
 
-from new_all import work_bot as new_all
+try:
+    from new_all import work_bot as new_all
+except ImportError:
+    new_all = None
 
 from src.helps.log import config_logger
 from src.mk_cats import ToMakeNewCat2222
@@ -16,10 +19,9 @@ new_all_tab = {1: False}
 
 
 def new_all_work_on_title(title, **Kwargs):
-    if not new_all_tab[1]:
-        new_all_tab[1] = new_all
-    # ---
-    new_all_tab[1].work_on_title(title=title, dont_create=True, **Kwargs)
+    if new_all:
+        # ---
+        new_all.work_on_title(title=title, dont_create=True, **Kwargs)
 
 
 def main():
