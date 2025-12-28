@@ -20,12 +20,12 @@ from .wd_bots import wb_rest_api
 
 import sys
 
-from ...helps import logger
+from ..helps import logger
 
 # ---
 # get_rest_result = login_bot.get_rest_result
 # ---
-from ...wd_bots import NewHimoAPIBot
+from . import NewHimoAPIBot
 
 # ---
 WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")

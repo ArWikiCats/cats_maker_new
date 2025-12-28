@@ -3,7 +3,7 @@
 
 """
 from ...b18_new.cat_tools_enlist import get_ar_list_from_cat
-from ...b18_new.LC_API_bot import find_LCN, get_arpage_inside_encat
+from ...b18_new.LCN_new import find_LCN, get_arpage_inside_encat
 from ..bots.cat_tools_argv import EEn_site, use_sqldb
 from ..cat_tools2 import Categorized_Page_Generator
 from ..log import logger

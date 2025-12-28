@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 from ..helps import logger
-from ..new_api.api_utils import wd_sparql
+from ..wiki_api import wd_sparql
 
 get_query_data = wd_sparql.get_query_data
 

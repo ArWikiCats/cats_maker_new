@@ -7,7 +7,7 @@ import sys
 from configparser import ConfigParser
 
 from ....helps import logger
-from ...DB_bots.pymysql_bot import sql_connect_pymysql
+from ....api_sql.pymysql_bot import sql_connect_pymysql
 
 
 def local_host():

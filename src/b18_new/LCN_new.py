@@ -4,8 +4,8 @@ Refactored module for handling MediaWiki API calls for categories, langlinks, et
 """
 from typing import Any, Dict, List, Optional, Tuple
 
-from ...helps import logger
-from ...wiki_api import himoBOT2
+from ..helps import logger
+from ..wiki_api import himoBOT2
 
 no_cat_pages = {}  # self.no_cat_pages
 page_is_redirect = {}  # self.page_is_redirect
@@ -331,7 +331,7 @@ class WikiApiHandler:
 
 
 # 1. Create a single, global instance of the new class.
-# The name LC_bot is chosen to match the original import `from c18_new import LC_API_bot`
+# The name LC_bot is chosen to match the original import `from c18_new import LCN_new`
 LC_bot = WikiApiHandler()
 
 # 2. Re-create the old functions as wrappers that call the new methods.

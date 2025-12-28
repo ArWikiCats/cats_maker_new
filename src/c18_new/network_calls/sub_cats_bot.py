@@ -4,7 +4,7 @@
 from ..network_calls.sub_cats_bot import sub_cats_query
 
 """
-from ...b18_new.LC_API_bot import get_cache_L_C_N, set_cache_L_C_N
+from ...b18_new.LCN_new import get_cache_L_C_N, set_cache_L_C_N
 from ...wiki_api import himoBOT2
 from ..bots.cat_tools_argv import EEn_site
 from ..log import logger

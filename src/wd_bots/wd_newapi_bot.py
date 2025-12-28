@@ -5,10 +5,10 @@
 import sys
 import time
 
-from ...helps import logger
-from ..bot_wd import WD_Functions
-from ..utils import lag_bot
-from ..utils.handle_wd_errors import WD_ERRORS_HANDLER
+from ..helps import logger
+from .bot_wd import WD_Functions
+from .utils import lag_bot
+from .utils.handle_wd_errors import WD_ERRORS_HANDLER
 
 
 class WD_API(WD_Functions, WD_ERRORS_HANDLER):

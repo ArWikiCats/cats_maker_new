@@ -6,8 +6,8 @@ from ..cats_tools.en_link_bot import english_page_link, en_title_for_arpage_cach
 """
 import re
 
-from ...b18_new.LC_API_bot import find_LCN, get_cache_L_C_N, set_cache_L_C_N
-from ...wd_api_bot import Get_Sitelinks_from_qid, Get_Sitelinks_From_wikidata
+from ...b18_new.LCN_new import find_LCN, get_cache_L_C_N, set_cache_L_C_N
+from ...wd_bots.wd_api_bot import Get_Sitelinks_from_qid, Get_Sitelinks_From_wikidata
 from ..log import logger
 
 En_title_for_ar_page = {}

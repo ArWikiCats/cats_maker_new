@@ -1,7 +1,7 @@
 #!/usr/bin/env python3 core8/pwb.py
 
 from ..helps import logger
-from .wd_bots.get_bots import Get_item_descriptions_or_labels
+from .get_bots import Get_item_descriptions_or_labels
 from .wd_desc import work_api_desc
 from .wd_sparql_bot import sparql_generator_url
 

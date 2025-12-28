@@ -3,7 +3,7 @@
 !
 """
 from ..mk_cats.wd_login_wrap import log_in_wikidata
-from .h_wd_newapi.wd_newapi_bot import WD_API
+from .wd_newapi_bot import WD_API
 from .req_bots_new import descriptions_wd, items_wd, labels_wd, sitelinks_wd
 from .utils.out_json import outbot_json, outbot_json_bot
 

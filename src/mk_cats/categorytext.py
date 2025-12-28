@@ -7,7 +7,7 @@
 import sys
 
 from ..temp import main_make_temp
-from ..wd_api_bot import Get_P373_API
+from ..wd_bots.wd_api_bot import Get_P373_API
 from ..wiki_api import himoBOT2
 from ..helps import logger
 
