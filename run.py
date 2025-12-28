@@ -3,6 +3,7 @@
 import sys
 import json
 import requests
+import logging
 
 sys.argv.append("ask")
 sys.path.append("D:/categories_bot/make2_new")
@@ -17,8 +18,9 @@ config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
 # config_logger("ERROR")
 
 from src.mk_cats import create_categories_from_list
-
 new_all_tab = {1: False}
+
+logger = logging.getLogger(__name__)
 
 
 def new_all_work_on_title(title, **Kwargs):
@@ -28,12 +30,15 @@ def new_all_work_on_title(title, **Kwargs):
 
 
 def get_url_result(url):
+    headers = {
+        "User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"
+    }
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, timeout=15, headers=headers)
         response.raise_for_status()
         return response.text
     except requests.RequestException as e:
-        print(f"Error fetching URL {url}: {e}")
+        logging.error(f"Error fetching URL {url}: {e}")
         return ""
 
 
@@ -48,7 +53,7 @@ def get_result(num):
         jsons = json.loads(result)
         rows = jsons["rows"]
     except json.decoder.JSONDecodeError:
-        print(f" json.decoder.JSONDecodeError url {url}")
+        logging.warning(f" json.decoder.JSONDecodeError url {url}")
     # ---
     return rows
 
@@ -87,14 +92,14 @@ def main():
             List = get_quarry_result(value)
             for cat in List:
                 categories_list.append(cat)
-            print(f"Add {len(List)} cat from get_quarry_result to categories_list.")
+            logger.info(f"Add {len(List)} cat from get_quarry_result to categories_list.")
 
         elif argn == "encat":
             categories_list.append(value)
 
     categories_list = [f"Category:{x}" if not x.startswith("Category:") else x for x in categories_list]
     if categories_list:
-        print(f"categories_list work with {len(categories_list)} cats.")
+        logger.info(f"categories_list work with {len(categories_list)} cats.")
         create_categories_from_list(categories_list, callback=new_all_work_on_title)
 
 
