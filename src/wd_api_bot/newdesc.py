@@ -17,42 +17,6 @@ translations = {
 }
 
 
-def work2_with_replacement(item, topic, translations, replacement_ke):
-    item.get()
-    # logger.output( '<<lightyellow>> **newdesc: work2:'  + item.title(as_link=False))
-    # ItemDescriptions = {}
-    # ---
-    keys1 = sorted([x for x in translations[topic].keys()])
-    # ---
-    if "en" in keys1:
-        keys1.append("en-gb")
-        keys1.append("en-ca")
-    # ---
-    ItemDescriptions = item.descriptions
-    NewDesc = {}
-    # ---
-    q = item.title(as_link=False)
-    # ---
-    for lang in replacement_ke.keys():  # استبدال
-        if lang in ItemDescriptions.keys() and lang in keys1:
-            value = ItemDescriptions[lang]
-            if value in replacement_ke[lang]:
-                NewDesc[lang] = {"language": lang, "value": translations[topic][lang]}
-                logger.output(f'<<lightyellow>> replace "{value}" by: "{translations[topic][lang]}".')
-    # ---
-    for lang in keys1:
-        if lang not in ItemDescriptions.keys():
-            # ---
-            lang2 = lang
-            if lang in ("en-ca", "en-gb"):
-                lang2 = "en"
-            # ---
-            NewDesc[lang] = {"language": lang, "value": translations[topic][lang2]}
-    # ---
-    # logger.output( '<<lightyellow>>  NewDesc' + str(NewDesc) )
-    work_api_desc(NewDesc, q)
-
-
 def work22(q, topic, translations):
     # ---
     keys = sorted([x for x in translations[topic].keys()])
@@ -93,54 +57,3 @@ def mainfromQuarry(topic, Quarry, translations):
         q = "item" in item and item["item"].split("/entity/")[1]
         logger.output(f'<<lightyellow>>*mainfromQuarry: {num}/{lenth} topic:"{topic}", q:"{q}".')
         work22(q, topic, translations)
-
-
-def Quarry_with_item_langs(p31, Quarry, translations):
-    json = sparql_generator_url(Quarry)
-    lenth = len(json)
-    num = 0
-    # ---
-    p31_langs = list(translations.get(p31, {}).keys())
-    # ---
-    for item in json:
-        num += 1
-        q = "item" in item and item["item"].split("/entity/")[1]
-        logger.output(f'<<lightyellow>>*mainfromQuarry: {num}/{lenth} p31:"{p31}", q:"{q}".')
-        # ---
-        q_langs = item.get("langs", "").split(",")
-        # ---
-        lang_to_add = list(set(p31_langs) - set(q_langs))
-        # ---
-        if len(lang_to_add) > 0:
-            work22(q, p31, translations)
-
-
-def mainfromQuarry2(topic, Quarry, translations):
-    mainfromQuarry(topic, Quarry, translations)
-
-
-def work2(item, topic, translations):
-    # ---
-    keys = sorted([x for x in translations[topic].keys()])
-    if "en" in keys:
-        keys.append("en-gb")
-        keys.append("en-ca")
-    # ---
-    NewDesc = {}
-    # ---
-    item.get()
-    # ---
-    q = item.title(as_link=False)
-    # ---
-    ItemDescriptions = item.descriptions
-    # ---
-    for lang in keys:
-        if lang not in ItemDescriptions.keys():
-            # ---
-            lang2 = lang
-            if lang in ("en-ca", "en-gb"):
-                lang2 = "en"
-            # ---
-            NewDesc[lang] = {"language": lang, "value": translations[topic][lang2]}
-    # ---
-    work_api_desc(NewDesc, q)

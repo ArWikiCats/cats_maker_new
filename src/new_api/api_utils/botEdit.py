@@ -296,10 +296,6 @@ def bot_May_Edit(text="", title_page="", botjob="all", page=False, delay=0):
     return check_it
 
 
-def botMayEdit(**kwargs):
-    return bot_May_Edit(**kwargs)
-
-
 # ---
 # python3 core8/pwb.py API/botEdit
 # ---

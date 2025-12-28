@@ -14,10 +14,6 @@ Usage:
 import sqlite_utils
 
 
-def tracer(sql, params):
-    print(f"SQL: {sql} - params: {params}")
-
-
 class LiteDB:
     def __init__(self, db_path):
         self.db_path = db_path
@@ -74,23 +70,6 @@ class LiteDB:
         lista = []
         # ---
         # for row in self.db[table_name].rows_where(where):
-        for row in self.db[table_name].rows_where(where, params):
-            lista.append(row)
-        # ---
-        return lista
-
-    def select_or(self, table_name, args):
-        # ---
-        where_conditions = []
-        params = []
-        # ---
-        for k, v in args.items():
-            where_conditions.append(f"{k} = ?")
-            params.append(v)
-        # ---
-        where = " or ".join(where_conditions)
-        lista = []
-        # ---
         for row in self.db[table_name].rows_where(where, params):
             lista.append(row)
         # ---
