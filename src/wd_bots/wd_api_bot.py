@@ -1,4 +1,3 @@
-from .quarry import get_quarry_results
 from .get_bots import (
     Get_Claim_API,
     Get_infos_wikidata,
@@ -18,7 +17,6 @@ __all__ = [
     "sparql_generator_big_results",
     "Get_item_descriptions_or_labels",
     "Get_Sitelinks_From_wikidata",
-    "get_quarry_results",
     "Get_P373_API",
     "Get_infos_wikidata",
     "Get_Sitelinks_from_qid",

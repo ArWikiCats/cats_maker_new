@@ -1,6 +1,9 @@
 """
 """
 import sys
+import json
+import requests
+
 
 sys.argv.append("ask")
 sys.path.append("D:/categories_bot/make2_new")
@@ -12,7 +15,6 @@ except ImportError:
 
 from src.helps.log import config_logger
 from src.mk_cats import ToMakeNewCat2222
-from src.wd_bots.wd_api_bot import get_quarry_results
 
 config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
 new_all_tab = {1: False}
@@ -22,6 +24,45 @@ def new_all_work_on_title(title, **Kwargs):
     if new_all:
         # ---
         new_all.work_on_title(title=title, dont_create=True, **Kwargs)
+
+
+def get_url_result(url):
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"Error fetching URL {url}: {e}")
+        return ""
+
+
+def get_result(num):
+    url = f"https://quarry.wmcloud.org/run/{str(num)}/output/0/json"
+    # ---
+    result = get_url_result(url)
+    # ---
+    rows = []
+    # ---
+    try:
+        jsons = json.loads(result)
+        rows = jsons["rows"]
+    except json.decoder.JSONDecodeError:
+        print(f" json.decoder.JSONDecodeError url {url}")
+    # ---
+    return rows
+
+
+def get_quarry_result(number, get_rows=None):
+    # ---
+    results = get_result(number)
+    # ---
+    if get_rows == 1:
+        return [x[0] for x in results]
+    # ---
+    if get_rows == 2:
+        return {x[0]: x[1] for x in results}
+    # ---
+    return results
 
 
 def main():
@@ -42,10 +83,10 @@ def main():
         # python3 core8/pwb.py I:/core/bots/‏‏cats_maker_new/run.py -depth:5 encat:Department_stores_of_the_United_States
 
         if argn == "quarry":
-            List = get_quarry_results(value)
+            List = get_quarry_result(value)
             for cat in List:
                 categories_list.append(cat)
-            print(f"Add {len(List)} cat from get_quarry_results to categories_list.")
+            print(f"Add {len(List)} cat from get_quarry_result to categories_list.")
 
         elif argn == "encat":
             categories_list.append(value)
