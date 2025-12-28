@@ -26,7 +26,6 @@ try:
 except ImportError:
     resolve_arabic_category_label = None
 
-
 DONE_D = []
 NewCat_Done = {}
 Already_Created = []
