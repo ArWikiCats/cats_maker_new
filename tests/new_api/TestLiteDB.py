@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from src.api_sql.db_bot import LiteDB
+from src.api_sql.lite_db_bot import LiteDB
 
 
 @pytest.mark.skip

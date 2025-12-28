@@ -15,7 +15,6 @@ import requests
 from ...helps import logger
 from ..api_utils.user_agent import default_user_agent
 from .cookies_bot import del_cookies_file, get_file_name
-from .Login_db.bot import log_one
 from .params_help import PARAMS_HELPS
 
 # cookies = get_cookies(lang, family, username)
@@ -53,7 +52,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         super().__init__()
 
     def log_error(self, result, action, params=None) -> None:
-        log_one(site=f"{self.lang}.{self.family}.org", user=self.username, result=result, action=action, params=params)
+        logger.error(f"{botname}/page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}")
 
     def add_User_tables(self, family, table, lang="") -> None:
         # ---
