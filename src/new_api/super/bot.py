@@ -176,7 +176,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         try:
             req = seasons_by_lang[self.sea_key].request("POST", self.endpoint, data=r2_params, headers=self.headers)
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"{botname} {self.lang}.{self.family} login request exception: {e}")
             return False
         # ---
         r22 = {}
@@ -185,7 +185,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             try:
                 r22 = req.json()
             except Exception as e:
-                logger.warning(e)
+                logger.warning(f"{botname} {self.lang}.{self.family} error parsing login response: {e} - response: {getattr(req, 'text', '')}")
                 print(req.text)
                 return False
         # ---
@@ -224,7 +224,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         try:
             req = seasons_by_lang[self.sea_key].request("POST", self.endpoint, data=params, headers=self.headers)
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"{botname} {self.lang}.{self.family} userinfo request exception: {e}")
             self.log_error("failed", "userinfo")
             return False
         # ---
@@ -233,7 +233,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             try:
                 json1 = req.json()
             except Exception as e:
-                logger.warning(e)
+                logger.warning(f"{botname} {self.lang}.{self.family} error parsing userinfo response: {e} - response: {getattr(req, 'text', '')}")
                 print(req.text)
                 return False
         # ---
@@ -339,7 +339,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         except Exception as e:
             self.log_error("Exception", u_action, params=params)
-            logger.warning(e)
+            logger.warning(f"{botname} {self.lang}.{self.family} raw_request exception for action '{u_action}': {e}")
         # ---
         self._handle_server_error(req0, u_action, params=params)
         # ---
@@ -417,7 +417,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 )
             # ---
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"{botname} {self.lang}.{self.family} get_rest_result exception for url '{url}': {e}")
             return {}
         # ---
         result = {}
@@ -426,7 +426,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             result = req0.json()
         except Exception as e:
             print(req0.text)
-            logger.warning(e)
+            logger.warning(f"{botname} {self.lang}.{self.family} error parsing rest response for url '{url}': {e}")
             return {}
         # ---
         return result
