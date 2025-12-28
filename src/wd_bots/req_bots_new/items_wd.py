@@ -68,7 +68,7 @@ class WD_Items:
             return qs_bot.QS_New_API(data2)
         # ---
         if cf == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         if returnid:
             Qid = False
@@ -103,7 +103,7 @@ class WD_Items:
         d = outbot_json(r4, fi=summary, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         return d
 
@@ -144,6 +144,6 @@ class WD_Items:
             return True
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         return False

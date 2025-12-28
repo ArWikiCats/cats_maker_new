@@ -97,7 +97,7 @@ class WD_Descriptions:
         cf = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if cf == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         if cf == "reagain":
             if rea:
@@ -130,7 +130,7 @@ class WD_Descriptions:
         d = outbot_json(r4, fi=summary, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         if ret:
             return str(r4)
@@ -177,7 +177,7 @@ class WD_Descriptions:
         cf = outbot_json(r4, fi=summary2, NoWait=nowait)
         # ---
         if cf == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         if cf is True:
             logger.warning(

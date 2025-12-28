@@ -100,7 +100,7 @@ class WD_Sitelinks:
         d = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         _err_ = {
             "error": {
@@ -152,7 +152,7 @@ class WD_Sitelinks:
             return True
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
 
     def Find_page_qids(self, sitecode, titles):
         _false = True
@@ -288,7 +288,7 @@ class WD_Sitelinks:
             return str(r4)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         return d
 
@@ -320,7 +320,7 @@ class WD_Sitelinks:
         d = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
         # ---
         if d is True:
             return True

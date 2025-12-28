@@ -52,7 +52,8 @@ class LOGIN_HELPS(PARAMS_HELPS):
         super().__init__()
 
     def log_error(self, result, action, params=None) -> None:
-        logger.error(f"{botname}/page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}")
+        if result not in ["success", 200]:
+            logger.error(f"{botname}/page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}")
 
     def add_User_tables(self, family, table, lang="") -> None:
         # ---

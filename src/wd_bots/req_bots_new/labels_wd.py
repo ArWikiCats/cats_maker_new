@@ -87,7 +87,7 @@ class WD_Labels:
         d = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
 
     def Labels_API(
         self, Qid, label, lang, ret, Or_Alii=False, change_des=False, number=0, nowait=False, tage="", remove=False
@@ -136,7 +136,7 @@ class WD_Labels:
         d = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if d == "warn":
-            logger.warning("", text=r4)
+            logger.warning(str(r4))
 
     def Labels_API_by_site(self, label, lang, ret, enlink, ensite, nowait=False):
         # ---
