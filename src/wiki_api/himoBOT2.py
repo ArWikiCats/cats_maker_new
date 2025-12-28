@@ -17,9 +17,9 @@ Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
 redirects_table = {}
 
 Session = requests.Session()
-# Session.headers.update(
-#     {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
-# )
+Session.headers.update(
+    {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
+)
 
 
 def submitAPI(params, Code, family, printurl=False, type="get"):
