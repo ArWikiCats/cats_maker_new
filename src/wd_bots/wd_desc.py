@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 
 from ..helps import logger
-from ..wd_bots import NewHimoAPIBot
+from . import NewHimoAPIBot
 
 WD_API_Bot = NewHimoAPIBot(Mr_or_bot="bot", www="www")
 file_name = os.path.basename(__file__)

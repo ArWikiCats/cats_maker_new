@@ -10,7 +10,7 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 """
 from functools import lru_cache
 
-from ...helps import logger
+from ..helps import logger
 from .submit_bot import submitAPI
 from .wb_rest_api import Get_one_qid_info
 

@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 import requests
 
 from ..helps import logger
-from ..wd_api_bot import Get_Sitelinks_From_wikidata
+from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 
 # ---
 menet = datetime2.now().strftime("%Y-%b-%d  %H:%M:%S")

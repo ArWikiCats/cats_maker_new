@@ -12,7 +12,7 @@ from ..b18_new.add_bot import add_to_final_list
 from ..b18_new.cat_tools import add_SubSub, get_SubSub_keys, get_SubSub_value
 from ..b18_new.LC_API_bot import find_LCN, find_Page_Cat_without_hidden
 from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
-from ..wd_api_bot import Get_Sitelinks_From_wikidata
+from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import himoBOT2
 from . import no_1
 from ..helps import logger

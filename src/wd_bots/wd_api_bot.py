@@ -1,5 +1,5 @@
 from .quarry import get_quarry_results
-from .wd_bots.get_bots import (
+from .get_bots import (
     Get_Claim_API,
     Get_infos_wikidata,
     Get_Item_API_From_Qid,

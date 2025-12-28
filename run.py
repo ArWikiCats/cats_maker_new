@@ -8,7 +8,7 @@ sys.path.append("D:/categories_bot/make2_new")
 from new_all import work_bot as new_all
 
 from src.mk_cats import ToMakeNewCat2222
-from src.wd_api_bot import get_quarry_results
+from src.wd_bots.wd_api_bot import get_quarry_results
 
 new_all_tab = {1: False}
 

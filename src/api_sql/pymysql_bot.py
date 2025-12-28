@@ -6,7 +6,7 @@ import copy
 import pymysql
 import pymysql.cursors
 
-from ...helps import logger
+from ..helps import logger
 
 
 def sql_connect_pymysql(
