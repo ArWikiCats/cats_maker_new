@@ -1,0 +1,12 @@
+*.csv
+*.pyc
+textfiles/Dont_add_to_these_pages.json
+*.tmp.py
+/textfiles/log_encat/**
+/textfiles/log_encat
+/old
+*.lnk
+c18/ennew_commands.txt
+*.db
+mk_cats/desktop.ini
+*.txt

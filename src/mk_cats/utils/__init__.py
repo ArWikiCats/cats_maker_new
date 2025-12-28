@@ -1,0 +1,8 @@
+# from portal.lists.portal_list import portal_en_to_ar_lower
+from .descraptions import wikimedia_category_descraptions
+from .portal_list import portal_en_to_ar_lower
+
+__all__ = [
+    "portal_en_to_ar_lower",
+    "wikimedia_category_descraptions",
+]

@@ -1,0 +1,180 @@
+"""
+
+from ..tools_bots.sql_bot import find_sql, MySQLdb_finder_New
+
+
+"""
+import re
+import sys
+import time
+from datetime import datetime
+
+from pymysql.converters import escape_string
+
+from ...api_sql import wiki_sql
+from ...api_sql.sql_qu import make_sql_connect
+from ...api_sql.wiki_sql import ns_text_tab_ar
+from ..log import logger
+
+
+def Decode_bytes(x):
+    if isinstance(x, bytes):
+        x = x.decode("utf-8")
+    return x
+
+
+def MySQLdbar(arcatTitle):
+    # ---
+    arcats = []
+    # ---
+    if not wiki_sql.GET_SQL():
+        return arcats
+    # ---
+    arcatTitle = re.sub(r"تصنيف:", "", arcatTitle)
+    arcatTitle = re.sub(r" ", "_", arcatTitle)
+    logger.debug(f"arcatTitle : {arcatTitle}")
+    # ---
+    arcatTitle = escape_string(arcatTitle)
+    # ---
+    ar_queries = f"""
+        SELECT page_title, page_namespace
+        FROM page
+        JOIN categorylinks
+        JOIN langlinks
+        WHERE cl_to = "{arcatTitle}"
+        AND cl_from = page_id
+        AND page_id = ll_from
+        AND ll_lang = "en"
+        GROUP BY page_title ;"""
+    # ---
+    host, dbs_p = wiki_sql.make_labsdb_dbs_p("ar")
+    # ---
+    ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host, Return=[], return_dict=True)
+    # ---
+    if not ar_results or len(ar_results) == 0:
+        return arcats
+    # ---
+    for ra in ar_results:
+        # ---
+        title = ra["page_title"]
+        title = re.sub(r" ", "_", title)
+        # ---
+        ns = ra["page_namespace"]
+        # ---
+        if ns_text_tab_ar.get(str(ns)):
+            title = f"{ns_text_tab_ar.get(str(ns))}:{title}"
+        # ---
+        arcats.append(str(title))
+    # ---
+    logger.debug(f"arcats: {len(arcats)} {arcatTitle}")
+    # ---
+    return arcats
+
+
+def Make_sql(queries, wiki="", printqua=False):
+    encats = []
+    # ---
+    start = time.time()
+    final = time.time()
+    # ---
+    if not wiki_sql.GET_SQL():
+        return encats
+    # ---
+    if not wiki:
+        wiki = "enwiki"
+    # ---
+    host, dbs_p = wiki_sql.make_labsdb_dbs_p(wiki)
+    # ---
+    if printqua:
+        logger.output(queries)
+    # ---
+    TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
+    logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {TTime}')
+    # ---
+    en_results = make_sql_connect(queries, host=host, db=dbs_p, Return=[])
+    final = time.time()
+    # ---end of sql--------------------------------------------
+    for raw in en_results:
+        tit = Decode_bytes(raw[0])
+        tit = re.sub(r" ", "_", tit)
+        encats.append(tit)
+    # ---
+    delta = int(final - start)
+    # ---
+    logger.debug(f'API/sql_py Make_sql len(encats) = "{len(encats)}", in {delta} seconds')
+    # ---
+    encats.sort()
+    # ---
+    return encats
+
+
+def MySQLdb_finder_New(encatTitle, arcatTitle):
+    # ---
+    logger.debug(f"<<yellow>> sql . MySQLdb_finder {encatTitle}: ")
+    # ---
+    item = encatTitle.replace("category:", "").replace("Category:", "").replace(" ", "_")
+    item = str(encatTitle).replace("[[en:", "").replace("]]", "").replace(" ", "_").replace("Category:", "")
+    # ---
+    if not wiki_sql.GET_SQL():
+        return False
+    # ---
+    start = time.time()
+    # ---
+    item = escape_string(item)
+    # ---
+    queries = f"""SELECT /* SLOW_OK */ ll_title , page_namespace  FROM page JOIN categorylinks JOIN langlinks
+        WHERE cl_to = "{item}" AND cl_from=page_id AND page_id =ll_from AND ll_lang = "ar"
+        GROUP BY ll_title ;"""
+    # ---
+    encats = Make_sql(queries)
+    # ---
+    arcats = []
+    # ---
+    if arcatTitle:
+        arcats = MySQLdbar(arcatTitle)
+    # ---
+    logger.debug(f"encats: <<yellow>> {len(encats)} <<default>> {item}")
+    # ---
+    final_cat = []
+    # ---
+    for cat in encats:
+        if cat not in arcats:
+            final_cat.append(str(cat))
+    # ---
+    delta = int(time.time() - start)
+    # ---
+    logger.output(f'sql_bot.py: MySQLdb_finder_New len(final_cat) = "{len(final_cat)}", in {delta} seconds')
+    # ---
+    if final_cat:
+        return final_cat
+    # ---
+    return False
+
+
+def find_sql(enpageTitle):
+    # ---
+    logger.output(f"find_sql, enpageTitle:'{enpageTitle}'")
+    # ---
+    if not wiki_sql.GET_SQL():
+        return []
+    # ---
+    fapages = MySQLdb_finder_New(enpageTitle, "")
+    # ---
+    if not fapages:
+        return []
+    # ---
+    listenpageTitle = []
+    # ---
+    for numbrr, pages in enumerate(fapages, 1):
+        # ---
+        if not pages.strip():
+            continue
+        # ---
+        pages = pages.replace("_", " ")
+        # ---
+        listenpageTitle.append(pages)
+        # ---
+        if numbrr < 30:
+            logger.output("<<lightgreen>> Adding " + pages + " to fa lists from en category. <<default>>")
+    # ---
+    return listenpageTitle
