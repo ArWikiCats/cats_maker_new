@@ -34,6 +34,10 @@ class LoggerWrap:
         """Set the logging level for the underlying logger."""
         self._logger.setLevel(level)
 
+    def setLevel(self, level: Union[int, str]) -> None:
+        """Set the logging level for the underlying logger."""
+        return self.set_level(level)
+
     def disable_logger(self, is_disabled: bool) -> None:
         """Enable or disable the underlying logger dynamically."""
         self._logger.disabled = is_disabled
@@ -107,27 +111,7 @@ class LoggerWrap:
 
 logger = LoggerWrap(__name__)
 
-
-def config_logger(level: Optional[Union[int, str]] = None, name: str = __name__) -> None:
-    """Configure the root logger with sensible defaults for the project."""
-    global logger
-    _levels = [
-        "CRITICAL",
-        "ERROR",
-        "WARNING",
-        "INFO",
-        "DEBUG",
-        "NOTSET",
-    ]
-
-    if not level:
-        level = logging.DEBUG
-
-    logger.set_level(level)
-
-
 __all__ = [
     "logger",
     "LoggerWrap",
-    "config_logger",
 ]

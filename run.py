@@ -13,9 +13,9 @@ try:
 except ImportError:
     new_all = None
 
-from src.helps.log import config_logger
-config_logger("DEBUG" if "DEBUG" in sys.argv else "INFO")
-# config_logger("ERROR")
+from src.helps.log import logger as base_logger
+base_logger.set_level("DEBUG" if "DEBUG" in sys.argv else "INFO")
+# base_logger.set_level("ERROR")
 
 from src.mk_cats import create_categories_from_list
 new_all_tab = {1: False}
