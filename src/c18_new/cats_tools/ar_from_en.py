@@ -2,13 +2,45 @@
 """
 
 """
-from ...b18_new.cat_tools_enlist import get_ar_list_from_cat
+from ...b18_new.cat_tools_enlist2 import get_ar_list_from_cat
 from ...b18_new.LCN_new import find_LCN, get_arpage_inside_encat
 from ..bots.cat_tools_argv import EEn_site, use_sqldb
 from ..cat_tools2 import Categorized_Page_Generator
 from ..log import logger
-from ..tools_bots.sql_bot import find_sql
+from ...api_sql.sql_bot import find_sql
 from .en_link_bot import en_title_for_arpage_cache
+
+
+def retrieve_ar_list_from_category(encat, enpageTitle):
+    gent_faso_list = Categorized_Page_Generator(enpageTitle, "all")
+    # ---
+    fetchedarpages = get_arpage_inside_encat("Category:" + enpageTitle)
+    # ---
+    if fetchedarpages:
+        logger.info("arpage inside_encat: " + (",a: ".join(fetchedarpages)))
+        for x in fetchedarpages:
+            gent_faso_list.append(x.replace("_", " "))
+        # ---
+    if not gent_faso_list:
+        gent_faso_list = get_ar_list_from_cat(encat, code="en", typee="all")
+        # ---
+    logger.info(f" make_ar_list_from_en_cat lenth : {len(gent_faso_list)}")
+    # ---
+    new_ll = Get_ar_list_from_en_list(gent_faso_list)
+    return new_ll
+
+
+def clean_category_input(encat):
+    encat = (
+        encat.replace("[[", "")
+        .replace("]]", "")
+        .replace("Category:", "")
+        .replace("category:", "")
+        .replace("category talk:", "")
+        .strip()
+    )
+    encat = encat.replace("Catégorie:", "")
+    return encat
 
 
 def make_ar_list_from_en_cat(encat):
@@ -36,15 +68,7 @@ def make_ar_list_from_en_cat(encat):
     # ---
     logger.info(f'<<lightgreen>>* make_ar_list_from_en_cat: cat:"{encat}" ')
     # count = 0
-    encat = (
-        encat.replace("[[", "")
-        .replace("]]", "")
-        .replace("Category:", "")
-        .replace("category:", "")
-        .replace("category talk:", "")
-        .strip()
-    )
-    encat = encat.replace("Catégorie:", "")
+    encat = clean_category_input(encat)
     # ---
     enpageTitle = encat
     logger.debug("cat: " + encat)
@@ -56,29 +80,12 @@ def make_ar_list_from_en_cat(encat):
     # ---
     if not listenpageTitle2:
         # ---
-        gent_faso_list = Categorized_Page_Generator(enpageTitle, "all")
-        # ---
-        UUX = get_arpage_inside_encat("Category:" + enpageTitle)
-        # ---
-        if UUX:
-            logger.info("arpage inside_encat: " + (",a: ".join(UUX)))
-            for x in UUX:
-                gent_faso_list.append(x.replace("_", " "))
-        # ---
-        if not gent_faso_list:
-            gent_faso_list = get_ar_list_from_cat(encat, code="en", typee="all")
-        # ---
-        logger.info(f" make_ar_list_from_en_cat lenth : {len(gent_faso_list)}")
-        # ---
-        new_ll = Get_ar_list_from_en_list(gent_faso_list)
+        new_ll = retrieve_ar_list_from_category(encat, enpageTitle)
         # ---
         for cc in new_ll:
             listenpageTitle2.append(cc)
     # ---
-    listenpageTitle = []
-    for cdv in listenpageTitle2:
-        if cdv not in listenpageTitle:
-            listenpageTitle.append(cdv)
+    listenpageTitle = list(set(listenpageTitle2))
     # ---
     if len(listenpageTitle) == 0:
         logger.info("<<lightblue>>make_ar_list_from_en_cat No cats listenpageTitle = [] ")
@@ -100,13 +107,9 @@ def Get_ar_list_from_en_list(enlist):
                 part_list = part_list[len("|") :]
             # ---
             new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=EEn_site["code"])
-            # logger.debug(f'gent_sasa {gent_sasa} ' )
             # ---
             if new_list:
                 for p_w in new_list:
-                    # ---
-                    # logger.debug(f'p_w {p_w} ' )
-                    # logger.debug(f'new_list[p_w] {new_list[p_w]} ' )
                     # ---
                     fapagetitle = ""
                     if "langlinks" in new_list[p_w] and "ar" in new_list[p_w]["langlinks"]:
@@ -120,12 +123,10 @@ def Get_ar_list_from_en_list(enlist):
                         en_done.append(p_w.replace("_", " "))
         # ---
         for xen in liste:
-            # ---
             en = xen.replace("_", " ")
-            # ar_title = ''
             # ---
-            if en not in en_done and en_title_for_arpage_cache(en):
-                tat = en_title_for_arpage_cache(en)
+            tat = en_title_for_arpage_cache(en)
+            if en not in en_done and tat:
                 logger.debug(f"<<lightblue>>Adding {tat} from En_title_for_ar page {xen}<<default>>")
                 new_ar_list.append(tat)
     # ---

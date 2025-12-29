@@ -42,7 +42,7 @@ change_codes = lang_codes.change_codes
 logins_cache = {}
 
 
-def log_it(lang, family):
+def create_login_session(lang, family):
     # ---
     login_bot, logins_cache2 = LoginWrap(lang, family, logins_cache, User_tables)
     # ---
@@ -53,7 +53,7 @@ def log_it(lang, family):
 
 def MainPage(title, lang, family="wikipedia"):
     # ---
-    login_bot = log_it(lang, family)
+    login_bot = create_login_session(lang, family)
     # ---
     page = super_page.MainPage(login_bot, title, lang, family=family)
     # ---
@@ -62,7 +62,7 @@ def MainPage(title, lang, family="wikipedia"):
 
 def CatDepth(title, sitecode="", family="wikipedia", **kwargs):
     # ---
-    login_bot = log_it(sitecode, family)
+    login_bot = create_login_session(sitecode, family)
     # ---
     result = catdepth_new.subcatquery(login_bot, title, sitecode=sitecode, family=family, **kwargs)
     # ---
@@ -71,7 +71,7 @@ def CatDepth(title, sitecode="", family="wikipedia", **kwargs):
 
 def NEW_API(lang="", family="wikipedia"):
     # ---
-    login_bot = log_it(lang, family)
+    login_bot = create_login_session(lang, family)
     # ---
     result = bot_api.NEW_API(login_bot, lang=lang, family=family)
     # ---

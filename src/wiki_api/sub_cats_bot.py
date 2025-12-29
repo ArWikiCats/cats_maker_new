@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 """
 
-from ..network_calls.sub_cats_bot import sub_cats_query
 
 """
-from ...b18_new.LCN_new import get_cache_L_C_N, set_cache_L_C_N
-from ...wiki_api import submitAPI
-from ..bots.cat_tools_argv import EEn_site
-from ..log import logger
+from ..b18_new.LCN_new import get_cache_L_C_N, set_cache_L_C_N
+from . import submitAPI
+from ..c18_new.bots.cat_tools_argv import EEn_site
+from ..c18_new.log import logger
 
 API_n_CALLS = {1: 0}
 

@@ -4,7 +4,7 @@
 """
 from ..c18_new.bots.cat_tools_argv import EEn_site
 from ..c18_new.cat_tools2 import Categorized_Page_Generator
-from ..c18_new.network_calls.sub_cats_bot import sub_cats_query
+from ..wiki_api.sub_cats_bot import sub_cats_query
 from .LCN_new import find_LCN, get_arpage_inside_encat, get_cache_L_C_N
 
 from ..helps import logger

@@ -1,23 +1,19 @@
 """
 
-from ..tools_bots.sql_bot import find_sql, MySQLdb_finder_New
-
-
 """
 import re
-import sys
 import time
 from datetime import datetime
 
 from pymysql.converters import escape_string
 
-from ...api_sql import wiki_sql
-from ...api_sql.sql_qu import make_sql_connect
-from ...api_sql.wiki_sql import ns_text_tab_ar
-from ..log import logger
+from . import wiki_sql
+from .sql_qu import make_sql_connect
+from .wiki_sql import ns_text_tab_ar
+from ..c18_new.log import logger
 
 
-def Decode_bytes(x):
+def decode_bytes(x):
     if isinstance(x, bytes):
         x = x.decode("utf-8")
     return x
@@ -95,7 +91,7 @@ def Make_sql(queries, wiki="", printqua=False):
     final = time.time()
     # ---end of sql--------------------------------------------
     for raw in en_results:
-        tit = Decode_bytes(raw[0])
+        tit = decode_bytes(raw[0])
         tit = re.sub(r" ", "_", tit)
         encats.append(tit)
     # ---

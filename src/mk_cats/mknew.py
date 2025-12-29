@@ -16,7 +16,7 @@ from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import himoBOT2
 from ..wd_bots import to_wd
 from ..helps import logger
-from .mk_bots import filter_en
+from .utils import filter_en
 from .create_category_page import new_category
 from .utils.check_en import check_en_temps
 
@@ -26,29 +26,35 @@ try:
 except ImportError:
     resolve_arabic_category_label = None
 
-DONE_D = []
-NewCat_Done = {}
-Already_Created = []
-Range = {1: 5}
-We_Try = {1: True}
 
-wiki_site_ar = {"family": "wikipedia", "code": "ar"}
-wiki_site_en = {"family": "wikipedia", "code": "en"}
+def configure_parameters():
+    DONE_D = []
+    NewCat_Done = {}
+    Already_Created = []
+    Range = {1: 5}
+    We_Try = {1: True}
 
-for arg in sys.argv:
-    arg, _, value = arg.partition(":")
+    wiki_site_ar = {"family": "wikipedia", "code": "ar"}
+    wiki_site_en = {"family": "wikipedia", "code": "en"}
 
-    if arg == "-We_Try":
-        We_Try[1] = True
-        logger.debug("<<lightred>> We_Try.")
+    for arg in sys.argv:
+        arg, _, value = arg.partition(":")
 
-    if arg == "-nowetry":
-        We_Try[1] = False
-        logger.debug("<<lightred>> NO We_Try.")
+        if arg == "-We_Try":
+            We_Try[1] = True
+            logger.debug("<<lightred>> We_Try.")
 
-    if arg == "-range":
-        Range[1] = int(value)
-        logger.debug("<<lightred>> Range : %d ." % Range[1])
+        if arg == "-nowetry":
+            We_Try[1] = False
+            logger.debug("<<lightred>> NO We_Try.")
+
+        if arg == "-range":
+            Range[1] = int(value)
+            logger.debug("<<lightred>> Range : %d ." % Range[1])
+    return DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en
+
+
+DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en = configure_parameters()
 
 
 def ar_make_lab(title, **Kwargs):
