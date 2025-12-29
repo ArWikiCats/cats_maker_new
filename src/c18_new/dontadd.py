@@ -119,12 +119,14 @@ def get_pages_nocat():
 
 def Dont_add_to_pages_def():
     data = load_json(filename_json)
-
-    # Get the time of last modification
-    last_modified_time = os.path.getmtime(filename_json)
+    date = ""
     # ---
-    date = datetime.fromtimestamp(last_modified_time).strftime("%Y-%m-%d")
-    # ---
+    if filename_json.exists():
+        # Get the time of last modification
+        last_modified_time = os.path.getmtime(filename_json)
+        # ---
+        date = datetime.fromtimestamp(last_modified_time).strftime("%Y-%m-%d")
+        # ---
     today = datetime.today().strftime("%Y-%m-%d")
     # ---
     if date != today or not data:
