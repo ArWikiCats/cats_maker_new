@@ -79,7 +79,7 @@ def make_sleep_def():
             r4fttext = r4ft.text
             # ---
         except Exception as e:
-            logger.warning(e, text="log Error writing")
+            logger.warning(e, "log Error writing")
         # ---
         lag = re.match(r".*Waiting for [^ ]*: (\d+\.*\d*) seconds.*", r4fttext)
         # ---

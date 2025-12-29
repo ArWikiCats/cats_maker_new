@@ -5,7 +5,7 @@ from ..network_calls.sub_cats_bot import sub_cats_query
 
 """
 from ...b18_new.LCN_new import get_cache_L_C_N, set_cache_L_C_N
-from ...wiki_api import himoBOT2
+from ...wiki_api import submitAPI
 from ..bots.cat_tools_argv import EEn_site
 from ..log import logger
 
@@ -54,7 +54,7 @@ def sub_cats_query(enlink, sitecode, ctype=""):
     # ---
     logger.info(f"<<lightblue>> API_n_CALLS {API_n_CALLS[1]} sub_cats_query for {sitecode}:{enlink}")
     # ---
-    api = himoBOT2.submitAPI(params, sitecode, "wikipedia", printurl=False) or {}
+    api = submitAPI(params, sitecode, "wikipedia", printurl=False) or {}
     # ---
     tablemember = {}
     # ---

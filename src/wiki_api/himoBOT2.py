@@ -4,75 +4,12 @@
 import functools
 import re
 import sys
-from urllib.parse import urlencode
-
-import requests
-
 from ..helps import logger
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
+from .api_requests import submitAPI
 
 Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
-
 redirects_table = {}
-
-
-@functools.lru_cache(maxsize=1)
-def _load_session() -> requests.Session:
-    Session = requests.Session()
-    Session.headers.update(
-        {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
-    )
-    return Session
-
-
-def submitAPI(params, Code, family, printurl=False, type="get"):
-    # ---
-    if Code.endswith("wiki"):
-        Code = Code[:-4]
-    # ---
-    sparql = ""
-    # ---
-    params["formatversion"] = 1
-    params["utf8"] = 1
-    params["format"] = "json"
-    # ---
-    if params.get("titles"):
-        titles = params["titles"]
-        if isinstance(titles, list):
-            params["titles"] = "|".join(titles)
-    # ---
-    # himo API
-    if family == "commons":
-        family = "wikimedia"
-    # ---
-    mainurl = f"https://{Code}.{family}.org/w/api.php?"
-    # ---
-    encode_params = urlencode(params)
-    # ---
-    url = f"https://{Code}.{family}.org/w/api.php?{encode_params}"
-    # ---
-    if printurl or "printboturl" in sys.argv:
-        url2 = url.replace("&format=json", "").replace("?format=json", "?")
-        logger.debug(f"printboturl: {url2}")
-    # ---
-    Session = _load_session()
-    # ---
-    json1 = {}
-    try:
-        r22 = Session.post(mainurl, data=params, timeout=10)
-
-    except requests.exceptions.ReadTimeout:
-        logger.debug(f"ReadTimeout: {mainurl}")
-
-    except Exception as e:
-        logger.warning(f"<<red>> Error submitting to API: {e}")
-
-    try:
-        json1 = r22.json()
-    except Exception as e:
-        logger.warning(f"<<red>> Error parsing API response: {e}")
-
-    return json1
 
 
 @functools.lru_cache(maxsize=1000)

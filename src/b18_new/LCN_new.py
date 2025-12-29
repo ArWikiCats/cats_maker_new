@@ -5,9 +5,8 @@ Refactored module for handling MediaWiki API calls for categories, langlinks, et
 from typing import Any, Dict, List, Optional, Tuple
 
 from ..helps import logger
-from ..wiki_api import himoBOT2
+from ..wiki_api import submitAPI
 
-no_cat_pages = {}  # self.no_cat_pages
 page_is_redirect = {}  # self.page_is_redirect
 
 
@@ -31,17 +30,16 @@ class WikiApiHandler:
         # ---
         self.cache: Dict[Tuple, Any] = {}
         # ---
-        self.no_cat_pages: Dict[str, List[str]] = {}
-        self.arpage_inside_encat: Dict[str, List[str]] = {}
+        self.arpage_inside_en_cat: Dict[str, List[str]] = {}
         self.page_is_redirect: Dict[str, List[str]] = {}
-        self.deleted_pages: List[str] = []
+        self.deleted: List[str] = []
         self.api_call_count: int = 0
 
     def get_arpage_inside_encat_all(self):
-        return self.arpage_inside_encat
+        return self.arpage_inside_en_cat
 
     def get_deleting_page(self):
-        return self.deleted_pages
+        return self.deleted
 
     def _increment_api_call(self):
         """Increments the API call counter."""
@@ -50,17 +48,9 @@ class WikiApiHandler:
 
     # --- Public methods mimicking the old functions ---
 
-    def add_to_no_cat(self, key: str, cat: str):
-        """Adds a category to the 'no_cat_pages' map for a given key."""
-        self.no_cat_pages.setdefault(key, []).append(cat)
-
-    def get_no_cat(self, key: str) -> Optional[List[str]]:
-        """Gets the list of 'no category' pages for a given key."""
-        return self.no_cat_pages.get(key)
-
     def get_arpage_inside_encat(self, key: str) -> Optional[List[str]]:
         """Gets the list of arabic pages inside an english category."""
-        return self.arpage_inside_encat.get(key)
+        return self.arpage_inside_en_cat.get(key)
 
     def find_page_data(
         self, page_title: str, prop: str = "", lllang: str = "", site_code: str = "en"
@@ -115,7 +105,7 @@ class WikiApiHandler:
 
         logger.debug(f" for page {site_code}:{page_title}")
 
-        api_response = himoBOT2.submitAPI(params, site_code, self.family, printurl=False)
+        api_response = submitAPI(params, site_code, self.family, printurl=False)
 
         if not (api_response and "query" in api_response and "pages" in api_response["query"]):
             logger.debug("<<lightblue>> API call failed or returned no query/pages.")
@@ -127,7 +117,7 @@ class WikiApiHandler:
 
         if "-1" in query["pages"]:
             logger.info(f'Page not found (id: -1) for "{site_code}:{page_title}"')
-            self.deleted_pages.append(page_title)
+            self.deleted.append(page_title)
             self.cache[cache_key] = False
             return False
 
@@ -210,8 +200,6 @@ class WikiApiHandler:
             logger.info("get_cache_L_C_N(cache_key)")
             return self.cache[cache_key]
 
-        self.no_cat_pages.setdefault(page_title, [])
-
         # If the page's redirect list doesn't exist, initialize it
         self.page_is_redirect.setdefault(site_code, [])
 
@@ -239,7 +227,7 @@ class WikiApiHandler:
         logger.info(f"<<lightblue>> API CALL {count}: find_non_hidden_categories for {site_code}:{page_title}")
 
         # Submit the API request
-        api_response = himoBOT2.submitAPI(params, site_code, self.family)
+        api_response = submitAPI(params, site_code, self.family)
 
         if not (api_response and "query" in api_response and "pages" in api_response["query"]):
             return False
@@ -316,10 +304,8 @@ class WikiApiHandler:
         if cats_without_langlinks:
             logger.debug("Categories without langlinks: " + (",a: ".join(cats_without_langlinks)))
 
-            self.no_cat_pages.setdefault(page_title, []).extend(cats_without_langlinks)
-
             for cat in cats_without_langlinks:
-                self.arpage_inside_encat.setdefault(cat, []).append(page_title)
+                self.arpage_inside_en_cat.setdefault(cat, []).append(page_title)
 
         self.cache[cache_key] = results
 
@@ -338,8 +324,6 @@ LC_bot = WikiApiHandler()
 
 deleted_pages = LC_bot.get_deleting_page()
 
-arpage_inside_encat = LC_bot.get_arpage_inside_encat_all()
-
 
 def find_LCN(enlink, prop="", lllang="", family="wikipedia", first_site_code="en"):
     # The new method is more generic, so we adapt the call.
@@ -349,14 +333,6 @@ def find_LCN(enlink, prop="", lllang="", family="wikipedia", first_site_code="en
 def find_Page_Cat_without_hidden(enlink, prop="", site_code="", family="wikipedia"):
     # The family parameter is now part of the instance, but we keep it for compatibility.
     return LC_bot.find_non_hidden_categories(page_title=enlink, prop=prop, site_code=site_code or "ar")
-
-
-def add_to_No_Cat_(key, cat):
-    LC_bot.add_to_no_cat(key, cat)
-
-
-def get_No_Cat_(t):
-    return LC_bot.get_no_cat(t)
 
 
 def get_arpage_inside_encat(key):
