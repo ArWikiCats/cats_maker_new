@@ -21,11 +21,10 @@ from .create_category_page import new_category
 from .utils.check_en import check_en_temps
 
 try:
-    from ArWikiCats import resolve_arabic_category_label, config_logger  # type: ignore
-    config_logger("ERROR")
+    from ArWikiCats import resolve_arabic_category_label, logger as cat_logger  # type: ignore
+    cat_logger.setLevel("ERROR")
 except ImportError:
     resolve_arabic_category_label = None
-
 
 DONE_D = []
 NewCat_Done = {}
