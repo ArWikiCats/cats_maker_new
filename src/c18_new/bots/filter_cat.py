@@ -5,7 +5,7 @@ from ..bots.filter_cat import filter_cats_text
 import re
 import sys
 
-from ...b18_new import LCN_new
+from ...wiki_api import LCN_new
 from ..log import logger
 from ..tools_bots.temp_bot import templatequery, templatequerymulti
 

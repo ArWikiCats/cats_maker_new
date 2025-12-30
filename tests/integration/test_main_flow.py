@@ -29,7 +29,7 @@ class TestMainFlowIntegration:
         mock_wikidata.return_value = {"q": "Q12345", "sitelinks": {}}
 
         # Mock LCN (Language Code Navigator)
-        mock_lcn = mocker.patch("src.b18_new.LCN_new.find_Page_Cat_without_hidden")
+        mock_lcn = mocker.patch("src.wiki_api.LCN_new.find_Page_Cat_without_hidden")
         mock_lcn.return_value = {}
 
         # Mock database queries

@@ -84,7 +84,6 @@ tests/
 │   ├── test_sql_bot.py           # اختبار sql_bot.py
 ├── b18_new/
 │   ├── __init__.py
-│   ├── test_LCN_new.py           # اختبار LCN_new.py
 │   ├── test_cat_tools.py         # اختبار cat_tools.py
 │   ├── test_cat_tools_enlist.py  # اختبار cat_tools_enlist.py
 │   ├── test_cat_tools_enlist2.py # اختبار cat_tools_enlist2.py
@@ -159,6 +158,7 @@ tests/
     ├── test_arAPI.py             # اختبار arAPI.py
     ├── test_himoBOT2.py          # اختبار himoBOT2.py
     └── test_wd_sparql.py         # اختبار wd_sparql.py
+│   ├── test_LCN_new.py           # اختبار LCN_new.py
 ```
 
 ---
@@ -442,9 +442,9 @@ class TestAddNsTextToTitle:
 
 ### مثال 2: اختبار مع Mock
 ```python
-# tests/b18_new/test_LCN_new.py
+# tests/wiki_api/test_LCN_new.py
 import pytest
-from src.b18_new.LCN_new import find_LCN
+from src.wiki_api.LCN_new import find_LCN
 
 class TestFindLCN:
     """اختبارات لدالة find_LCN"""
@@ -583,7 +583,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 | Module | Test Files | Tests Count | Status |
 |--------|------------|-------------|--------|
 | api_sql | test_wiki_sql.py, test_sql_qu.py | 42 | ✅ |
-| b18_new | test_LCN_new.py, test_cat_tools.py | 53 | ✅ |
+| b18_new | test_cat_tools.py | 21 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py, test_jsonl_data.py | 77 | ✅ |
 | integration | test_main_flow.py | 18 | ✅ |
@@ -591,7 +591,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 | mk_cats/utils | test_check_en.py | 10 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |
-| wiki_api | test_arAPI.py, test_himoBOT2.py | 32 | ✅ |
+| wiki_api | test_LCN_new.py, test_arAPI.py, test_himoBOT2.py | 58 | ✅ |
 | temp | (existing tests) | 96 | ✅ |
 
 **Total Tests: 464 passing (3 skipped/failed new_api tests require network)**

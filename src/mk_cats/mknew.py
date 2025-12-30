@@ -3,15 +3,16 @@ python3 core8/pwb.py mk_cats/mknew
 """
 import sys
 
-from ..b18_new.cat_tools_enlist2 import MakeLitApiWay
+from ..b18_new import MakeLitApiWay
+from ..b18_new import get_listenpageTitle
+from ..b18_new import add_SubSub, get_SubSub_keys, get_SubSub_value
+
+from ..wiki_api import find_Page_Cat_without_hidden
+
+from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2
 
 from ..c18_new.bots.cat_tools_argv import use_sqldb
-from ..b18_new.cat_tools_enlist import get_listenpageTitle
-
 from .add_bot import add_to_final_list
-from ..b18_new.cat_tools import add_SubSub, get_SubSub_keys, get_SubSub_value
-from ..b18_new.LCN_new import find_Page_Cat_without_hidden
-from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import himoBOT2
 from ..wd_bots import to_wd

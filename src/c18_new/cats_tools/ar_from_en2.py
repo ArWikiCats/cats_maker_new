@@ -2,11 +2,12 @@
 """
 
 """
-from ...b18_new.LCN_new import find_LCN
 from ..bots.cat_tools_argv import EEn_site, FR_site
 from ..log import logger
 from .en_link_bot import en_title_for_arpage_cache
 from ...new_api.page import CatDepth
+
+from ...wiki_api import find_LCN
 
 
 def Get_ar_list_title_from_en_list(enlist, wiki="en"):
