@@ -324,7 +324,7 @@ tests/
 **المدة: 2-3 أيام / Duration: 2-3 days**
 
 - [x] اختبارات التكامل بين الوحدات ✅ (18 tests in tests/integration/test_main_flow.py)
-- [x] تحسين تغطية الكود ✅ (1691 passing tests)
+- [x] تحسين تغطية الكود ✅ (464 passing tests)
 - [x] مراجعة وتحسين الاختبارات ✅
 - [x] توثيق الاختبارات ✅
 
@@ -380,7 +380,7 @@ testpaths = tests
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
-addopts = 
+addopts =
     -v
     --cov=src
     --cov-report=html
@@ -418,22 +418,22 @@ from src.api_sql.wiki_sql import add_nstext_to_title
 
 class TestAddNsTextToTitle:
     """اختبارات لدالة add_nstext_to_title"""
-    
+
     def test_with_namespace_0_returns_original_title(self):
         """اختبار إرجاع العنوان الأصلي مع namespace 0"""
         result = add_nstext_to_title("محمد", "0", "ar")
         assert result == "محمد"
-    
+
     def test_with_category_namespace_ar(self):
         """اختبار إضافة نص تصنيف للغة العربية"""
         result = add_nstext_to_title("علوم", "14", "ar")
         assert result == "تصنيف:علوم"
-    
+
     def test_with_template_namespace_en(self):
         """اختبار إضافة نص قالب للغة الإنجليزية"""
         result = add_nstext_to_title("Science", "10", "en")
         assert result == "Template:Science"
-    
+
     def test_with_invalid_namespace(self):
         """اختبار مع namespace غير موجود"""
         result = add_nstext_to_title("Test", "999", "ar")
@@ -449,7 +449,7 @@ from src.b18_new.LCN_new import find_LCN
 
 class TestFindLCN:
     """اختبارات لدالة find_LCN"""
-    
+
     @pytest.fixture
     def mock_api_response(self):
         """Mock response من Wikipedia API"""
@@ -465,7 +465,7 @@ class TestFindLCN:
                 }
             }
         }
-    
+
     def test_find_LCN_success(self, mocker, mock_api_response):
         """اختبار البحث عن رابط لغة بنجاح"""
         # Mock API call
@@ -473,12 +473,12 @@ class TestFindLCN:
             'src.b18_new.LCN_new.submitAPI',
             return_value=mock_api_response
         )
-        
+
         result = find_LCN("Science", lllang="ar", first_site_code="en")
-        
+
         assert result == "العلوم"
         mock_submit.assert_called_once()
-    
+
     def test_find_LCN_no_langlink(self, mocker):
         """اختبار عدم وجود رابط لغة"""
         mock_response = {
@@ -491,12 +491,12 @@ class TestFindLCN:
                 }
             }
         }
-        
+
         mocker.patch(
             'src.b18_new.LCN_new.submitAPI',
             return_value=mock_response
         )
-        
+
         result = find_LCN("Test", lllang="ar", first_site_code="en")
         assert result is None or result == ""
 ```
@@ -522,12 +522,12 @@ def mock_database(mocker):
     mock_conn = mocker.MagicMock()
     mock_cursor = mocker.MagicMock()
     mock_conn.cursor.return_value = mock_cursor
-    
+
     mocker.patch(
         'src.api_sql.sql_qu.make_sql_connect',
         return_value=mock_conn
     )
-    
+
     return mock_cursor
 
 # tests/c18_new/test_cat_tools2.py
@@ -593,9 +593,9 @@ def test_using_fixtures(sample_category_data, mock_database):
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |
 | wiki_api | test_arAPI.py, test_himoBOT2.py | 32 | ✅ |
-| temp | (existing tests) | 1326 | ✅ |
+| temp | (existing tests) | 96 | ✅ |
 
-**Total Tests: 1691 passing (3 skipped/failed new_api tests require network)**
+**Total Tests: 464 passing (3 skipped/failed new_api tests require network)**
 
 ### Infrastructure Completed:
 - [x] Fixed root `__init__.py` to handle import errors
