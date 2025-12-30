@@ -6,7 +6,6 @@ textfiles/Dont_add_to_these_pages.json
 /textfiles/log_encat
 /old
 *.lnk
-c18/ennew_commands.txt
 *.db
 mk_cats/desktop.ini
 *.txt

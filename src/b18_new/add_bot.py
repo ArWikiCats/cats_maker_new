@@ -5,7 +5,7 @@
 import time
 
 from ..c18_new.bots.text_to_temp_bot import add_text_to_template
-from ..c18_new.bots_helps.dontadd import Dont_add_to_pages_def
+from ..c18_new.dontadd import Dont_add_to_pages_def
 from ..helps import logger
 from ..new_api.page import MainPage
 

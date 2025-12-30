@@ -11,7 +11,11 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 from functools import lru_cache
 
 from ..helps import logger
-from .submit_bot import submitAPI
+from ..wiki_api import submitAPI
+
+
+def submitWikidataParams(params):
+    return submitAPI(params, "www", "wikidata")
 
 
 def format_sitelinks(sitelinks):
@@ -26,7 +30,7 @@ def Get_infos_wikidata(params):
     # ---
     table = {"labels": {}, "sitelinks": {}, "q": ""}
     # ---
-    json1 = submitAPI(params)
+    json1 = submitWikidataParams(params)
     # ---
     if not json1:
         return table
@@ -144,7 +148,7 @@ def Get_item_descriptions_or_labels(q, ty="descriptions or labels"):
     if ty in ["descriptions", "labels"]:
         params["props"] = ty
     # ---
-    json1 = submitAPI(params)
+    json1 = submitWikidataParams(params)
     # ---
     if not json1:
         return {}
@@ -189,7 +193,7 @@ def Get_Item_API_From_Qid(q, sites="", titles="", props=""):
         params["normalize"] = 1
     # ---
     table = {"sitelinks": {}, "aliases": {}, "labels": {}, "descriptions": {}, "claims": {}, "q": ""}
-    json1 = submitAPI(params)
+    json1 = submitWikidataParams(params)
     # ---
     if not json1:
         return table
@@ -230,7 +234,7 @@ def Get_Items_API_From_Qids(qids, props="", sitefilter=""):
     # ---
     logger.info(f"<<purple>> Get_Items_API_From_Qids: {len(qids)=}")
     # ---
-    json1 = submitAPI(params)
+    json1 = submitWikidataParams(params)
     # ---
     if not json1:
         return {}
@@ -301,7 +305,7 @@ def Get_P373_API(q, titles="", sites=""):
         params["sites"] = sites
         params["titles"] = titles
     # ---
-    json1 = submitAPI(params) or {}
+    json1 = submitWikidataParams(params) or {}
     # ---
     mainvalue = ""
     # ---
@@ -342,7 +346,7 @@ def Get_Property_API(q="", p="", titles="", sites=""):
         params["sites"] = sites
         params["titles"] = titles
     # ---
-    json1 = submitAPI(params) or {}
+    json1 = submitWikidataParams(params) or {}
     # ---
     listo = []
     # ---

@@ -6,7 +6,7 @@ import sys
 
 from ..utils.skip_cats import global_False_entemps as NO_Templates
 from ..helps import logger
-from .LCN_new import add_to_No_Cat_, get_cache_L_C_N
+from .LCN_new import get_cache_L_C_N
 
 SubSub = {}
 # ---
@@ -72,7 +72,6 @@ def work_in_one_cat(cat, tabcat, en_site_code, pagetitle, en_cate_list):
     # ---
     if not ar_cat_for_cat:
         # ---
-        add_to_No_Cat_(pagetitle, cat)
         logger.debug("\tno ar title...")
         # ---
         if cat not in SubSub:

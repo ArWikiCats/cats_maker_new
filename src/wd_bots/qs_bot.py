@@ -6,6 +6,7 @@ This module provides functions for working with the QuickStatements API.
 """
 
 import time
+import functools
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +17,15 @@ from .utils import logger
 
 Dir = Path(__file__).parent.parent
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
+
+
+@functools.lru_cache(maxsize=1)
+def _load_session() -> requests.Session:
+    Session = requests.Session()
+    Session.headers.update(
+        {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
+    )
+    return Session
 
 
 def QS_New_API(data2):
@@ -42,11 +52,10 @@ def QS_New_API(data2):
     # ---
     CREATE = f"{CREATE}XX"
     CREATE = CREATE.replace("||XX", "")
-    # CREATE = CREATE.replace("|","%7C")
     # ---
     menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
     # ---
-    r2 = requests.Session().post(
+    r2 = _load_session().post(
         "https://quickstatements.toolforge.org/api.php",
         data={
             "format": "v1",
@@ -79,10 +88,7 @@ def QS_line(line, user="Mr. Ibrahem"):
         "Mr.Ibrahembot": qs_tokenbot,
     }
     # ---
-    session = requests.session()
-    session.headers.update({"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"})
-    # ---
-    r2 = session.post(
+    r2 = _load_session().post(
         "https://quickstatements.toolforge.org/api.php",
         data={
             "format": "v1",
@@ -101,17 +107,5 @@ def QS_line(line, user="Mr. Ibrahem"):
         return False
     # ---
     logger.debug(r2.text)
-    # ---
-    # {"status":"OK","batch_id":35429}
-    try:
-        with open(f"{str(Dir)}/textfiles/API-log/qsstatus.csv", "a", encoding="utf-8") as logfile:
-            lena = len(line.split("||"))
-            lli = f"{str(r2.text)}\t{lena}\n"
-            logfile.write(lli)
-        logfile.close()
-    except Exception as e:
-        logger.warning(f"<<red>> Error writing to QS log file: {e}")
-    # ---
-    # if "try2020" in sys.argv: return csdhg
     # ---
     time.sleep(2)
