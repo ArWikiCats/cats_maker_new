@@ -8,7 +8,7 @@ from ..b18_new.cat_tools_enlist2 import MakeLitApiWay
 from ..c18_new.bots.cat_tools_argv import use_sqldb
 from ..b18_new.cat_tools_enlist import get_listenpageTitle
 
-from ..b18_new.add_bot import add_to_final_list
+from .add_bot import add_to_final_list
 from ..b18_new.cat_tools import add_SubSub, get_SubSub_keys, get_SubSub_value
 from ..b18_new.LCN_new import find_Page_Cat_without_hidden
 from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
