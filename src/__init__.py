@@ -1,5 +1,8 @@
-
-from .mk_cats import (ToMakeNewCat2222, create_categories_from_list, ar_make_lab, process_catagories, make_category, no_work,)
+try:
+    from .mk_cats import (ToMakeNewCat2222, create_categories_from_list, ar_make_lab, process_catagories, make_category, no_work,)
+except ImportError:
+    # Skip imports when running as a standalone package (e.g., during testing)
+    pass
 
 __all__ = [
     "no_work",
