@@ -76,7 +76,7 @@ tests/
 ├── conftest.py                    # مشترك / Shared fixtures
 ├── integration/                   # ⭐ اختبارات التكامل / Integration tests
 │   ├── __init__.py
-│   └── test_main_flow.py         # اختبار التدفق الرئيسي الكامل
+│   └── test_main_flow.py         # اختبار التدفق الرئيسي الكامل ✅ (18 tests)
 ├── api_sql/
 │   ├── __init__.py
 │   ├── test_wiki_sql.py          # اختبار wiki_sql.py
@@ -323,10 +323,10 @@ tests/
 ### المرحلة 5: التكامل والتحسين
 **المدة: 2-3 أيام / Duration: 2-3 days**
 
-- [ ] اختبارات التكامل بين الوحدات
-- [ ] تحسين تغطية الكود (هدف: >80%)
-- [ ] مراجعة وتحسين الاختبارات
-- [ ] توثيق الاختبارات
+- [x] اختبارات التكامل بين الوحدات ✅ (18 tests in tests/integration/test_main_flow.py)
+- [ ] تحسين تغطية الكود (هدف: >80%) - الحالي: ~31%
+- [x] مراجعة وتحسين الاختبارات ✅
+- [x] توثيق الاختبارات ✅
 
 ---
 
@@ -579,7 +579,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 
 ## 10. التقدم المنجز / Completed Progress
 
-### الاختبارات المكتملة / Completed Tests (237 new tests added)
+### الاختبارات المكتملة / Completed Tests (255 new tests added)
 
 | Module | Test Files | Tests Count | Status |
 |--------|------------|-------------|--------|
@@ -587,19 +587,21 @@ def test_using_fixtures(sample_category_data, mock_database):
 | b18_new | test_LCN_new.py | 28 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py | 58 | ✅ |
+| integration | test_main_flow.py | 18 | ✅ |
 | mk_cats | test_categorytext.py, test_create_category_page.py | 31 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |
 | wiki_api | test_arAPI.py, test_himoBOT2.py | 32 | ✅ |
 | temp | (existing tests) | 1326 | ✅ |
 
-**Total Tests: 1563 (all passing)**
+**Total Tests: 1586 passing (3 skipped/failed new_api tests require network)**
 
 ### Infrastructure Completed:
 - [x] Fixed root `__init__.py` to handle import errors
 - [x] Fixed `src/__init__.py` to handle import errors
 - [x] Enhanced `conftest.py` with shared fixtures
 - [x] GitHub Actions workflow for pytest
+- [x] Added integration tests marker to pytest.ini
 
 ---
 
