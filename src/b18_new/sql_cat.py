@@ -5,7 +5,7 @@
 import sys
 
 from pymysql.converters import escape_string
-from ..api_sql import wiki_sql
+from ..api_sql import GET_SQL, sql_new_title_ns, sql_new
 from ..c18_new.cats_tools.ar_from_en2 import get_en_title
 from ..helps import logger
 from ..utils.skip_cats import global_False_entemps
@@ -63,9 +63,9 @@ def get_ar_list(arcat, us_sql=True):
     # ---
     ar_list = []
     # ---
-    if us_sql is True and wiki_sql.GET_SQL():
+    if us_sql is True and GET_SQL():
         # ---
-        ar_list = wiki_sql.sql_new_title_ns(qia_ar, wiki="arwiki", t1="page_title", t2="page_namespace")
+        ar_list = sql_new_title_ns(qia_ar, wiki="arwiki", t1="page_title", t2="page_namespace")
     else:
         ar_list = get_ar_list_from_cat(arcat, code="ar", typee="", return_list=True)
     # ---
@@ -97,8 +97,8 @@ def get_ar_list_from_en(encat, us_sql=True, wiki="en"):
             and cla.cl_from = p1.page_id
     """
     # ---
-    if us_sql is True and wiki_sql.GET_SQL():
-        en_list_table = wiki_sql.sql_new(en_qua, wiki=f"{wiki}wiki")
+    if us_sql is True and GET_SQL():
+        en_list_table = sql_new(en_qua, wiki=f"{wiki}wiki")
         en_list = [x.get("ll_title") for x in en_list_table if x.get("ll_title")]
     else:
         en_list = get_en_title(encat, wiki=wiki)

@@ -2,12 +2,9 @@
 """
 
 """
-import sys
-from ..c18_new.bots.cat_tools_argv import EEn_site, FR_site, use_sqldb
-from ..c18_new.cats_tools.en_link_bot import english_page_link
-from ..api_sql.sql_bot import MySQLdb_finder_New
+from ..c18_new.bots.cat_tools_argv import use_sqldb
 from . import sql_cat
-from ..api_sql import wiki_sql
+from ..api_sql import GET_SQL, MySQLdb_finder_New
 
 from ..helps import logger
 
@@ -15,7 +12,7 @@ pages_in_arcat_toMake = {}
 
 
 def extract_fan_page_titles(enpageTitle):
-    if wiki_sql.GET_SQL() and use_sqldb[1]:
+    if GET_SQL() and use_sqldb[1]:
         cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
         # ---
         try:

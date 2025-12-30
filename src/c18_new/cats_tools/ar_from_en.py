@@ -7,7 +7,8 @@ from ...b18_new.LCN_new import find_LCN, get_arpage_inside_encat
 from ..bots.cat_tools_argv import EEn_site, use_sqldb
 from ..cat_tools2 import Categorized_Page_Generator
 from ..log import logger
-from ...api_sql.sql_bot import find_sql
+from ...api_sql import find_sql
+
 from .en_link_bot import en_title_for_arpage_cache
 
 
