@@ -81,8 +81,7 @@ tests/
 │   ├── __init__.py
 │   ├── test_wiki_sql.py          # اختبار wiki_sql.py
 │   ├── test_sql_qu.py            # اختبار sql_qu.py
-│   ├── test_wikidb.py            # اختبار wikidb.py
-│   └── test_lite_db_bot.py       # اختبار lite_db_bot.py
+│   ├── test_sql_bot.py           # اختبار sql_bot.py
 ├── b18_new/
 │   ├── __init__.py
 │   ├── test_LCN_new.py           # اختبار LCN_new.py
@@ -111,7 +110,6 @@ tests/
 │   └── tools_bots/
 │       ├── test_encat_like.py
 │       ├── test_sort_bot.py
-│       ├── test_sql_bot.py
 │       └── test_temp_bot.py
 ├── helps/
 │   ├── __init__.py
@@ -137,6 +135,7 @@ tests/
 ├── utils/
 │   ├── __init__.py
 │   └── test_skip_cats.py
+│   └── test_lite_db_bot.py       # اختبار lite_db_bot.py
 ├── wd_bots/
 │   ├── __init__.py
 │   ├── test_bot_wd.py

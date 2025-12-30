@@ -3,7 +3,7 @@
 """
 from ..api_sql import LiteDB, sql_connect_pymysql
 from ..wiki_api import wd_sparql
-from ..api_sql import lite_db_bot
+from ..utils import lite_db_bot
 from . import page
 from .api_utils import botEdit
 from .super.login_wrap import LoginWrap
