@@ -9,3 +9,7 @@ textfiles/Dont_add_to_these_pages.json
 *.db
 mk_cats/desktop.ini
 *.txt
+.coverage
+htmlcov/
+*.egg-info/
+__pycache__/
