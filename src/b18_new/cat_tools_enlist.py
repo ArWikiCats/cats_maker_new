@@ -33,10 +33,7 @@ def get_listenpageTitle(artitle, enpageTitle1):
     # ---
     listenpageTitle = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True) or []
     # ---
-    if "getfr" in sys.argv:
-        listenpage2 = generate_french_list(artitle, enpageTitle1)
-    else:
-        listenpage2 = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True, wiki="en") or []
+    listenpage2 = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True, wiki="en") or []
     # ---
     listenpageTitle.extend(listenpage2)
     # ---
@@ -52,9 +49,3 @@ def get_listenpageTitle(artitle, enpageTitle1):
     listenpageTitle = [x for x in listenpageTitle if isinstance(x, str) and x != ""]
     # ---
     return listenpageTitle
-
-
-def generate_french_list(artitle, enpageTitle1):
-    frcat = english_page_link(enpageTitle1, EEn_site["code"], FR_site["code"])
-    listenpage2 = sql_cat.make_ar_list_newcat2(artitle, frcat, us_sql=True, wiki="fr") or []
-    return listenpage2
