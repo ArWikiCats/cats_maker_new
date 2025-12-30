@@ -5,3 +5,5 @@ pymysql
 jsonlines
 sqlite_utils
 pywikibot
+pytest
+pytest-mock
