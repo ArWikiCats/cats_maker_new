@@ -7,77 +7,52 @@ This module tests category text generation functions.
 import pytest
 
 from src.mk_cats.categorytext import (
-    LLo,
-    LLo2,
+    LocalLanguageLinks,
     Make_temp,
-    find_lis,
+    category_mapping,
 )
 
 
 class TestFindLis:
-    """Tests for find_lis dictionary"""
+    """Tests for category_mapping dictionary"""
 
     def test_is_dict(self):
-        """Test that find_lis is a dictionary"""
-        assert isinstance(find_lis, dict)
+        """Test that category_mapping is a dictionary"""
+        assert isinstance(category_mapping, dict)
 
     def test_contains_known_mappings(self):
-        """Test that find_lis contains known mappings"""
-        assert "الألعاب الأولمبية" in find_lis
-        assert find_lis["الألعاب الأولمبية"] == "ألعاب أولمبية"
+        """Test that category_mapping contains known mappings"""
+        assert "الألعاب الأولمبية" in category_mapping
+        assert category_mapping["الألعاب الأولمبية"] == "ألعاب أولمبية"
 
     def test_values_are_strings(self):
         """Test that all values are strings"""
-        for key, value in find_lis.items():
+        for key, value in category_mapping.items():
             assert isinstance(key, str)
             assert isinstance(value, str)
 
 
-class TestLLo2Set:
-    """Tests for LLo2 set"""
-
-    def test_is_set(self):
-        """Test that LLo2 is a set"""
-        assert isinstance(LLo2, set)
-
-    def test_contains_known_items(self):
-        """Test that LLo2 contains known items"""
-        known_items = ["علوم", "طب", "فلسفة", "رياضة", "موسيقى"]
-        for item in known_items:
-            assert item in LLo2
-
-    def test_all_items_are_strings(self):
-        """Test that all items are strings"""
-        for item in LLo2:
-            assert isinstance(item, str)
-
-    def test_no_empty_strings(self):
-        """Test that there are no empty strings"""
-        for item in LLo2:
-            assert item.strip() != ""
-
-
 class TestLLoSet:
-    """Tests for LLo set"""
+    """Tests for LocalLanguageLinks set"""
 
     def test_is_set(self):
-        """Test that LLo is a set"""
-        assert isinstance(LLo, set)
+        """Test that LocalLanguageLinks is a set"""
+        assert isinstance(LocalLanguageLinks, set)
 
     def test_contains_known_items(self):
-        """Test that LLo contains known items"""
+        """Test that LocalLanguageLinks contains known items"""
         known_items = ["فلسطين", "المغرب", "اليمن", "سينما", "كرة القدم"]
         for item in known_items:
-            assert item in LLo
+            assert item in LocalLanguageLinks
 
     def test_all_items_are_strings(self):
         """Test that all items are strings"""
-        for item in LLo:
+        for item in LocalLanguageLinks:
             assert isinstance(item, str)
 
     def test_no_empty_strings(self):
         """Test that there are no empty strings"""
-        for item in LLo:
+        for item in LocalLanguageLinks:
             assert item.strip() != ""
 
 
@@ -114,21 +89,8 @@ class TestMakeTemp:
 class TestPortalListIntegrity:
     """Tests for portal list integrity"""
 
-    def test_llo_and_llo2_no_overlap(self):
-        """Test that LLo and LLo2 have minimal overlap"""
-        # Some overlap is expected, but they should mostly be different
-        overlap = LLo.intersection(LLo2)
-        # There should be some overlap based on the source code
-        assert isinstance(overlap, set)
-
-    def test_combined_coverage(self):
-        """Test that LLo and LLo2 together provide good coverage"""
-        combined = LLo.union(LLo2)
-        # Should have substantial coverage
-        assert len(combined) > 100
-
     def test_find_lis_values_relate_to_portals(self):
-        """Test that find_lis values are valid portal names"""
-        for key, value in find_lis.items():
+        """Test that category_mapping values are valid portal names"""
+        for key, value in category_mapping.items():
             # Values should be non-empty strings
             assert value.strip() != ""

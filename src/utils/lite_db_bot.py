@@ -17,7 +17,6 @@ import sqlite_utils
 class LiteDB:
     def __init__(self, db_path):
         self.db_path = db_path
-        # self.db = sqlite_utils.Database(db_path, tracer=tracer)
         self.db = sqlite_utils.Database(db_path)
 
     def create_table(self, table_name, fields, pk="id", **kwargs):
