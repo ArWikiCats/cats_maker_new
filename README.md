@@ -115,7 +115,7 @@ English Category Name
     ↓
 [get_listenpageTitle] → Member pages
     ↓
-[make_text] → Category page text (with templates)
+[generate_category_text] → Category page text (with templates)
     ↓
 [page.save] → Save to ar.wikipedia
     ↓

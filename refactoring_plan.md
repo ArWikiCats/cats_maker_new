@@ -50,7 +50,7 @@ create_categories_from_list(liste, uselabs, callback)
                 │       ├─ scan_ar_title(ar_title) → checked_title
                 │       │   └─ Get_Sitelinks_From_wikidata()
                 │       ├─ check_if_artitle_exists(en_title, ar_title) → bool
-                │       │   ├─ Get_page_info_from_wikipedia()
+                │       │   ├─ get_page_info_from_wikipedia()
                 │       │   └─ return exists or not
                 │       ├─ find_LCN(en_link) → ar_title
                 │       │   └─ submitAPI() with langlinks
@@ -64,12 +64,11 @@ create_categories_from_list(liste, uselabs, callback)
                 │       │   └─ return members list
                 │       ↓
                 │       new_category(en_title, ar_title, categories, qid, family)
-                │           ├─ make_text(en_title, ar_title, qid)
+                │           ├─ generate_category_text(en_title, ar_title, qid)
                 │           │   ├─ categorytext.py logic
-                │           │   ├─ Make_temp() for templates
-                │           │   ├─ Make_Portal() for portals
-                │           │   └─ getP373() from Wikidata
-                │           ├─ himoBOT2.page_put(title, text, summary)
+                │           │   ├─ generate_portal_content() for portals
+                │           │   └─ fetch_commons_category() from Wikidata
+                │           ├─ page_put(title, text, summary)
                 │           │   └─ Save page to Wikipedia
                 │           └─ return created title or False
                 │       ↓
@@ -107,10 +106,9 @@ create_categories_from_list(liste, uselabs, callback)
    - make_category() - المنطق الأساسي للإنشاء
 
 4. **mk_cats/categorytext.py** - توليد النصوص
-   - make_text() - توليد نص التصنيف
-   - Make_temp() - قوالب
-   - Make_Portal() - بوابات
-   - getP373() - جلب P373 من Wikidata
+   - generate_category_text() - توليد نص التصنيف
+   - generate_portal_content() - بوابات
+   - fetch_commons_category() - جلب P373 من Wikidata
 
 5. **b18_new/** - معالجة التصنيفات والروابط / Category and link processing
    - LCN_new.py: find_LCN(), find_Page_Cat_without_hidden()
@@ -133,7 +131,7 @@ create_categories_from_list(liste, uselabs, callback)
    - get_bots.py: Wikidata queries
 
 8. **wiki_api/** - استدعاءات API / API calls
-   - himoBOT2.py: page_put(), Get_page_info_from_wikipedia()
+   - himoBOT2.py: page_put(), get_page_info_from_wikipedia()
 
 9. **api_sql/** - قاعدة البيانات / Database operations
    - wiki_sql.py: sql_new(), sql_new_title_ns()
@@ -211,7 +209,7 @@ English Category Name
     ↓
 [get_listenpageTitle] → Member pages
     ↓
-[make_text] → Category page text (with templates)
+[generate_category_text] → Category page text (with templates)
     ↓
 [page.save] → Save to ar.wikipedia
     ↓

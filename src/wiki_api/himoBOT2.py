@@ -13,59 +13,17 @@ redirects_table = {}
 
 
 @functools.lru_cache(maxsize=1000)
-def Get_Newpages(sitecode, family, limit="max", namespace="0", rcstart=""):
-    # ---
-    params = {
-        "action": "query",
-        "list": "recentchanges",
-        # "rcdir": "newer",
-        "rcnamespace": namespace,
-        "rclimit": limit,
-        "rctype": "new",
-    }
-    # ---
-    if rcstart:
-        params["rcstart"] = rcstart
-    # ---
-    json1 = submitAPI(params, sitecode, family)
-    # ---
-    Main_table = []
-    # ---
-    if not json1:
-        return []
-    # ---
-    newp = json1.get("query", {}).get("recentchanges", {})
-    Main_table = [x["title"] for x in newp]
-    # ---
-    _ccc = {
-        "type": "new",
-        "ns": 0,
-        "title": "تشارلز مسيون ريمي",
-        "pageid": 7004776,
-        "revid": 41370093,
-        "old_revid": 0,
-        "rcid": 215347464,
-        "timestamp": "2019-12-15T13:14:34Z",
-    }
-    # ---
-    return Main_table
-
-
-@functools.lru_cache(maxsize=1000)
-def Get_page_info_from_wikipedia_new(
+def get_page_info_from_wikipedia(
     sitecode,
     title,
     findtemp="",
     Workredirects=False,
     findiwlinks=False,
-    getcach=False,
     Print=True,
-    return_all_table=False,
     nohidden=False,
 ):
-    # Note: getcach parameter is deprecated and ignored - caching is handled by @lru_cache decorator
     if Print:
-        logger.debug(f'himoBOT2.Get_page_info_from_wikipedia_new for "{sitecode}:{title}"')
+        logger.debug(f'himoBOT2.get_page_info_from_wikipedia for "{sitecode}:{title}"')
     # ---
     if sitecode.endswith("wiki"):
         sitecode = sitecode[:-4]
@@ -189,31 +147,12 @@ def Get_page_info_from_wikipedia_new(
     # ---
     result = table
     # ---
-    if return_all_table:
-        return table
-    # ---
     if title in table:
         result = table[title]
     elif title2 in table:
         result = table[title2]
     # ---
     return result
-
-
-@functools.lru_cache(maxsize=1000)
-def Get_page_info_from_wikipedia(
-    sitecode, title, findtemp="", Workredirects=False, findiwlinks=False, getcach=False, Print=False, nohidden=False
-):
-    return Get_page_info_from_wikipedia_new(
-        sitecode,
-        title,
-        findtemp=findtemp,
-        Workredirects=Workredirects,
-        findiwlinks=findiwlinks,
-        getcach=getcach,
-        Print=Print,
-        nohidden=nohidden,
-    )
 
 
 @functools.lru_cache(maxsize=1000)

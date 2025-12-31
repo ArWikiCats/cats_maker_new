@@ -4,9 +4,12 @@
 
 
 """
+import functools
+from typing import Literal
 from ..helps import logger
 from ..utils.skip_cats import skip_encats
-from ..new_api.page import MainPage
+from ..new_api.page import MainPage, SuperMainPage
+from ..temp import main_make_temp_no_title
 
 from . import categorytext
 
@@ -18,15 +21,38 @@ dump = {}
 dump["new"] = []
 
 
-def page_put(page, new_text, msg):
+@functools.lru_cache
+def _load_page(title) -> SuperMainPage:
+    page = MainPage(title, "ar")
+    return page
+
+
+def page_put(title, new_text, msg):
     """
     used in tests
     """
+    page = _load_page(title)
+
+    text = page.get_text()
+    # ---
+    if not text:
+        logger.info(' text = "" ')
+        return False
+    # ---
+    if not page.exists():
+        return False
+    # ---
+    page_edit = page.can_edit(script="cat")
+    # ---
+    if not page_edit:
+        return False
+    # ---
     save = page.save(newtext=new_text, summary=msg, nocreate=1)
+    # ---
     return save
 
 
-def create_Page(text, page):
+def create_Page(text: str, page: SuperMainPage) -> bool:
     """
     used in tests
     """
@@ -38,21 +64,6 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
     if family != "wikipedia" and family:
         return text
 
-    page = MainPage(title, "ar")
-    text = page.get_text()
-    # ---
-    if not text:
-        logger.info(' text = "" ')
-        return text
-    # ---
-    if not page.exists():
-        return text
-    # ---
-    page_edit = page.can_edit(script="cat")
-    # ---
-    if not page_edit:
-        return text
-    # ---
     new_text = text
 
     if len(categories) > 0:
@@ -72,12 +83,12 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text += f"\n{caca}"
 
-        save = page_put(page, new_text, msg)
+        save = page_put(title, new_text, msg)
         # ---
         if save:
             text = new_text
 
-    p373 = categorytext.getP373(enca, qid)
+    p373 = categorytext.fetch_commons_category(enca, qid)
 
     if p373:
         # اضافة قالب كومنز
@@ -85,12 +96,12 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text += f"\n{p373}"
 
-        save = page_put(page, new_text, susa)
+        save = page_put(title, new_text, susa)
 
         if save:
             text = new_text
 
-    portalse, portals_list = categorytext.Make_Portal(title, enca, return_list=True)
+    portalse, portals_list = categorytext.generate_portal_content(title, enca, return_list=True)
 
     if portalse and portals_list != []:
         # اضافة قالب بوابة
@@ -100,17 +111,17 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text = f"{portalse}\n{new_text}"
 
-        save = page_put(page, new_text, sus2)
+        save = page_put(title, new_text, sus2)
 
         if save:
             text = new_text
 
-    temp = categorytext.Make_temp(enca, title)
+    temp = main_make_temp_no_title(title)
 
     if temp:
         new_text += f"\n{temp}"
 
-        save = page_put(page, new_text, "بوت: إضافة قالب تصفح")
+        save = page_put(title, new_text, "بوت: إضافة قالب تصفح")
 
         if save:
             text = new_text

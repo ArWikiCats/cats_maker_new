@@ -191,7 +191,7 @@ class TestCheckIfArtitleExists:
     def test_returns_false_when_page_exists(self, mocker):
         """Test that check_if_artitle_exists returns False when page exists."""
         mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.Get_page_info_from_wikipedia",
+            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
             return_value={"exists": True}
         )
 
@@ -204,7 +204,7 @@ class TestCheckIfArtitleExists:
     def test_returns_true_when_page_not_exists(self, mocker):
         """Test that check_if_artitle_exists returns True when page doesn't exist."""
         mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.Get_page_info_from_wikipedia",
+            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
             return_value={"exists": False}
         )
 
@@ -217,7 +217,7 @@ class TestCheckIfArtitleExists:
     def test_adds_prefix_if_missing(self, mocker):
         """Test that check_if_artitle_exists adds تصنيف: prefix if missing."""
         mock_get_page = mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.Get_page_info_from_wikipedia",
+            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
             return_value={"exists": False}
         )
 
@@ -232,7 +232,7 @@ class TestCheckIfArtitleExists:
     def test_handles_none_response(self, mocker):
         """Test that check_if_artitle_exists handles None response."""
         mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.Get_page_info_from_wikipedia",
+            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
             return_value=None
         )
 

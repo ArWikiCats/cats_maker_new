@@ -2,20 +2,14 @@
 """
 
 """
-from ..temp import main_make_temp
+from ..temp import main_make_temp_no_title
 from ..wd_bots.wd_api_bot import Get_P373_API
 from ..wiki_api import himoBOT2
 from .utils import portal_en_to_ar_lower
 from .categorytext_data import category_mapping, LocalLanguageLinks
 
 
-def Make_temp(enca, title):
-    ff, title = main_make_temp(enca, title)
-
-    return ff
-
-
-def getP373(entitle, Qid):
+def fetch_commons_category(entitle, Qid):
     template = ""
     P373 = Get_P373_API(q=Qid, titles=entitle, sites="enwiki")
 
@@ -25,7 +19,7 @@ def getP373(entitle, Qid):
     return template
 
 
-def Make_Portal(title, enca, return_list=False):
+def generate_portal_content(title, enca, return_list=False):
     lilo = []
     en_links = himoBOT2.GetPagelinks(enca, sitecode="en")
 
@@ -61,13 +55,13 @@ def Make_Portal(title, enca, return_list=False):
     return litp
 
 
-def make_text(enca, title, Qid):
-    ff = Make_temp(enca, title)
-    # ---#تصنيف:اكتشافات فلكيون
+def generate_category_text(enca, title, Qid):
+    ff = main_make_temp_no_title(enca, title)
+    # ---
     text = ""
-    text += Make_Portal(title, enca)
+    text += generate_portal_content(title, enca)
     text += "{{نسخ:#لوموجود:{{نسخ:اسم_الصفحة}}|{{مقالة تصنيف}}|}}\n"
-    text += getP373(enca, Qid)
+    text += fetch_commons_category(enca, Qid)
 
     if ff:
         text += "\n%s" % ff

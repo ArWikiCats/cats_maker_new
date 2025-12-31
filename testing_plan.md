@@ -170,10 +170,10 @@ tests/
 - [x] اختبار scan_ar_title() - فحص العناوين ✅ (test_mknew.py)
 - [x] اختبار check_if_artitle_exists() - التحقق من الوجود ✅ (test_mknew.py)
 - [x] اختبار new_category() - إنشاء صفحة التصنيف ✅ (test_create_category_page.py)
-- [x] اختبار make_text() - إنشاء نص التصنيف ✅ (test_categorytext.py)
-- [x] اختبار Make_temp() و Make_Portal() ✅ (test_categorytext.py)
+- [x] اختبار generate_category_text() - إنشاء نص التصنيف ✅ (test_categorytext.py)
+- [x] اختبار generate_portal_content() ✅ (test_categorytext.py)
 - [x] اختبار check_en_temps() - فحص القوالب الإنجليزية ✅ (test_check_en.py)
-- [x] اختبار getP373() - الحصول على P373 من Wikidata ✅ (test_get_bots.py)
+- [x] اختبار fetch_commons_category() - الحصول على P373 من Wikidata ✅ (test_get_bots.py)
 - [x] Mock جميع استدعاءات الخدمات الخارجية ✅ (conftest.py fixtures)
 - [x] اختبارات تكامل للتدفق الكامل من create_categories_from_list ✅ (test_main_flow.py)
 - [x] اختبار معالجة قوائم التصنيفات المختلفة ✅ (test_mknew.py)
@@ -577,7 +577,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py, test_jsonl_data.py | 77 | ✅ |
 | integration | test_main_flow.py | 18 | ✅ |
-| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py | 78 | ✅ |
+| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py | 67 | ✅ |
 | mk_cats/utils | test_check_en.py | 10 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |

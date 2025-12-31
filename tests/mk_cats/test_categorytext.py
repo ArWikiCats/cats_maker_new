@@ -8,7 +8,6 @@ import pytest
 
 from src.mk_cats.categorytext import (
     LocalLanguageLinks,
-    Make_temp,
     category_mapping,
 )
 
@@ -54,36 +53,6 @@ class TestLLoSet:
         """Test that there are no empty strings"""
         for item in LocalLanguageLinks:
             assert item.strip() != ""
-
-
-class TestMakeTemp:
-    """Tests for Make_temp function"""
-
-    def test_returns_string(self):
-        """Test that Make_temp returns a string"""
-        result = Make_temp("", "تصنيف:عقد 2010")
-        assert isinstance(result, str)
-
-    def test_returns_empty_for_unknown_category(self):
-        """Test that Make_temp returns empty string for unknown category patterns"""
-        result = Make_temp("", "تصنيف:موضوع عشوائي")
-        assert result == ""
-
-    def test_decade_category_returns_template(self):
-        """Test that decade categories return a template"""
-        result = Make_temp("", "تصنيف:عقد 2010")
-        assert "{{" in result or result == ""
-
-    def test_century_category_returns_template(self):
-        """Test that century categories return a template"""
-        result = Make_temp("", "تصنيف:القرن 19")
-        assert "{{" in result or result == ""
-
-    def test_year_category_returns_template(self):
-        """Test that year categories return a template"""
-        result = Make_temp("", "تصنيف:2020")
-        # Should return {{تصنيف موسم}} or similar
-        assert "{{" in result or result == ""
 
 
 class TestPortalListIntegrity:

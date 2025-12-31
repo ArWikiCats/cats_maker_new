@@ -135,7 +135,7 @@ def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en", arcat_created=Fa
     keepwork = True
     # ---
     # فحص التصنيف الانجليزي
-    ioio_en = enpage or himoBOT2.Get_page_info_from_wikipedia(wiki, encat2)
+    ioio_en = enpage or himoBOT2.get_page_info_from_wikipedia(wiki, encat2)
     if ioio_en:
         # en_temp = ioio_en.get(encat2) or ioio_en
         # ---
@@ -174,7 +174,7 @@ def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en", arcat_created=Fa
     if keepwork:
         # ---
         # فحص التصنيف العربي
-        ioio_ar = arpage or himoBOT2.Get_page_info_from_wikipedia("ar", arcat2)
+        ioio_ar = arpage or himoBOT2.get_page_info_from_wikipedia("ar", arcat2)
         # ---
         if not ioio_ar:
             logger.info(f"<<lightred>> not ioio_ar:({arcat2})")

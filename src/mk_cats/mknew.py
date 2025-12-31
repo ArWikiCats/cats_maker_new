@@ -100,7 +100,7 @@ def check_if_artitle_exists(en_title_1, test_title):
     if not test_title.startswith("تصنيف:"):
         test_title = f"تصنيف:{test_title}"
 
-    test_page = himoBOT2.Get_page_info_from_wikipedia(wiki_site_ar["code"], test_title, Workredirects=False)
+    test_page = himoBOT2.get_page_info_from_wikipedia(wiki_site_ar["code"], test_title, Workredirects=False)
 
     if test_page and test_page["exists"]:
         logger.debug(f"<<lightred>>* category:{test_title} already exists in arwiki.")

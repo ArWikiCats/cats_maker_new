@@ -21,7 +21,7 @@ class TestMainFlowIntegration:
     def mock_all_external_services(self, mocker):
         """Mock all external API calls for integration testing."""
         # Mock Wikipedia API
-        mock_wiki_api = mocker.patch("src.wiki_api.himoBOT2.Get_page_info_from_wikipedia")
+        mock_wiki_api = mocker.patch("src.wiki_api.himoBOT2.get_page_info_from_wikipedia")
         mock_wiki_api.return_value = {"exists": False}
 
         # Mock Wikidata API
@@ -197,7 +197,7 @@ class TestModuleInteraction:
             }
         }
 
-        result = himoBOT2.Get_page_info_from_wikipedia_new("ar", "Test Page")
+        result = himoBOT2.get_page_info_from_wikipedia("ar", "Test Page")
 
         assert result is not None
         assert "title" in result
@@ -365,7 +365,7 @@ class TestDataFlowIntegration:
         })
 
         # Get page info
-        result = himoBOT2.Get_page_info_from_wikipedia_new("en", "Category:Science")
+        result = himoBOT2.get_page_info_from_wikipedia("en", "Category:Science")
 
         # Verify the data structure is suitable for category creation
         assert "title" in result

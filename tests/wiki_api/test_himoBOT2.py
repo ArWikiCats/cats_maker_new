@@ -7,9 +7,7 @@ This module tests Wikipedia API helper functions.
 import pytest
 
 from src.wiki_api.himoBOT2 import (
-    Get_Newpages,
-    Get_page_info_from_wikipedia,
-    Get_page_info_from_wikipedia_new,
+    get_page_info_from_wikipedia,
     GetPagelinks,
     get_en_link_from_ar_text,
     redirects_table,
@@ -24,55 +22,8 @@ class TestRedirectsTable:
         assert isinstance(redirects_table, dict)
 
 
-class TestGetNewpages:
-    """Tests for Get_Newpages function"""
-
-    def test_returns_list(self, mocker):
-        """Test that Get_Newpages returns a list"""
-        mock_response = {
-            "query": {
-                "recentchanges": [
-                    {"title": "Page 1", "ns": 0},
-                    {"title": "Page 2", "ns": 0},
-                ]
-            }
-        }
-        mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        # Clear lru_cache
-        Get_Newpages.cache_clear()
-
-        result = Get_Newpages("ar", "wikipedia")
-        assert isinstance(result, list)
-        assert len(result) == 2
-
-    def test_returns_empty_list_on_no_response(self, mocker):
-        """Test that Get_Newpages returns empty list when API fails"""
-        mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=None)
-        Get_Newpages.cache_clear()
-
-        result = Get_Newpages("ar", "wikipedia", limit="10")
-        assert result == []
-
-    def test_extracts_titles_correctly(self, mocker):
-        """Test that Get_Newpages extracts titles from response"""
-        mock_response = {
-            "query": {
-                "recentchanges": [
-                    {"title": "مقالة جديدة", "ns": 0, "type": "new"},
-                    {"title": "صفحة أخرى", "ns": 0, "type": "new"},
-                ]
-            }
-        }
-        mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        Get_Newpages.cache_clear()
-
-        result = Get_Newpages("en", "wikipedia", namespace="0")
-        assert "مقالة جديدة" in result
-        assert "صفحة أخرى" in result
-
-
 class TestGetPageInfoFromWikipediaNew:
-    """Tests for Get_page_info_from_wikipedia_new function"""
+    """Tests for get_page_info_from_wikipedia function"""
 
     def test_returns_dict_for_valid_page(self, mocker):
         """Test that function returns dict for valid page"""
@@ -89,17 +40,17 @@ class TestGetPageInfoFromWikipediaNew:
             }
         }
         mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        Get_page_info_from_wikipedia_new.cache_clear()
+        get_page_info_from_wikipedia.cache_clear()
 
-        result = Get_page_info_from_wikipedia_new("ar", "Test Page", Print=False)
+        result = get_page_info_from_wikipedia("ar", "Test Page", Print=False)
         assert isinstance(result, dict)
 
     def test_returns_empty_dict_on_no_response(self, mocker):
         """Test that function returns empty dict when API fails"""
         mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=None)
-        Get_page_info_from_wikipedia_new.cache_clear()
+        get_page_info_from_wikipedia.cache_clear()
 
-        result = Get_page_info_from_wikipedia_new("ar", "Nonexistent", Print=False)
+        result = get_page_info_from_wikipedia("ar", "Nonexistent", Print=False)
         assert result == {}
 
     def test_handles_missing_page(self, mocker):
@@ -116,9 +67,9 @@ class TestGetPageInfoFromWikipediaNew:
             }
         }
         mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        Get_page_info_from_wikipedia_new.cache_clear()
+        get_page_info_from_wikipedia.cache_clear()
 
-        result = Get_page_info_from_wikipedia_new("ar", "Missing Page", Print=False)
+        result = get_page_info_from_wikipedia("ar", "Missing Page", Print=False)
         assert isinstance(result, dict)
         if result:
             assert result.get("exists") is False
@@ -127,26 +78,12 @@ class TestGetPageInfoFromWikipediaNew:
         """Test that function strips 'wiki' suffix from sitecode"""
         mock_response = {"query": {"pages": {"123": {"pageid": 123, "ns": 0, "title": "Test"}}}}
         mock_submit = mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        Get_page_info_from_wikipedia_new.cache_clear()
+        get_page_info_from_wikipedia.cache_clear()
 
-        Get_page_info_from_wikipedia_new("arwiki", "Test", Print=False)
+        get_page_info_from_wikipedia("arwiki", "Test", Print=False)
         # The function should call submitAPI with 'ar' not 'arwiki'
         call_args = mock_submit.call_args
         assert call_args[0][1] == "ar"  # sitecode should be 'ar'
-
-
-class TestGetPageInfoFromWikipedia:
-    """Tests for Get_page_info_from_wikipedia function"""
-
-    def test_is_wrapper_for_new_function(self, mocker):
-        """Test that Get_page_info_from_wikipedia wraps Get_page_info_from_wikipedia_new"""
-        mock_response = {"query": {"pages": {"123": {"pageid": 123, "ns": 0, "title": "Test"}}}}
-        mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value=mock_response)
-        Get_page_info_from_wikipedia.cache_clear()
-        Get_page_info_from_wikipedia_new.cache_clear()
-
-        result = Get_page_info_from_wikipedia("ar", "Test", Print=False)
-        assert isinstance(result, dict)
 
 
 class TestGetPagelinks:
