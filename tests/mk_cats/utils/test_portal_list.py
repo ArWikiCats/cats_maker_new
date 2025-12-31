@@ -7,5 +7,5 @@ TODO: write tests
 import pytest
 
 from src.mk_cats.utils.portal_list import (
-    portal_list,
+    portal_en_to_ar_lower,
 )
