@@ -75,7 +75,7 @@ tests/
 ├── api_sql/
 │   ├── __init__.py
 │   ├── test_wiki_sql.py          # اختبار wiki_sql.py
-│   ├── test_sql_qu.py            # اختبار mysql_client.py
+│   ├── test_mysql_client.py            # اختبار mysql_client.py
 │   ├── test_sql_bot.py           # اختبار sql_bot.py
 ├── b18_new/
 │   ├── __init__.py
@@ -215,11 +215,11 @@ tests/
 - [x] اختبار إضافة نطاقات للغة العربية والإنجليزية ✅ (test_wiki_sql.py)
 - [x] اختبار معالجة النطاق "0" (المقالات) ✅ (test_wiki_sql.py)
 - [x] اختبار إنشاء سلاسل اتصال قاعدة البيانات ✅ (test_wiki_sql.py)
-- [x] اختبار تنفيذ استعلامات SQL بقيم مختلفة ✅ (test_sql_qu.py)
-- [x] اختبار معالجة الأخطاء عند فشل الاتصال ✅ (test_sql_qu.py)
-- [x] اختبار تحويل البايتات إلى نصوص ✅ (test_sql_qu.py)
+- [x] اختبار تنفيذ استعلامات SQL بقيم مختلفة ✅ (test_mysql_client.py)
+- [x] اختبار معالجة الأخطاء عند فشل الاتصال ✅ (test_mysql_client.py)
+- [x] اختبار تحويل البايتات إلى نصوص ✅ (test_mysql_client.py)
 - [x] Mock قاعدة البيانات لتجنب الاتصالات الحقيقية ✅ (conftest.py)
-- [x] اختبار LiteDB للتخزين المؤقت ✅ (test_sql_qu.py)
+- [x] اختبار LiteDB للتخزين المؤقت ✅ (test_mysql_client.py)
 
 ### 3.6 wd_bots ⭐⭐ (أولوية عالية / High Priority)
 
@@ -567,7 +567,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 
 | Module | Test Files | Tests Count | Status |
 |--------|------------|-------------|--------|
-| api_sql | test_wiki_sql.py, test_sql_qu.py | 42 | ✅ |
+| api_sql | test_wiki_sql.py, test_mysql_client.py | 42 | ✅ |
 | b18_new | test_cat_tools.py | 21 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py, test_jsonl_data.py | 77 | ✅ |
