@@ -29,8 +29,6 @@ if "-stubs" in sys.argv or "stubs" in sys.argv:
     global_False_entemps.remove("Hiddencat")
     global_False_entemps.remove("WPSS-cat")
     global_False_entemps.remove("Stub Category")
-# ---
-False_entemps_line_to_sql = ",".join(f"'{x.replace(' ', '_')}'" for x in global_False_entemps)
-# ---
+
 
 NO_Templates_lower = [x.lower() for x in global_False_entemps]
