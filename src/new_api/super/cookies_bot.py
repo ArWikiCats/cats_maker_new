@@ -24,11 +24,16 @@ else:
 ta_dir = tool / "cookies"
 # ---
 if not ta_dir.exists():
-    ta_dir.mkdir()
+    ta_dir.mkdir(exist_ok=True, parents=True)
+    # ---
     logger.debug("<<green>> mkdir:")
     logger.debug(f"ta_dir:{ta_dir}")
     logger.debug("<<green>> mkdir:")
-    os.chmod(ta_dir, statgroup)
+    # ---
+    try:
+        os.chmod(ta_dir, statgroup)
+    except Exception as e:
+        logger.warning(f"<<red>> chmod: Exception:{e}")
 
 
 def del_cookies_file(file_path):

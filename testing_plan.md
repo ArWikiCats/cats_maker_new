@@ -97,7 +97,6 @@ tests/
 │   │   ├── test_ar_from_en.py
 │   │   ├── test_ar_from_en2.py
 │   └── tools_bots/
-│       ├── test_encat_like.py
 │       ├── test_sort_bot.py
 │       └── test_temp_bot.py
 ├── helps/

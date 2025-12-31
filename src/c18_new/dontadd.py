@@ -2,6 +2,7 @@
 """
 
 """
+import functools
 import os
 import json
 import stat
@@ -14,6 +15,8 @@ from ..helps import logger
 
 Dir = Path(__file__).parent.parent.parent
 filename_json = Dir / "textfiles/Dont_add_to_pages.json"
+
+filename_json.parent.mkdir(parents=True, exist_ok=True)
 
 statgroup = stat.S_IRWXU | stat.S_IRWXG
 
@@ -117,6 +120,7 @@ def get_pages_nocat():
     return data
 
 
+@functools.lru_cache(maxsize=1)
 def Dont_add_to_pages_def():
     data = load_json(filename_json)
     date = ""

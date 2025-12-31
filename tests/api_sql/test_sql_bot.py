@@ -7,8 +7,8 @@ TODO: write tests
 import pytest
 
 from src.api_sql.sql_bot import (
-    MySQLdbar,
+    fetch_arcat_titles,
     Make_sql,
-    MySQLdb_finder_New,
+    get_exclusive_category_titles,
     find_sql,
 )
