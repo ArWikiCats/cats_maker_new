@@ -4,9 +4,9 @@
 
 
 """
-from ..wiki_api import arAPI
 from ..helps import logger
 from ..utils.skip_cats import skip_encats
+from ..new_api.page import MainPage
 
 from . import categorytext
 
@@ -18,10 +18,41 @@ dump = {}
 dump["new"] = []
 
 
+def page_put(page, new_text, msg):
+    """
+    used in tests
+    """
+    save = page.save(newtext=new_text, summary=msg, nocreate=1)
+    return save
+
+
+def create_Page(text, page):
+    """
+    used in tests
+    """
+    new_cat = page.Create(text=text, summary="بوت:إنشاء تصنيف.")
+    return new_cat
+
+
 def add_text_to_cat(text, categories, enca, title, qid, family=""):
     if family != "wikipedia" and family:
         return text
 
+    page = MainPage(title, "ar")
+    text = page.get_text()
+    # ---
+    if not text:
+        logger.info(' text = "" ')
+        return text
+    # ---
+    if not page.exists():
+        return text
+    # ---
+    page_edit = page.can_edit(script="cat")
+    # ---
+    if not page_edit:
+        return text
+    # ---
     new_text = text
 
     if len(categories) > 0:
@@ -41,9 +72,9 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text += f"\n{caca}"
 
-        ux = arAPI.page_put(oldtext=text, newtext=new_text, summary=msg, title=title)
-
-        if ux:
+        save = page_put(page, new_text, msg)
+        # ---
+        if save:
             text = new_text
 
     p373 = categorytext.getP373(enca, qid)
@@ -54,9 +85,9 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text += f"\n{p373}"
 
-        ux0 = arAPI.page_put(oldtext=text, newtext=new_text, summary=susa, title=title)
+        save = page_put(page, new_text, susa)
 
-        if ux0:
+        if save:
             text = new_text
 
     portalse, portals_list = categorytext.Make_Portal(title, enca, return_list=True)
@@ -69,9 +100,9 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
 
         new_text = f"{portalse}\n{new_text}"
 
-        ux1 = arAPI.page_put(oldtext=text, newtext=new_text, summary=sus2, title=title)
+        save = page_put(page, new_text, sus2)
 
-        if ux1:
+        if save:
             text = new_text
 
     temp = categorytext.Make_temp(enca, title)
@@ -79,9 +110,9 @@ def add_text_to_cat(text, categories, enca, title, qid, family=""):
     if temp:
         new_text += f"\n{temp}"
 
-        ux2 = arAPI.page_put(oldtext=text, newtext=new_text, summary="بوت: إضافة قالب تصفح", title=title)
+        save = page_put(page, new_text, "بوت: إضافة قالب تصفح")
 
-        if ux2:
+        if save:
             text = new_text
 
     return new_text
@@ -108,16 +139,19 @@ def make_category(categories, enca, title, qid, family=""):
     text = text + caia
     text += f"\n\n[[en:{enca}]]"
 
-    New_Cat = arAPI.create_Page(text, "بوت:إنشاء تصنيف.", title, False, sleep=0, family=family, minor=1)
+    page = MainPage(title, "ar")
+    # ---
+    if page.get_text() or page.exists():
+        return False
+    # ---
+    new_cat = create_Page(text, page)
 
-    if New_Cat is not False:
+    if new_cat is not False:
         text = add_text_to_cat(text, categories, enca, title, qid, family="")
 
-        # ass4.work_ar_title_page(title, "", 14, enlink=enca, askk=False, newwa=True)
+    logger.warning(f"<<lightgreen>> New_Cat: {new_cat}")
 
-    logger.warning(f"<<lightgreen>> New_Cat: {New_Cat}")
-
-    return New_Cat
+    return new_cat
 
 
 def new_category(enca, title, categories, qid, family=""):

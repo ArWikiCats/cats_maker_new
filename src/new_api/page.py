@@ -51,7 +51,7 @@ def create_login_session(lang, family):
     return login_bot
 
 
-def MainPage(title, lang, family="wikipedia"):
+def MainPage(title, lang, family="wikipedia") -> super_page.MainPage:
     # ---
     login_bot = create_login_session(lang, family)
     # ---
@@ -69,7 +69,7 @@ def CatDepth(title, sitecode="", family="wikipedia", **kwargs):
     return result
 
 
-def NEW_API(lang="", family="wikipedia"):
+def NEW_API(lang="", family="wikipedia") -> bot_api.NEW_API:
     # ---
     login_bot = create_login_session(lang, family)
     # ---

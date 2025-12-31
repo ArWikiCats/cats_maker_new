@@ -214,7 +214,7 @@ English Category Name
     ↓
 [make_text] → Category page text (with templates)
     ↓
-[page_put] → Save to ar.wikipedia
+[page.save] → Save to ar.wikipedia
     ↓
 [Log_to_wikidata] → Update Wikidata sitelink
 ```
@@ -239,7 +239,7 @@ class WikipediaRepository:
     def get_page_categories(self, title: str, lang: str) -> list:
         """Get categories for a page"""
         pass
-    
+
     def save_page(self, title: str, text: str, summary: str) -> bool:
         """Save a page to Wikipedia"""
         pass
@@ -249,7 +249,7 @@ class WikidataRepository:
     def get_sitelinks(self, qid: str) -> dict:
         """Get sitelinks from Wikidata"""
         pass
-    
+
     def get_label(self, qid: str, lang: str) -> str:
         """Get label for a Qid"""
         pass
@@ -261,7 +261,7 @@ class WikidataRepository:
 def make_ar(en_page_title, ar_title, callback=None):
     # استدعاء مباشر
     result = Get_Sitelinks_From_wikidata(...)
-    
+
 # After
 def make_ar(en_page_title, ar_title, wikidata_repo, callback=None):
     # استخدام repository
@@ -276,7 +276,7 @@ class CategoryProcessor:
         self.wiki = wiki_repo
         self.wikidata = wikidata_repo
         self.db = db_repo
-    
+
     def process_category(self, en_title: str) -> dict:
         """Pure business logic without I/O"""
         # Logic here
@@ -322,12 +322,12 @@ class CategoryNotFoundError(CatsMakerException):
 class ErrorHandler:
     def __init__(self, logger):
         self.logger = logger
-    
+
     def handle_api_error(self, error: Exception, context: dict):
         """Handle API errors consistently"""
         self.logger.error(f"API Error: {error}", extra=context)
         # Retry logic, fallback, etc.
-    
+
     def handle_database_error(self, error: Exception, context: dict):
         """Handle database errors"""
         self.logger.error(f"DB Error: {error}", extra=context)
@@ -352,15 +352,15 @@ class CacheManager:
     def __init__(self, backend='memory'):
         self.backend = backend
         self._cache = {}
-    
+
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache"""
         return self._cache.get(key)
-    
+
     def set(self, key: str, value: Any, ttl: int = 3600):
         """Set value in cache with TTL"""
         self._cache[key] = value
-    
+
     def invalidate(self, pattern: str):
         """Invalidate cache entries matching pattern"""
         pass
@@ -414,7 +414,7 @@ class Settings:
     wikipedia: WikipediaConfig = WikipediaConfig()
     wikidata: WikidataConfig = WikidataConfig()
     database: DatabaseConfig = DatabaseConfig()
-    
+
     # Global settings
     range_limit: int = 5
     debug: bool = False
@@ -448,31 +448,31 @@ def create_categories_from_list(liste: list[str], uselabs: bool = False, callbac
     """
     معالجة قائمة من التصنيفات الإنجليزية وإنشاء نظائرها العربية.
     Process a list of English categories and create their Arabic counterparts.
-    
+
     Args:
         liste: قائمة بأسماء التصنيفات الإنجليزية / List of English category names
         uselabs: استخدام التسميات من ArWikiCats / Use labels from ArWikiCats
         callback: دالة اختيارية للاستدعاء بعد كل تصنيف / Optional callback after each category
-    
+
     Returns:
         None
-    
+
     Raises:
         CategoryNotFoundError: إذا لم يتم العثور على التصنيف / If category not found
         WikipediaAPIError: عند فشل استدعاء API / On API call failure
-    
+
     Examples:
         >>> categories = ["Category:Science", "Category:Mathematics"]
         >>> create_categories_from_list(categories)
-        
+
         >>> def my_callback(title, **kwargs):
         ...     print(f"Processed: {title}")
         >>> create_categories_from_list(categories, callback=my_callback)
-    
+
     Notes:
         - يتم تخطي التصنيفات المكررة / Duplicate categories are skipped
         - التصنيفات المعالجة تُضاف إلى DONE_D / Processed categories added to DONE_D
-    
+
     See Also:
         - one_cat(): معالجة تصنيف واحد / Process one category
         - process_catagories(): المعالجة المتكررة / Recursive processing
@@ -551,8 +551,8 @@ def ar_make_lab(title: str, **kwargs) -> Optional[str]:
     pass
 
 def get_ar_list_from_en(
-    encat: str, 
-    us_sql: bool = True, 
+    encat: str,
+    us_sql: bool = True,
     wiki: str = "en"
 ) -> List[str]:
     """الحصول على قائمة عربية من تصنيف إنجليزي"""
