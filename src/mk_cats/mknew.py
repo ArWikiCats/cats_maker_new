@@ -19,8 +19,9 @@ from ..helps import logger
 from .utils import filter_en
 from .create_category_page import new_category
 from .utils.check_en import check_en_temps
-from ..new_api.page import NEW_API, MainPage
-from .check_redirects import remove_redirect_pages
+from ..new_api.page import MainPage
+from ..wiki_api.check_redirects import remove_redirect_pages
+
 try:
     from ArWikiCats import resolve_arabic_category_label, logger as cat_logger  # type: ignore
     cat_logger.setLevel("ERROR")
@@ -192,7 +193,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
 
     members = list(set(members))
     members = [m for m in members if m and isinstance(m, str)]
-    members = remove_redirect_pages(members)
+    members = remove_redirect_pages("ar", members)
     if len(members) == 0:
         logger.debug(" get_listenpageTitle == [] ")
         return []

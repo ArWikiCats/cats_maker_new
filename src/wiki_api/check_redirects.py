@@ -7,9 +7,9 @@ def _load_new_api(lang) -> SuperNEW_API:
     return NEW_API(lang, family="wikipedia")
 
 
-def remove_redirect_pages(page_titles: list) -> list:
+def remove_redirect_pages(lang: str, page_titles: list) -> list:
     """Remove redirect pages from a list of page titles."""
-    api = _load_new_api("ar")
+    api = _load_new_api(lang)
 
     result = api.Find_pages_exists_or_not(page_titles, get_redirect=True)
 
