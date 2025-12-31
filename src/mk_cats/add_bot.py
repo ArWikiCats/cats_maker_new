@@ -21,7 +21,7 @@ def add_to_page(page_title, arcat, callback=None):
     # ---
     if page_title in Dont_add_to_pages:
         logger.info(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
-        return ""
+        return False
     # ---
     arcat = arcat.replace("_", " ")
     final_categories = f"\n[[{arcat}]]"
@@ -36,27 +36,27 @@ def add_to_page(page_title, arcat, callback=None):
     # ---
     if not text:
         logger.info(' text = "" ')
-        return
+        return False
     # ---
     if page.isRedirect():
-        return
+        return False
     # ---
     if page.isDisambiguation():
-        return
+        return False
     # ---
     if not page.exists():
-        return
+        return False
     # ---
     page_edit = page.can_edit(script="cat")
     # ---
     if not page_edit:
-        return
+        return False
     # ---
     categories = page.get_categories(with_hidden=False)
     # ---
     if text.find(f"[[{arcat}]]") != -1 or text.find(f"[[{arcat}|") != -1:
         logger.info(" text.find( final_categories.strip() ) != -1 ")
-        return
+        return False
     # ---
     newtext = text
     # ---
@@ -73,22 +73,29 @@ def add_to_page(page_title, arcat, callback=None):
             if newtext.find(final_categories.strip()) == -1:
                 newtext = newtext + final_categories
     # ---
-    if newtext != text:
-        # newtext = cosmetic_change_bot.do_cos_meticchanges(newtext, False, title=page_title, page_ns=ns)
-        # ---
-        newtext = sort_categories(newtext, page_title)
-        # ---
-        save = page.save(newtext=newtext, summary=susu)
-        # ---
-        if save and callback:
-            try:
-                callback(page_title)
-            except Exception as e:
-                logger.info(f"<<lightred>> Error in callback: {e}")
+    if newtext == text:
+        return False
     # ---
-    final = time.perf_counter()
-    delta = int(final - start)
-    logger.info(f"add_bot.py done in {delta} seconds")
+    # newtext = cosmetic_change_bot.do_cos_meticchanges(newtext, False, title=page_title, page_ns=ns)
+    # ---
+    newtext = sort_categories(newtext, page_title)
+    # ---
+    save = page.save(newtext=newtext, summary=susu)
+    # ---
+    if not save:
+        logger.error(f"<<lightred>> page.save() failed for {page_title=}, {arcat=}")
+        return False
+    # ---
+    if callback:
+        try:
+            callback(page_title)
+        except Exception as e:
+            logger.info(f"<<lightred>> Error in callback: {e}")
+    # ---
+    delta = time.perf_counter() - start
+    logger.info(f"add_bot.py done in {delta:.2f} seconds")
+    # ---
+    return True
 
 
 def add_to_final_list(final_list, title, callback=None):
