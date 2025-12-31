@@ -4,12 +4,32 @@ from ..bots.english_page_title import get_english_page_title
 """
 
 import sys
-
-from ...wiki_api import himoBOT2
 from ..cats_tools.en_link_bot import english_page_link
 from ..log import logger
+from ...wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 
-# ---
+
+def get_en_link_from_ar_text(title, site, sitetarget):
+    # ---
+    enpage = Get_Sitelinks_From_wikidata(site, title, return_main_table=True)
+    # ---
+    if not enpage:
+        return ""
+    # ---
+    EngInterwiki = ""
+    # ---
+    if sitetarget:
+        sitetarget2 = sitetarget
+        if not sitetarget.endswith("wiki"):
+            sitetarget2 += "wiki"
+        # ---
+        sitelinks = enpage.get("sitelinks", {})
+        EngInterwiki = sitelinks.get(sitetarget) or sitelinks.get(sitetarget2) or ""
+    # ---
+    if EngInterwiki:
+        logger.debug(f"<<lightblue>> himoBOT2.py, get_en_link_from_ar_text {EngInterwiki}")
+    # ---
+    return EngInterwiki
 
 
 def get_english_page_title(englishlink, pagetitle, text_new, ar_page_langlinks):
@@ -30,7 +50,7 @@ def get_english_page_title(englishlink, pagetitle, text_new, ar_page_langlinks):
         if en2:
             en = en2
         else:
-            en = himoBOT2.get_en_link_from_ar_text(text_new, pagetitle, ar_site, en_site)
+            en = get_en_link_from_ar_text(pagetitle, ar_site, en_site)
     # ---
     if not en:
         en = english_page_link(pagetitle, en_site, en_site, text=text_new)

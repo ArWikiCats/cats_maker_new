@@ -9,7 +9,6 @@ import pytest
 from src.wiki_api.himoBOT2 import (
     get_page_info_from_wikipedia,
     GetPagelinks,
-    get_en_link_from_ar_text,
     redirects_table,
 )
 
@@ -140,46 +139,3 @@ class TestGetPagelinks:
         GetPagelinks("Test")
         call_args = mock_submit.call_args
         assert call_args[0][1] == "ar"
-
-
-class TestGetEnLinkFromArText:
-    """Tests for get_en_link_from_ar_text function"""
-
-    def test_extracts_qid_from_text(self, mocker):
-        """Test that function extracts QID from template in text"""
-        get_en_link_from_ar_text.cache_clear()
-
-        text = "{{قيمة ويكي بيانات/قالب تحقق|Q12345}}"
-        result = get_en_link_from_ar_text(text, "Test", "ar", "", getqid=True)
-        assert result == "Q12345"
-
-    def test_extracts_qid_with_id_param(self, mocker):
-        """Test that function extracts QID from template with id= parameter"""
-        get_en_link_from_ar_text.cache_clear()
-
-        text = "{{قيمة ويكي بيانات/قالب تحقق|id=Q67890}}"
-        result = get_en_link_from_ar_text(text, "Test", "ar", "", getqid=True)
-        assert result == "Q67890"
-
-    def test_returns_empty_for_no_match(self, mocker):
-        """Test that function returns empty string when no QID found"""
-        mocker.patch("src.wiki_api.himoBOT2.Get_Sitelinks_From_wikidata", return_value=None)
-        get_en_link_from_ar_text.cache_clear()
-
-        text = "Plain text without templates"
-        result = get_en_link_from_ar_text(text, "Test", "ar", "en", getqid=True)
-        # When no QID in text, it tries wikidata API which returns None
-        assert result == ""
-
-    def test_uses_wikidata_when_no_text_match(self, mocker):
-        """Test that function uses Wikidata API when no text match"""
-        mock_wikidata = mocker.patch(
-            "src.wiki_api.himoBOT2.Get_Sitelinks_From_wikidata",
-            return_value={"q": "Q999", "sitelinks": {"enwiki": "English Title"}},
-        )
-        get_en_link_from_ar_text.cache_clear()
-
-        text = "No templates here"
-        result = get_en_link_from_ar_text(text, "Arabic Title", "ar", "en", getqid=False)
-        assert result == "English Title"
-        mock_wikidata.assert_called_once()

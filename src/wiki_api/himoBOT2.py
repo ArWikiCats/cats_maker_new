@@ -5,7 +5,6 @@ import functools
 import re
 import sys
 from ..helps import logger
-from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from .api_requests import submitAPI
 
 Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
@@ -192,52 +191,3 @@ def GetPagelinks(title, sitecode=""):
     logger.debug(tab)
     # ---
     return tab
-
-
-@functools.lru_cache(maxsize=1000)
-def get_en_link_from_ar_text(text, title, site, sitetarget, getqid=False):
-    # ---
-    matches = [
-        r"\{\{قيمة ويكي بيانات\/قالب تحقق\s*\|\s*(Q\d+)\s*\}\}",
-        r"\{\{قيمة ويكي بيانات\/قالب تحقق\s*\|\s*id\s*\=\s*(Q\d+)\s*\}\}",
-        r"\{\{سباق الدراجات\/صندوق [\s\w]+\s*\|\s*(Q\d+)\s*\}\}",
-        r"\{\{Cycling race\/infobox\s*\|\s*(Q\d+)\s*\}\}",
-        r"\{\{نتيجة سباق الدراجات\/بداية\s*\|\s*id\s*\=\s*(Q\d+)\s*\}\}",
-    ]
-    # ---
-    qid = ""
-    # ---
-    if text:
-        for ma in matches:
-            if match := re.search(ma, text):
-                qid = match.group(1)
-                break
-        # ---
-        if getqid and qid:
-            return qid
-    # ---
-    enpage = Get_Sitelinks_From_wikidata(site, title, return_main_table=True)
-    # {"sitelinks": {"arwiki": "كريس فروم","enwiki": "Chris Froome","fiwiki": "Chris Froome"},"q": "Q319591"}
-    # ---
-    # logger.debug( json.dumps(enpage, indent=1, ensure_ascii=False) )
-    # ---
-    if not enpage:
-        return ""
-    # ---
-    EngInterwiki = ""
-    # ---
-    qid = enpage.get("q", "")
-    if getqid:
-        return qid
-    elif sitetarget:
-        sitetarget2 = sitetarget
-        if not sitetarget.endswith("wiki"):
-            sitetarget2 += "wiki"
-        # ---
-        sitelinks = enpage.get("sitelinks", {})
-        EngInterwiki = sitelinks.get(sitetarget) or sitelinks.get(sitetarget2) or ""
-    # ---
-    if EngInterwiki:
-        logger.debug(f"<<lightblue>> himoBOT2.py, get_en_link_from_ar_text {EngInterwiki}")
-    # ---
-    return EngInterwiki
