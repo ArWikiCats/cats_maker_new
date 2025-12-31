@@ -9,7 +9,7 @@ from ..b18_new import add_SubSub, get_SubSub_keys, get_SubSub_value
 
 from ..wiki_api import find_Page_Cat_without_hidden
 
-from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2
+from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2, validate_categories_for_new_cat
 
 from ..c18_new.bots.cat_tools_argv import use_sqldb
 from .add_bot import add_to_final_list
@@ -197,30 +197,33 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         logger.debug(" get_listenpageTitle == [] ")
         return []
 
-    opuo = ""
+    formatted_member_list = ""
 
     if members and len(members) < 30:
-        opuo = ",".join(members)
+        formatted_member_list = ",".join(members)
 
-    logger.debug(f"Add to {len(members)} pages: {opuo}")
+    logger.debug(f"Add to {len(members)} pages: {formatted_member_list}")
 
     # إنشاء التصنيف وإضافته للصفحات
 
-    hhh = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
+    created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
 
-    if hhh:
-        add_to_final_list(members, ar_title, callback=callback)
+    if not created_category:
+        to_wd.add_label(qid, ar_title)
+        return en_cats_of_new_cat
 
-        add_SubSub(en_cats_of_new_cat, hhh)
+    add_to_final_list(members, ar_title, callback=callback)
 
+    add_SubSub(en_cats_of_new_cat, created_category)
+
+    if validate_categories_for_new_cat(ar_title, en_page_title, wiki="en"):
         listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
 
-        if listen != []:
-            add_to_final_list(listen, ar_title, callback=callback)
+    if listen != []:
+        add_to_final_list(listen, ar_title, callback=callback)
 
-        to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
-    else:
-        to_wd.add_label(qid, ar_title)
+    to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
+
     return en_cats_of_new_cat
 
 

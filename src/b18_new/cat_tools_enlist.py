@@ -3,10 +3,10 @@
 
 """
 from ..c18_new.bots.cat_tools_argv import use_sqldb
-from . import sql_cat
 from ..api_sql import GET_SQL, MySQLdb_finder_New
-
 from ..helps import logger
+from .sql_cat import make_ar_list_newcat2
+from .sql_cat_checker import validate_categories_for_new_cat
 
 pages_in_arcat_toMake = {}
 
@@ -28,11 +28,10 @@ def get_listenpageTitle(artitle, enpageTitle1):
     # ---
     enpageTitle = enpageTitle1.strip()
     # ---
-    listenpageTitle = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True) or []
+    listenpageTitle = []
     # ---
-    listenpage2 = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True, wiki="en") or []
-    # ---
-    listenpageTitle.extend(listenpage2)
+    if validate_categories_for_new_cat(artitle, enpageTitle1, wiki="en"):
+        listenpageTitle = make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True) or []
     # ---
     if not listenpageTitle:
         fapages = extract_fan_page_titles(enpageTitle)

@@ -8,28 +8,7 @@ from pymysql.converters import escape_string
 from ..api_sql import GET_SQL, sql_new_title_ns, sql_new
 from ..c18_new.cats_tools.ar_from_en2 import get_en_title
 from ..helps import logger
-from ..utils.skip_cats import global_False_entemps
-from ..wiki_api import himoBOT2
 from .cat_tools_enlist2 import get_ar_list_from_cat
-
-JustAdd = {1: False}
-USE_SQLL = {1: False}
-# ---
-NO_Templates_ar = [
-    "تصنيف ويكيبيديا",
-    "تحويل تصنيف",
-    "تصنيف تتبع",
-    "تصنيف تهذيب شهري",
-    "تصنيف مخفي",
-    "تصنيف بذرة",
-    "تصنيف حاوية",
-]
-# ---
-NO_Templates_lower = [x.lower() for x in global_False_entemps]
-# ---
-if "-stubs" in sys.argv or "stubs" in sys.argv:
-    NO_Templates_ar.remove("تصنيف بذرة")
-    NO_Templates_ar.remove("تصنيف مخفي")
 
 
 def get_ar_list(arcat, us_sql=True):
@@ -124,69 +103,10 @@ def do_sql(encat, arcat, us_sql=True, wiki="en"):
 def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en"):
     # ---
     encat = encat.replace("Category:Category:", "Category:")
-    # ---
     encat = encat.replace("category:", "").replace("Category:", "").replace("Catégorie:", "")
+    encat = encat.replace('_', ' ')
     # ---
     arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace('_', ' ')
-    arcat2 = f"تصنيف:{arcat}"
-    # ---
-    # فحص التصنيف الانجليزي
-    encat2 = f"Category:{encat.replace('_', ' ')}"
-    # ---
-    ioio_en = himoBOT2.get_page_info_from_wikipedia(wiki, encat2)
-    # ---
-    if ioio_en:
-        # ---
-        if not ioio_en:
-            logger.info(f"<<lightred>> not ioio_en:({encat2})")
-            return False
-        # ---
-        elif ioio_en:
-            if not ioio_en["exists"]:
-                logger.info(f"<<lightred>> ioio_en:({encat2}) not exists")
-                return False
-            elif ioio_en["isRedirectPage"]:
-                logger.info(f"<<lightred>> ioio_en:({encat2}) isRedirectPage")
-                return False
-        # ---
-        ar_link = ioio_en.get("langlinks", {}).get("ar", "")
-        if ar_link and ar_link != arcat2:
-            logger.info(f"<<lightred>> find ar in encat. ({ar_link}) != ({arcat2}) ")
-            return False
-        # ---
-        en_temp = ioio_en.get("templates", {})
-        for TargetTemp in en_temp:
-            Target_Temp2 = TargetTemp.replace("Template:", "")
-            if Target_Temp2.lower() in NO_Templates_lower and "keep" not in sys.argv:
-                logger.info(f"<<lightred>> encat:{encat2} has temp:{Target_Temp2} ")
-                return False
-    # ---
-    # فحص التصنيف العربي
-    ioio_ar = himoBOT2.get_page_info_from_wikipedia("ar", arcat2)
-    # ---
-    if not ioio_ar:
-        logger.info(f"<<lightred>> not ioio_ar:({arcat2})")
-        return False
-    # ---
-    elif ioio_ar:
-        if not ioio_ar["exists"]:
-            logger.info(f"<<lightred>> ioio_ar:({arcat2}) not exists")
-        elif ioio_ar["isRedirectPage"]:
-            logger.info(f"<<lightred>> ioio_ar:({arcat2}) isRedirectPage")
-            return False
-    # ---
-    if ioio_ar:
-        en_link = ioio_ar.get("langlinks", {}).get("en", "")
-        if en_link and en_link != encat2:
-            logger.info(f"<<lightred>> find en in ioio_ar. ({en_link}) != ({encat2}) ")
-            return False
-        # ---
-        ar_temp = ioio_ar.get("templates", {})
-        for TargetTemp in ar_temp:
-            TargetTemp2 = TargetTemp.replace("قالب:", "")
-            if TargetTemp2 in NO_Templates_ar and "keep" not in sys.argv:
-                logger.info(f"<<lightred>> arcat2:{arcat2} has temp:{TargetTemp2} ")
-                return False
     # ---
     result = do_sql(encat, arcat, us_sql=us_sql, wiki=wiki)
     # ---
