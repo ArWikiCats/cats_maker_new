@@ -3,12 +3,12 @@
 
 """
 import sys
-import time as tttime
+import functools
+import os
+import time
 
 from ..helps import logger
 from . import sql_qu
-
-can_use_sql_db = sql_qu.can_use_sql_db
 
 ns_text_tab_ar = {
     "0": "",
@@ -58,6 +58,18 @@ ns_text_tab_en = {
 }
 
 
+@functools.lru_cache(maxsize=1)
+def GET_SQL() -> bool:
+
+    dir1 = "/mnt/nfs/labstore-secondary-tools-project/"
+    dir2 = "/data/project/"
+
+    if not os.path.isdir(dir1) and not os.path.isdir(dir2) or os.path.isdir("I:/core/bots"):
+        return False
+
+    return True
+
+
 def add_nstext_to_title(title, ns, lang="ar"):
     """Add namespace text to a title based on the provided namespace and
     language.
@@ -96,10 +108,6 @@ def add_nstext_to_title(title, ns, lang="ar"):
         new_title = f"{ns_text}:{title}"
     # ----
     return new_title
-
-
-def GET_SQL():
-    return can_use_sql_db[1]
 
 
 def make_labsdb_dbs_p(wiki):
@@ -162,12 +170,12 @@ def sql_new(queries, wiki="", printqua=False, values=[]):
         logger.info("no GET_SQL()")
         return []
     # ---
-    start = tttime.time()
-    final = tttime.time()
+    start = time.time()
+    final = time.time()
     # ---
-    rows = sql_qu.make_sql_connect(queries, db=dbs_p, host=host, return_dict=True, values=values)
+    rows = sql_qu.make_sql_connect(queries, db=dbs_p, host=host, values=values)
     # ---
-    final = tttime.time()
+    final = time.time()
     # ---
     delta = int(final - start)
     # ---

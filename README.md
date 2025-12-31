@@ -150,11 +150,6 @@ English Category Name
    pip install ArWikiCats
    ```
 
-4. **Configure pywikibot (if not already configured):**
-   ```bash
-   python -m pywikibot -lang:ar -family:wikipedia
-   ```
-
 ### Dependencies
 
 - `wikitextparser>=0.55.7` - Wiki text parsing
@@ -163,7 +158,6 @@ English Category Name
 - `pymysql` - MySQL database connections
 - `jsonlines` - JSONL file handling
 - `sqlite_utils` - SQLite utilities
-- `pywikibot` - MediaWiki API interaction
 - `pytest` - Testing framework
 - `pytest-mock` - Test mocking
 

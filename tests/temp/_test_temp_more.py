@@ -3,7 +3,6 @@ import random
 from pathlib import Path
 
 import pytest
-from pywikibot import data
 
 from src.temp import main_make_temp_no_title
 
