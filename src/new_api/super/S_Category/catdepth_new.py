@@ -71,7 +71,7 @@ def subcatquery(login_bot, title, sitecode=SITECODE, family=FAMILY, **kwargs):
     if get_revids:
         result = bot.get_revids()
     # ---
-    delta = int(time.perf_counter() - start)
+    delta = time.perf_counter() - start
     # ---
     if "printresult" in sys.argv:
         logger.debug(result)
@@ -80,7 +80,7 @@ def subcatquery(login_bot, title, sitecode=SITECODE, family=FAMILY, **kwargs):
         lenpages = bot.get_len_pages()
         # ---
         logger.debug(
-            f"<<lightblue>>catdepth_new.py: find {len(result)} pages({args2['ns']}) in {sitecode}:{title}, depth:{args2['depth']} in {delta} seconds | {lenpages=}"
+            f"<<lightblue>>catdepth_new.py: find {len(result)} pages({args2['ns']}) in {sitecode}:{title}, depth:{args2['depth']} in {delta:.2f} seconds | {lenpages=}"
         )
     # ---
     return result

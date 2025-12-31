@@ -157,29 +157,25 @@ def make_labsdb_dbs_p(wiki):
     return host, dbs_p
 
 
-def sql_new(queries, wiki="", printqua=False, values=[]):
+def sql_new(queries, wiki="", values=[]):
     # ---
     logger.debug(f"wiki_sql.py sql_new wiki '{wiki}'")
     # ---
     host, dbs_p = make_labsdb_dbs_p(wiki)
     # ---
-    if printqua or "printsql" in sys.argv:
-        logger.info(queries)
+    logger.info(queries)
     # ---
     if not GET_SQL():
         logger.info("no GET_SQL()")
         return []
     # ---
     start = time.perf_counter()
-    final = time.perf_counter()
     # ---
     rows = mysql_client.make_sql_connect(queries, db=dbs_p, host=host, values=values)
     # ---
-    final = time.perf_counter()
+    delta = time.perf_counter() - start
     # ---
-    delta = int(final - start)
-    # ---
-    logger.info(f'wiki_sql.py sql_new len(encats) = "{len(rows)}", in {delta} seconds')
+    logger.info(f'wiki_sql.py sql_new len(encats) = "{len(rows)}", in {delta:.2f} seconds')
     # ---
     return rows
 

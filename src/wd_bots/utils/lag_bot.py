@@ -30,7 +30,7 @@ if "maxlag2" in sys.argv:
 FFa_lag = {1: maxlag, 2: maxlag}
 Find_Lag = {}
 Find_Lag_o = {1: True}
-Find_Lag[2] = time.perf_counter()
+Find_Lag[2] = time.time()
 Find_Lag[3] = 0
 
 
@@ -51,7 +51,7 @@ def find_lag(err) -> None:
 
 def make_sleep_def():
     # ---
-    frr = int(time.perf_counter() - Find_Lag[2])
+    frr = int(time.time() - Find_Lag[2])
     # ---
     params = {
         "action": "query",
@@ -65,7 +65,7 @@ def make_sleep_def():
         Find_Lag_o[1] = False
         # ---
         Find_Lag[3] += 1
-        Find_Lag[2] = time.perf_counter()
+        Find_Lag[2] = time.time()
         # ---
         r4fttext = ""
         # ---
@@ -134,7 +134,7 @@ def do_lag():
         # ---
         sleeptime = FFa_lag[1] * 2
         # ---
-        diff = int(time.perf_counter() - Find_Lag[2])
+        diff = int(time.time() - Find_Lag[2])
         # ---
         logger.debug(f" lag = ({FFa_lag[1]}) > 5, {numb=}, {diff=}, {sleeptime=}")
         # ---

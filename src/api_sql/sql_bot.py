@@ -70,7 +70,7 @@ def fetch_arcat_titles(arcatTitle):
     return arcats
 
 
-def Make_sql(queries, wiki="", printqua=False):
+def Make_sql(queries, wiki="") -> list:
     encats = []
     # ---
     start = time.perf_counter()
@@ -83,8 +83,7 @@ def Make_sql(queries, wiki="", printqua=False):
     # ---
     host, dbs_p = wiki_sql.make_labsdb_dbs_p(wiki)
     # ---
-    if printqua:
-        logger.info(queries)
+    logger.info(queries)
     # ---
     start_time = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
     logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {start_time}')
@@ -122,24 +121,25 @@ def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
     # ---
     final_cat = [x for x in encats if x not in arcats]
     # ---
-    delta = int(time.perf_counter() - start)
+    delta = time.perf_counter() - start
     # ---
-    logger.info(f'sql_bot.py: get_exclusive_category_titles len(final_cat) = "{len(final_cat)}", in {delta} seconds')
+    logger.info(f'sql_bot.py: get_exclusive_category_titles len(final_cat) = "{len(final_cat)}", in {delta:.2f} seconds')
     # ---
     return final_cat
 
 
-def fetch_encat_titles(encatTitle):
-    item = encatTitle.replace("category:", "").replace("Category:", "").replace(" ", "_")
-    item = str(encatTitle).replace("[[en:", "").replace("]]", "").replace(" ", "_").replace("Category:", "")
+def fetch_encat_titles(encatTitle: str) -> list:
+    item = str(encatTitle).replace("category:", "").replace("Category:", "").replace(" ", "_")
+    item = item.replace("[[en:", "").replace("]]", "")
     # ---
     item = escape_string(item)
     # ---
-    queries = f"""SELECT /* SLOW_OK */ ll_title , page_namespace  FROM page JOIN categorylinks JOIN langlinks
+    queries = f"""SELECT ll_title , page_namespace  FROM page JOIN categorylinks JOIN langlinks
         WHERE cl_to = "{item}" AND cl_from=page_id AND page_id =ll_from AND ll_lang = "ar"
         GROUP BY ll_title ;"""
     # ---
     encats = Make_sql(queries)
+    # ---
     return encats
 
 
