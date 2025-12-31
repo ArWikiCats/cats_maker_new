@@ -87,7 +87,7 @@ def Make_sql(queries, wiki="", printqua=False):
     TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
     logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {TTime}')
     # ---
-    en_results = make_sql_connect(queries, host=host, db=dbs_p, Return=[])
+    en_results = make_sql_connect(queries, host=host, db=dbs_p) or []
     final = time.time()
     # ---end of sql--------------------------------------------
     for raw in en_results:

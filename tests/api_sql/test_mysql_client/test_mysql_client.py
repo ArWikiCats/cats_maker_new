@@ -34,22 +34,6 @@ def mock_mysql_connection(mocker):
 class TestSqlConnectPymysql:
     """Tests for _sql_connect_pymysql function."""
 
-    def test_returns_default_on_connection_error(self, mocker):
-        """Test that _sql_connect_pymysql returns default value on connection error."""
-        mocker.patch("pymysql.connect", side_effect=Exception("Connection failed"))
-
-        result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=[])
-
-        assert result == []
-
-    def test_returns_custom_default_on_error(self, mocker):
-        """Test that _sql_connect_pymysql returns custom default value on error."""
-        mocker.patch("pymysql.connect", side_effect=Exception("Connection failed"))
-
-        result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["default"])
-
-        assert result == ["default"]
-
     def test_uses_dict_cursor_when_requested(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql uses DictCursor."""
         _, mock_cursor, mock_connect = mock_mysql_connection
@@ -86,24 +70,6 @@ class TestSqlConnectPymysql:
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 
         assert result == [("row1",), ("row2",)]
-
-    def test_returns_default_on_execute_error(self, mock_mysql_connection):
-        """Test that _sql_connect_pymysql returns default on execute error."""
-        _, mock_cursor, _ = mock_mysql_connection
-        mock_cursor.execute.side_effect = Exception("Execute error")
-
-        result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["error"])
-
-        assert result == ["error"]
-
-    def test_returns_default_on_fetchall_error(self, mock_mysql_connection):
-        """Test that _sql_connect_pymysql returns default on fetchall error."""
-        _, mock_cursor, _ = mock_mysql_connection
-        mock_cursor.fetchall.side_effect = Exception("Fetchall error")
-
-        result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["fetch_error"])
-
-        assert result == ["fetch_error"]
 
     def test_sets_charset_to_utf8mb4(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql uses utf8mb4 charset."""

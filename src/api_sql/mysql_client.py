@@ -26,7 +26,7 @@ def load_db_config(db: str, host: str) -> dict[str, Any]:
     }
 
 
-def _sql_connect_pymysql(query: str, db: str = "", host: str = "", Return: list = [], values: tuple = None) -> list:
+def _sql_connect_pymysql(query: str, db: str = "", host: str = "", values: tuple = None) -> list:
     # ---
     logger.debug("start _sql_connect_pymysql:")
     # ---
@@ -43,7 +43,7 @@ def _sql_connect_pymysql(query: str, db: str = "", host: str = "", Return: list 
         connection = pymysql.connect(**DB_CONFIG)
     except Exception as e:
         logger.exception(e)
-        return Return
+        return []
     # ---
     with connection as conn, conn.cursor() as cursor:
         # ---
@@ -53,16 +53,16 @@ def _sql_connect_pymysql(query: str, db: str = "", host: str = "", Return: list 
 
         except Exception as e:
             logger.exception(e)
-            return Return
+            return []
         # ---
-        results = Return
+        results = []
         # ---
         try:
             results = cursor.fetchall()
 
         except Exception as e:
             logger.exception(e)
-            return Return
+            return []
         # ---
         # yield from cursor
         return results
@@ -71,10 +71,10 @@ def _sql_connect_pymysql(query: str, db: str = "", host: str = "", Return: list 
 def decode_value(value: bytes) -> str:
     try:
         value = value.decode("utf-8")  # Assuming UTF-8 encoding
-    except BaseException:
+    except Exception:
         try:
             value = str(value)
-        except BaseException:
+        except Exception:
             return ""
     return value
 
@@ -93,15 +93,15 @@ def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return decoded_rows
 
 
-def make_sql_connect(query, db="", host="", Return=[], values=None):
+def make_sql_connect(query: str, db: str="", host: str="", values=None):
     # ---
     if not query:
         logger.debug("query == ''")
-        return Return
+        return []
     # ---
     logger.debug("<<lightyellow>> newsql::")
     # ---
-    rows = _sql_connect_pymysql(query, db=db, host=host, Return=Return, values=values)
+    rows = _sql_connect_pymysql(query, db=db, host=host, values=values)
     # ---
     rows = decode_bytes_in_list(rows)
     # ---
