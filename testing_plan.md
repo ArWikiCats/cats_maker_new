@@ -112,7 +112,6 @@ tests/
 │   ├── test_mknew.py             # اختبار mknew.py ⭐ الملف الرئيسي
 │   ├── mk_bots/
 │   │   ├── test_filter_en.py
-│   │   └── test_log_catlinks.py
 │   └── utils/
 │       ├── test_check_en.py
 │       └── test_portal_list.py
