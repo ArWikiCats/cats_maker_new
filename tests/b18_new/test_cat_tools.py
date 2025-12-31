@@ -14,6 +14,7 @@ This module tests:
 
 import pytest
 from unittest.mock import MagicMock, patch
+from src.b18_new import cat_tools
 
 
 class TestSubSubFunctions:
@@ -21,7 +22,6 @@ class TestSubSubFunctions:
 
     def test_get_subsub_keys_empty(self):
         """Test get_SubSub_keys returns empty list when SubSub is empty."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -32,7 +32,6 @@ class TestSubSubFunctions:
 
     def test_get_subsub_keys_with_data(self):
         """Test get_SubSub_keys returns list of keys."""
-        from src.b18_new import cat_tools
 
         # Clear and populate SubSub
         cat_tools.SubSub.clear()
@@ -50,7 +49,6 @@ class TestSubSubFunctions:
 
     def test_get_subsub_value_existing_key(self):
         """Test get_SubSub_value returns value for existing key."""
-        from src.b18_new import cat_tools
 
         # Clear and populate SubSub
         cat_tools.SubSub.clear()
@@ -65,7 +63,6 @@ class TestSubSubFunctions:
 
     def test_get_subsub_value_missing_key(self):
         """Test get_SubSub_value returns None for missing key."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -76,7 +73,6 @@ class TestSubSubFunctions:
 
     def test_add_subsub_new_key(self):
         """Test add_SubSub creates new key with value."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -91,7 +87,6 @@ class TestSubSubFunctions:
 
     def test_add_subsub_existing_key(self):
         """Test add_SubSub appends to existing key."""
-        from src.b18_new import cat_tools
 
         # Clear and populate SubSub
         cat_tools.SubSub.clear()
@@ -108,7 +103,6 @@ class TestSubSubFunctions:
 
     def test_add_subsub_multiple_categories(self):
         """Test add_SubSub handles multiple categories."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -124,7 +118,6 @@ class TestSubSubFunctions:
 
     def test_add_subsub_empty_list(self):
         """Test add_SubSub handles empty list."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -190,7 +183,6 @@ class TestWorkInOneCat:
 
     def test_adds_to_subsub_when_no_ar_cat(self, mocker):
         """Test that work_in_one_cat adds to SubSub when no Arabic category."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
@@ -265,7 +257,6 @@ class TestWorkInOneCat:
 
     def test_handles_empty_tabcat(self, mocker):
         """Test that work_in_one_cat handles empty tabcat."""
-        from src.b18_new import cat_tools
 
         # Clear SubSub
         cat_tools.SubSub.clear()
