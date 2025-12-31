@@ -222,26 +222,77 @@ process_catagories("Category:Science", ar_label, num=1, lenth=1)
 
 ## Configuration
 
+Configuration is managed through the `src/config/settings.py` module, which provides dataclass-based settings that can be configured via environment variables or command-line arguments.
+
+### Usage
+
+```python
+from src.config import settings
+
+# Access Wikipedia configuration
+print(settings.wikipedia.ar_code)  # 'ar'
+
+# Access Wikidata configuration
+print(settings.wikidata.endpoint)  # 'https://www.wikidata.org/w/api.php'
+
+# Access Database configuration
+print(settings.database.use_sql)  # True
+
+# Access global settings
+print(settings.range_limit)  # 5
+print(settings.debug)  # False
+```
+
 ### Environment Variables
 
-The project supports configuration through several mechanisms:
+#### Wikipedia Configuration
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| Log level | Set via command line with `DEBUG` | `INFO` |
+| `WIKIPEDIA_AR_CODE` | Arabic Wikipedia language code | `ar` |
+| `WIKIPEDIA_EN_CODE` | English Wikipedia language code | `en` |
+| `WIKIPEDIA_AR_FAMILY` | Arabic Wikipedia family | `wikipedia` |
+| `WIKIPEDIA_EN_FAMILY` | English Wikipedia family | `wikipedia` |
+| `WIKIPEDIA_USER_AGENT` | User agent string for API requests | `Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)` |
+| `WIKIPEDIA_TIMEOUT` | Default timeout for API requests (seconds) | `10` |
 
-### Runtime Configuration
+#### Wikidata Configuration
 
-Configuration is managed through `sys.argv` arguments and internal dictionaries:
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `WIKIDATA_ENDPOINT` | Wikidata API endpoint URL | `https://www.wikidata.org/w/api.php` |
+| `WIKIDATA_SPARQL_ENDPOINT` | SPARQL query endpoint URL | `https://query.wikidata.org/sparql` |
+| `WIKIDATA_TIMEOUT` | Default timeout for Wikidata requests (seconds) | `30` |
+| `WIKIDATA_MAXLAG` | Maximum lag for Wikidata API requests | `5` |
 
-```python
-# In mk_cats/mknew.py
-Range = {1: 5}      # Recursion range limit
-We_Try = {1: True}  # Retry on failure
+#### Database Configuration
 
-# In c18_new/bots/cat_tools_argv.py
-use_sqldb = {1: True}  # Use SQL database
-```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_HOST` | Database host (optional) | `None` |
+| `DATABASE_PORT` | Database port | `3306` |
+| `DATABASE_USE_SQL` | Whether to use SQL database for queries | `True` |
+
+#### Global Settings
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `RANGE_LIMIT` | Maximum number of iterations for category processing | `5` |
+| `DEBUG` | Enable debug mode | `False` |
+| `LOG_LEVEL` | Logging level (DEBUG, INFO, WARNING, ERROR) | `INFO` |
+
+### Command-Line Arguments
+
+Configuration can also be overridden via command-line arguments:
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `-range:<n>` | Set the range limit for processing | `-range:10` |
+| `-debug` or `--debug` | Enable debug mode | `-debug` |
+| `-nosql` | Disable SQL database usage | `-nosql` |
+| `usesql` | Enable SQL database usage | `usesql` |
+| `testwikidata` or `-testwikidata` | Use Wikidata test environment | `testwikidata` |
+| `maxlag2` | Set Wikidata maxlag to 1 | `maxlag2` |
 
 ### Blacklists
 
@@ -263,6 +314,9 @@ cats_maker_new/
 ├── testing_plan.md          # Testing strategy documentation
 │
 ├── src/                     # Source code
+│   ├── config/             # Configuration management
+│   │   └── settings.py     # Centralized settings (dataclass-based)
+│   │
 │   ├── mk_cats/            # Main category creation logic
 │   │   ├── mknew.py        # Core functions (create_categories_from_list)
 │   │   ├── categorytext.py # Text generation for category pages
