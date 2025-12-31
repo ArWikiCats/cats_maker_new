@@ -307,7 +307,7 @@ class TestGlobalSettings:
         """Test settings has default Wikidata config."""
         from src.config import settings
 
-        assert "wikidata.org" in settings.wikidata.endpoint
+        assert settings.wikidata.endpoint == "https://www.wikidata.org/w/api.php"
 
     def test_settings_has_default_database(self):
         """Test settings has default Database config."""
