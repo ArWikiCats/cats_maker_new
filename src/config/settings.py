@@ -18,6 +18,14 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
+def _safe_int(value: str, default: int) -> int:
+    """Safely convert string to int, returning default on failure."""
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+
 @dataclass
 class WikipediaConfig:
     """Configuration for Wikipedia API connections.
@@ -115,7 +123,9 @@ class Settings:
         if os.environ.get("WIKIPEDIA_USER_AGENT"):
             self.wikipedia.user_agent = os.environ["WIKIPEDIA_USER_AGENT"]
         if os.environ.get("WIKIPEDIA_TIMEOUT"):
-            self.wikipedia.default_timeout = int(os.environ["WIKIPEDIA_TIMEOUT"])
+            self.wikipedia.default_timeout = _safe_int(
+                os.environ["WIKIPEDIA_TIMEOUT"], self.wikipedia.default_timeout
+            )
 
         # Wikidata config
         if os.environ.get("WIKIDATA_ENDPOINT"):
@@ -123,21 +133,21 @@ class Settings:
         if os.environ.get("WIKIDATA_SPARQL_ENDPOINT"):
             self.wikidata.sparql_endpoint = os.environ["WIKIDATA_SPARQL_ENDPOINT"]
         if os.environ.get("WIKIDATA_TIMEOUT"):
-            self.wikidata.timeout = int(os.environ["WIKIDATA_TIMEOUT"])
+            self.wikidata.timeout = _safe_int(os.environ["WIKIDATA_TIMEOUT"], self.wikidata.timeout)
         if os.environ.get("WIKIDATA_MAXLAG"):
-            self.wikidata.maxlag = int(os.environ["WIKIDATA_MAXLAG"])
+            self.wikidata.maxlag = _safe_int(os.environ["WIKIDATA_MAXLAG"], self.wikidata.maxlag)
 
         # Database config
         if os.environ.get("DATABASE_HOST"):
             self.database.host = os.environ["DATABASE_HOST"]
         if os.environ.get("DATABASE_PORT"):
-            self.database.port = int(os.environ["DATABASE_PORT"])
+            self.database.port = _safe_int(os.environ["DATABASE_PORT"], self.database.port)
         if os.environ.get("DATABASE_USE_SQL"):
             self.database.use_sql = os.environ["DATABASE_USE_SQL"].lower() in ("true", "1", "yes")
 
         # Global settings
         if os.environ.get("RANGE_LIMIT"):
-            self.range_limit = int(os.environ["RANGE_LIMIT"])
+            self.range_limit = _safe_int(os.environ["RANGE_LIMIT"], self.range_limit)
         if os.environ.get("DEBUG"):
             self.debug = os.environ["DEBUG"].lower() in ("true", "1", "yes")
         if os.environ.get("LOG_LEVEL"):
@@ -150,7 +160,7 @@ class Settings:
 
             # Range limit
             if arg_name == "-range" and value:
-                self.range_limit = int(value)
+                self.range_limit = _safe_int(value, self.range_limit)
 
             # Debug mode
             if arg_name in ("-debug", "--debug"):

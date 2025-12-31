@@ -7,6 +7,40 @@ import sys
 import pytest
 
 
+class TestSafeInt:
+    """Tests for _safe_int helper function."""
+
+    def test_valid_integer_string(self):
+        """Test valid integer string is converted."""
+        from src.config.settings import _safe_int
+
+        assert _safe_int("42", 0) == 42
+
+    def test_invalid_string_returns_default(self):
+        """Test invalid string returns default value."""
+        from src.config.settings import _safe_int
+
+        assert _safe_int("invalid", 10) == 10
+
+    def test_empty_string_returns_default(self):
+        """Test empty string returns default value."""
+        from src.config.settings import _safe_int
+
+        assert _safe_int("", 5) == 5
+
+    def test_none_returns_default(self):
+        """Test None returns default value."""
+        from src.config.settings import _safe_int
+
+        assert _safe_int(None, 15) == 15
+
+    def test_float_string_returns_default(self):
+        """Test float string returns default value."""
+        from src.config.settings import _safe_int
+
+        assert _safe_int("3.14", 20) == 20
+
+
 class TestWikipediaConfig:
     """Tests for WikipediaConfig dataclass."""
 
