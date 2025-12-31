@@ -562,23 +562,28 @@ def test_using_fixtures(sample_category_data, mock_database):
 
 ## 10. التقدم المنجز / Completed Progress
 
-### الاختبارات المكتملة / Completed Tests (360+ new tests added)
+### الاختبارات المكتملة / Completed Tests (793 tests total)
 
 | Module | Test Files | Tests Count | Status |
 |--------|------------|-------------|--------|
-| api_sql | test_wiki_sql.py, test_mysql_client.py | 42 | ✅ |
-| b18_new | test_cat_tools.py | 21 | ✅ |
+| api_sql | test_wiki_sql.py, test_mysql_client.py, test_sql_bot.py | 57 | ✅ |
+| b18_new | test_cat_tools.py, test_cat_tools_enlist.py, test_cat_tools_enlist2.py, test_sql_cat.py | 45 | ✅ |
+| c18_new/bots | test_cat_tools_argv.py, test_english_page_title.py, test_filter_cat.py, test_text_to_temp_bot.py | 85 | ✅ |
+| c18_new/cats_tools | test_ar_from_en.py, test_ar_from_en2.py | 30 | ✅ |
+| c18_new/tools_bots | test_sort_bot.py, test_temp_bot.py | 27 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py, test_jsonl_data.py | 77 | ✅ |
 | integration | test_main_flow.py | 18 | ✅ |
-| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py | 67 | ✅ |
-| mk_cats/utils | test_check_en.py | 10 | ✅ |
+| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py, test_add_bot.py | 80 | ✅ |
+| mk_cats/mk_bots | test_filter_en.py | 23 | ✅ |
+| mk_cats/utils | test_check_en.py, test_portal_list.py | 16 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
-| wd_bots | test_get_bots.py | 29 | ✅ |
-| wiki_api | test_LCN_new.py.py, test_himoBOT2.py | 43 | ✅ |
+| wd_bots | test_get_bots.py, test_to_wd.py, test_wd_sparql_bot.py, test_qs_bot.py, test_wd_desc.py, test_wb_rest_api.py, test_wd_newapi_bot.py, test_wd_login_wrap.py, test_wd_api_bot.py, test_bot_wd.py | 120 | ✅ |
+| wd_bots/utils | test_handle_wd_errors.py, test_lag_bot.py, test_out_json.py | 40 | ✅ |
+| wiki_api | test_LCN_new.py, test_himoBOT2.py, test_sub_cats_bot.py, test_wd_sparql.py | 59 | ✅ |
 | temp | (existing tests) | 96 | ✅ |
 
-**Total Tests: 464 passing (3 skipped/failed new_api tests require network)**
+**Total Tests: 793 passing (4 skipped, 10 deselected for network)**
 
 ### Infrastructure Completed:
 - [x] Fixed root `__init__.py` to handle import errors
@@ -587,10 +592,11 @@ def test_using_fixtures(sample_category_data, mock_database):
 - [x] GitHub Actions workflow for pytest
 - [x] Added integration tests marker to pytest.ini
 - [x] Created comprehensive test coverage for all modules
+- [x] Wrote all TODO tests for remaining 29 test files
 
 ---
 
-**آخر تحديث / Last Updated:** 2025-12-30
-**الحالة / Status:** 🟢 99% Complete - Testing Plan Fully Implemented / خطة الاختبار مكتملة 99%
+**آخر تحديث / Last Updated:** 2025-12-31
+**الحالة / Status:** 🟢 100% Complete - Testing Plan Fully Implemented / خطة الاختبار مكتملة 100%
 
 **ملف مرتبط / Related File:** `refactoring_plan.md` - يحتوي على التفاصيل التقنية وخطة إعادة الهيكلة
