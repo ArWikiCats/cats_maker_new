@@ -8,8 +8,7 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 
 
 """
-from functools import lru_cache
-
+from ..cache import cached
 from ..helps import logger
 from ..wiki_api import submitAPI
 
@@ -60,7 +59,7 @@ def Get_infos_wikidata(params):
     return table
 
 
-@lru_cache(maxsize=5000)
+@cached(ttl=3600, key_prefix="wikidata")
 def Get_Sitelinks_From_wikidata(site, title, ssite="", ids="", props="", add_props=None, return_main_table=False):
     # ---
     sitewiki = site

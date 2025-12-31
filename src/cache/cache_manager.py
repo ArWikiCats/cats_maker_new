@@ -271,6 +271,9 @@ class CacheManager:
         """
 
         def decorator(func: F) -> F:
+            # Store the function name and prefix for cache operations
+            func_prefix = f"{key_prefix}:{func.__name__}" if key_prefix else func.__name__
+
             @wraps(func)
             def wrapper(*args, **kwargs) -> Any:
                 # Generate cache key from function name and arguments
@@ -284,6 +287,19 @@ class CacheManager:
                 if result is not None:
                     self.set(cache_key, result, ttl)
                 return result
+
+            # Add cache_clear method for compatibility with functools.lru_cache
+            def cache_clear() -> None:
+                """Clear cached entries for this function."""
+                self.invalidate(f"{func_prefix}:*")
+
+            # Add cache_info method for compatibility (returns simplified info)
+            def cache_info():
+                """Return cache statistics (simplified version)."""
+                return {"size": self.size(), "maxsize": self.max_size}
+
+            wrapper.cache_clear = cache_clear  # type: ignore
+            wrapper.cache_info = cache_info  # type: ignore
 
             return wrapper  # type: ignore
 

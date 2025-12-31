@@ -347,6 +347,49 @@ class TestCacheManagerDecorator:
         # None results should not be cached, so function called twice
         assert call_count == 2
 
+    def test_cached_decorator_has_cache_clear(self):
+        """Test that cached decorator provides cache_clear method (lru_cache compatibility)."""
+        from src.cache.cache_manager import CacheManager
+
+        cache = CacheManager()
+        call_count = 0
+
+        @cache.cached(ttl=3600, key_prefix="test")
+        def cached_func(x: int) -> int:
+            nonlocal call_count
+            call_count += 1
+            return x * 2
+
+        # First call - caches result
+        result1 = cached_func(5)
+        assert call_count == 1
+
+        # Second call - from cache
+        result2 = cached_func(5)
+        assert call_count == 1
+
+        # Clear cache
+        cached_func.cache_clear()
+
+        # Third call - should execute function again
+        result3 = cached_func(5)
+        assert call_count == 2
+        assert result3 == 10
+
+    def test_cached_decorator_has_cache_info(self):
+        """Test that cached decorator provides cache_info method (lru_cache compatibility)."""
+        from src.cache.cache_manager import CacheManager
+
+        cache = CacheManager()
+
+        @cache.cached(ttl=3600)
+        def cached_func(x: int) -> int:
+            return x * 2
+
+        info = cached_func.cache_info()
+        assert "size" in info
+        assert "maxsize" in info
+
 
 class TestModuleLevelCached:
     """Tests for module-level cached decorator."""
