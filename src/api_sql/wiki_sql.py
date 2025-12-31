@@ -8,7 +8,7 @@ import os
 import time
 
 from ..helps import logger
-from . import sql_qu
+from . import mysql_client
 
 ns_text_tab_ar = {
     "0": "",
@@ -173,7 +173,7 @@ def sql_new(queries, wiki="", printqua=False, values=[]):
     start = time.time()
     final = time.time()
     # ---
-    rows = sql_qu.make_sql_connect(queries, db=dbs_p, host=host, values=values)
+    rows = mysql_client.make_sql_connect(queries, db=dbs_p, host=host, values=values)
     # ---
     final = time.time()
     # ---

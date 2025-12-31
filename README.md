@@ -291,7 +291,7 @@ cats_maker_new/
 │   │
 │   ├── api_sql/            # Database operations
 │   │   ├── wiki_sql.py     # Wiki SQL queries
-│   │   └── sql_qu.py       # Query utilities
+│   │   └── mysql_client.py       # Query utilities
 │   │
 │   ├── helps/              # Helper utilities
 │   │   ├── log.py          # Logging wrapper

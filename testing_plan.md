@@ -59,7 +59,7 @@ def mock_wikidata_api(mocker):
 @pytest.fixture
 def mock_database(mocker):
     """Mock database connections"""
-    return mocker.patch('src.api_sql.sql_qu.make_sql_connect')
+    return mocker.patch('src.api_sql.mysql_client.make_sql_connect')
 ```
 
 ---
@@ -75,7 +75,7 @@ tests/
 ├── api_sql/
 │   ├── __init__.py
 │   ├── test_wiki_sql.py          # اختبار wiki_sql.py
-│   ├── test_sql_qu.py            # اختبار sql_qu.py
+│   ├── test_sql_qu.py            # اختبار mysql_client.py
 │   ├── test_sql_bot.py           # اختبار sql_bot.py
 ├── b18_new/
 │   ├── __init__.py
@@ -508,7 +508,7 @@ def mock_database(mocker):
     mock_conn.cursor.return_value = mock_cursor
 
     mocker.patch(
-        'src.api_sql.sql_qu.make_sql_connect',
+        'src.api_sql.mysql_client.make_sql_connect',
         return_value=mock_conn
     )
 

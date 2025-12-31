@@ -8,7 +8,7 @@ from datetime import datetime
 from pymysql.converters import escape_string
 
 from . import wiki_sql
-from .sql_qu import make_sql_connect
+from .mysql_client import make_sql_connect
 from .wiki_sql import ns_text_tab_ar
 from ..c18_new.log import logger
 
