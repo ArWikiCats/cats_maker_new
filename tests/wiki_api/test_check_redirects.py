@@ -29,3 +29,21 @@ class TestRemoveRedirectPagesReal:
         non_redirects = remove_redirect_pages("en", page_titles)
         assert "يمن" not in non_redirects
         assert "اليمن" in non_redirects
+
+    def test_real_mixed_pages(self):
+        """Test with real mix of valid pages and redirects"""
+        page_titles = ["Wikipedia", "Main Page", "WP:NPOV"]  # WP:NPOV is redirect
+        non_redirects = remove_redirect_pages("en", page_titles)
+        assert "Wikipedia" in non_redirects
+        assert "Main Page" in non_redirects
+
+    def test_real_all_valid(self):
+        """Test with real pages that are all valid (non-redirects)"""
+        page_titles = ["Wikipedia", "Main Page"]
+        non_redirects = remove_redirect_pages("en", page_titles)
+        assert len(non_redirects) == 2
+
+    def test_real_empty_list(self):
+        """Test with empty list on real API"""
+        result = remove_redirect_pages("en", [])
+        assert result == []
