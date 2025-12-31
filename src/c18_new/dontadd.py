@@ -15,6 +15,8 @@ from ..helps import logger
 Dir = Path(__file__).parent.parent.parent
 filename_json = Dir / "textfiles/Dont_add_to_pages.json"
 
+filename_json.parent.mkdir(parents=True, exist_ok=True)
+
 statgroup = stat.S_IRWXU | stat.S_IRWXG
 
 
