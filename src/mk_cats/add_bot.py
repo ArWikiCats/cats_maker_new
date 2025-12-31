@@ -2,37 +2,31 @@
 """
 
 """
+import functools
 import time
-
+from typing import Literal
 from ..c18_new.bots.text_to_temp_bot import add_text_to_template
 from ..c18_new.dontadd import Dont_add_to_pages_def
 from ..c18_new.tools_bots.sort_bot import sort_categories
 from ..helps import logger
-from ..new_api.page import MainPage
-
-Dont_add_to_pages = Dont_add_to_pages_def()
+from ..new_api.page import MainPage, SuperMainPage
 
 
-def add_to_page(page_title, arcat, callback=None):
-    # ---
-    start = time.perf_counter()
-    # ---
-    logger.info(f"add_to_page page_title:{page_title} , cat:{arcat}")
-    # ---
-    if page_title in Dont_add_to_pages:
-        logger.info(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
-        return False
-    # ---
-    arcat = arcat.replace("_", " ")
-    final_categories = f"\n[[{arcat}]]"
-    # ---
-    # susu = " بوت: أضاف 1 تصنيف"
-    # ---
-    susu = f"بوت [[مستخدم:Mr.Ibrahembot/التصانیف المعادلة|التصانيف المعادلة]]: +([[{arcat}]])"
+def add_text_to_articles(final_categories, newtext):
+    if newtext.find("[[تصنيف:") != -1:
+        num = newtext.find("[[تصنيف:")
+        newtext = f"{(newtext[:num] + final_categories)}\n{newtext[num:]}"
+        # ---
+        if newtext.find(final_categories.strip()) == -1:
+            newtext = newtext + final_categories
+    return newtext
+
+
+@functools.lru_cache(maxsize=1024)
+def _get_page(page_title) -> SuperMainPage | Literal[False]:
     # ---
     page = MainPage(page_title, "ar")
     text = page.get_text()
-    ns = page.namespace()
     # ---
     if not text:
         logger.info(' text = "" ')
@@ -52,6 +46,35 @@ def add_to_page(page_title, arcat, callback=None):
     if not page_edit:
         return False
     # ---
+    return page
+
+
+def add_to_page(page_title, arcat):
+    # ---
+    Dont_add_to_pages = Dont_add_to_pages_def()
+    # ---
+    logger.info(f"add_to_page page_title:{page_title} , cat:{arcat}")
+    # ---
+    start = time.perf_counter()
+    # ---
+    if page_title in Dont_add_to_pages:
+        logger.info(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
+        return False
+    # ---
+    arcat = arcat.replace("_", " ")
+    final_categories = f"\n[[{arcat}]]"
+    # ---
+    susu = f"بوت [[مستخدم:Mr.Ibrahembot/التصانیف المعادلة|التصانيف المعادلة]]: +([[{arcat}]])"
+    # ---
+    page = _get_page(page_title, "ar")
+    # ---
+    if not page:
+        logger.info(f"<<lightred>> _get_page() failed for {page_title=}, {arcat=}")
+        return False
+    # ---
+    text = page.get_text()
+    ns = page.namespace()
+    # ---
     categories = page.get_categories(with_hidden=False)
     # ---
     if text.find(f"[[{arcat}]]") != -1 or text.find(f"[[{arcat}|") != -1:
@@ -60,23 +83,13 @@ def add_to_page(page_title, arcat, callback=None):
     # ---
     newtext = text
     # ---
-    # إضافة التصانيف إلى القوالب
     if ns == 10:
         newtext = add_text_to_template(newtext, final_categories, page_title)
-    # ---
-    # إضافة التصانيف إلى المقالات
     else:
-        if newtext.find("[[تصنيف:") != -1:
-            num = newtext.find("[[تصنيف:")
-            newtext = f"{(newtext[:num] + final_categories)}\n{newtext[num:]}"
-            # ---
-            if newtext.find(final_categories.strip()) == -1:
-                newtext = newtext + final_categories
+        newtext = add_text_to_articles(final_categories, newtext)
     # ---
     if newtext == text:
         return False
-    # ---
-    # newtext = cosmetic_change_bot.do_cos_meticchanges(newtext, False, title=page_title, page_ns=ns)
     # ---
     newtext = sort_categories(newtext, page_title)
     # ---
@@ -85,12 +98,6 @@ def add_to_page(page_title, arcat, callback=None):
     if not save:
         logger.error(f"<<lightred>> page.save() failed for {page_title=}, {arcat=}")
         return False
-    # ---
-    if callback:
-        try:
-            callback(page_title)
-        except Exception as e:
-            logger.info(f"<<lightred>> Error in callback: {e}")
     # ---
     delta = time.perf_counter() - start
     logger.info(f"add_bot.py done in {delta:.2f} seconds")
@@ -105,7 +112,14 @@ def add_to_final_list(final_list, title, callback=None):
     if not title.startswith("تصنيف:"):
         title = f"تصنيف:{title}"
     # ---
-    if final_list:
-        for n, page in enumerate(final_list, start=1):
-            logger.info(f"<<yellow>> add_to_final_list cat:{title} page:{page} n:{n}/{len(final_list)}")
-            add_to_page(page, title, callback=callback)
+    if not final_list:
+        return
+    # ---
+    for n, page in enumerate(final_list, start=1):
+        logger.info(f"<<yellow>> add_to_final_list cat:{title} page:{page} n:{n}/{len(final_list)}")
+        save = add_to_page(page, title)
+        if save and callback:
+            try:
+                callback(title)
+            except Exception as e:
+                logger.info(f"<<lightred>> Error in callback: {e}")

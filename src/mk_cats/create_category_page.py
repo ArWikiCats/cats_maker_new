@@ -5,20 +5,11 @@
 
 """
 import functools
-from typing import Literal
 from ..helps import logger
 from ..utils.skip_cats import skip_encats
 from ..new_api.page import MainPage, SuperMainPage
 from ..temp import main_make_temp_no_title
-
 from . import categorytext
-
-find_title = [
-    "إسرائيل",
-    "إرهاب",
-]
-dump = {}
-dump["new"] = []
 
 
 @functools.lru_cache

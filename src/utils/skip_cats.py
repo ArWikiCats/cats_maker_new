@@ -7,6 +7,7 @@ import sys
 skip_encats = [
     "Category:Invasions of Israel",
 ]
+
 global_False_entemps = [
     "Hidden category",
     "Maintenance category",  # تصنيف صيانة

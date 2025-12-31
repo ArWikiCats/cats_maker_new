@@ -8,24 +8,10 @@ import pytest
 
 from src.mk_cats.create_category_page import (
     add_text_to_cat,
-    find_title,
     make_category,
     new_category,
 )
 from src.utils.skip_cats import skip_encats
-
-
-class TestFindTitle:
-    """Tests for find_title list"""
-
-    def test_is_list(self):
-        """Test that find_title is a list"""
-        assert isinstance(find_title, list)
-
-    def test_contains_strings(self):
-        """Test that find_title contains strings"""
-        for item in find_title:
-            assert isinstance(item, str)
 
 
 class TestMakeCategory:

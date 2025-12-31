@@ -2,6 +2,7 @@
 """
 
 """
+import functools
 import os
 import json
 import stat
@@ -119,6 +120,7 @@ def get_pages_nocat():
     return data
 
 
+@functools.lru_cache(maxsize=1)
 def Dont_add_to_pages_def():
     data = load_json(filename_json)
     date = ""
