@@ -66,17 +66,15 @@ class TestFilterCat:
     """Tests for filter_cat function"""
 
     def test_returns_false_for_disambiguation(self):
-        """Test that Disambiguation categories return False"""
-        # BBlcak items are checked case-insensitively (cat is lowercased)
-        # but the blacklist items are checked as-is, so "Disambiguation" 
-        # matches "disambiguation" when cat is lowercased
-        # Actually the code does cat.lower().find(x) so it checks if
-        # the blacklist item appears in the lowercased cat
+        """Test that Disambiguation categories with exact case match return False.
+        
+        The blacklist check uses cat.lower().find(x) where x is the original
+        blacklist item (not lowercased). So "Disambiguation" won't match
+        "disambiguation" in the lowercased category string.
+        """
         result = filter_cat("Category:Disambiguation pages")
-        # "Disambiguation" is in BBlcak, but "disambiguation" in "category:disambiguation pages" 
-        # won't match "Disambiguation" since find is case-sensitive
-        # So this actually returns True unless the blacklist items are also lowercased
-        assert result is True  # Actual behavior - blacklist items aren't lowercased
+        # Blacklist item "Disambiguation" doesn't match lowercase "disambiguation"
+        assert result is True
 
     def test_returns_false_for_wikiproject(self):
         """Test that WikiProject categories return False"""
@@ -109,11 +107,13 @@ class TestFilterCat:
         assert result is True
 
     def test_case_insensitive_blacklist(self):
-        """Test that blacklist matching is case sensitive for BBlcak items"""
-        # The code uses cat.lower().find(x) where x is the original BBlcak item
-        # So "Disambiguation" won't match "disambiguation" in lowercased cat
+        """Test blacklist matching behavior with different cases.
+        
+        The code uses cat.lower().find(x) where x is not lowercased,
+        so blacklist matching is effectively case-sensitive.
+        """
         result = filter_cat("DISAMBIGUATION pages")
-        # Returns True because "Disambiguation" != "disambiguation"
+        # "Disambiguation" in BBlcak won't match "disambiguation" (lowercased)
         assert result is True
 
     def test_returns_false_for_month_year_pattern(self):
