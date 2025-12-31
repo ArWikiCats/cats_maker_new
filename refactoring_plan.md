@@ -78,11 +78,13 @@ create_categories_from_list(liste, uselabs, callback)
                 │       add_SubSub(en_cats, new_cat)
                 │       │   └─ Track subcategories
                 │       ↓
-                │       make_ar_list_newcat2(ar_title, en_title)
-                │       │   └─ Get members from new category
-                │       ↓
-                │       to_wd.Log_to_wikidata(ar_title, en_title, qid)
-                │           └─ Update Wikidata with sitelink
+                │       validate_categories_for_new_cat(ar_title, en_title)
+                │           ↓
+                │           make_ar_list_newcat2(ar_title, en_title)
+                │               │   └─ Get members from new category
+                │               ↓
+                │               to_wd.Log_to_wikidata(ar_title, en_title, qid)
+                │               └─ Update Wikidata with sitelink
                 │
                 └─ جمع النتائج: enriched_titles.extend(...)
 ```

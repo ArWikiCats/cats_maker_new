@@ -87,20 +87,15 @@ tests/
 ├── c18_new/
 │   ├── __init__.py
 │   ├── test_cat_tools2.py        # اختبار cat_tools2.py
+│   ├── test_dontadd.py           # اختبار dontadd.py
 │   ├── bots/
 │   │   ├── test_cat_tools_argv.py
 │   │   ├── test_english_page_title.py
 │   │   ├── test_filter_cat.py
 │   │   └── test_text_to_temp_bot.py
-│   ├── bots_helps/
-│   │   ├── test_dontadd.py
-│   │   └── test_funcs.py
 │   ├── cats_tools/
 │   │   ├── test_ar_from_en.py
 │   │   ├── test_ar_from_en2.py
-│   │   └── test_en_link_bot.py
-│   ├── network_calls/
-│   │   └── test_sub_cats_bot.py
 │   └── tools_bots/
 │       ├── test_encat_like.py
 │       ├── test_sort_bot.py
@@ -151,8 +146,9 @@ tests/
 └── wiki_api/
     ├── __init__.py
     ├── test_himoBOT2.py          # اختبار himoBOT2.py
-    └── test_wd_sparql.py         # اختبار wd_sparql.py
+    ├── test_wd_sparql.py         # اختبار wd_sparql.py
 │   ├── test_LCN_new.py           # اختبار LCN_new.py
+│   └── test_sub_cats_bot.py
 ```
 
 ---

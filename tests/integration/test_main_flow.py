@@ -54,6 +54,10 @@ class TestMainFlowIntegration:
         # Mock to_wd.Log_to_wikidata
         mock_log_wd = mocker.patch("src.wd_bots.to_wd.Log_to_wikidata")
 
+        # Mock validate_categories_for_new_cat
+        mock_validate = mocker.patch("src.b18_new.sql_cat_checker.validate_categories_for_new_cat")
+        mock_validate.return_value = []
+
         # Mock make_ar_list_newcat2
         mock_make_ar_list = mocker.patch("src.b18_new.sql_cat.make_ar_list_newcat2")
         mock_make_ar_list.return_value = []
@@ -69,6 +73,7 @@ class TestMainFlowIntegration:
             "add_final": mock_add_final,
             "log_wd": mock_log_wd,
             "make_ar_list": mock_make_ar_list,
+            "validate": mock_validate,
         }
 
     @pytest.fixture

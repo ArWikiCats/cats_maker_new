@@ -116,15 +116,15 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
         if gent_sasa:
             for p_w in gent_sasa:
                 # ---
-                fapagetitle = False
+                arpagetitle = False
                 # if p_w in gent_sasa:
                 # if (p_w in gent_sasa) and ('langlinks' in gent_sasa[p_w]) and ("ar" in gent_sasa[p_w]):
                 logger.debug(f'find "{p_w}" page_work in gent_sasa ')
                 logger.debug(gent_sasa[p_w])
                 if ("langlinks" in gent_sasa[p_w]) and ("ar" in gent_sasa[p_w]["langlinks"]):
-                    fapagetitle = gent_sasa[p_w]["langlinks"]["ar"]
+                    arpagetitle = gent_sasa[p_w]["langlinks"]["ar"]
                     # logger.debug(f'<<lightgreen>> find ar link for "{p_w}" :' )
-                    logger.debug(f'find "{p_w}" page_work in gent_sasa fapagetitle: {fapagetitle}')
+                    logger.debug(f'find "{p_w}" page_work in gent_sasa arpagetitle: {arpagetitle}')
                     logger.debug(gent_sasa[p_w]["langlinks"]["ar"])
                 else:
                     tubb22 = (p_w, EEn_site["code"], "ar", "en_links")
@@ -135,17 +135,13 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
                                 p_w, EEn_site["code"], get_cache_L_C_N(tubb22)
                             )
                         )
-                        fapagetitle = get_cache_L_C_N(tubb22)
-                    # ---
-                # elif len(listenpageTitle) < 10 :
-                # logger.debug(f'<<lightred>> Cant find "{p_w}" page_work in gent_sasa ' )
-                # fapagetitle = english_page_link(p_w, EEn_site['code'], AAr_site['code'])
-                # ---
-                if fapagetitle is False:
-                    logger.debug("fapagetitle is False")
+                        arpagetitle = get_cache_L_C_N(tubb22)
+
+                if arpagetitle is False:
+                    logger.debug("arpagetitle is False")
                 else:
-                    logger.debug("<<lightblue>>Adding " + fapagetitle + " to fapage lists " + p_w + "<<default>>")
-                    listenpageTitle.append(fapagetitle)
+                    logger.debug("<<lightblue>>Adding " + arpagetitle + " to fapage lists " + p_w + "<<default>>")
+                    listenpageTitle.append(arpagetitle)
         # ---
     # if not listenpageTitle:
     if len(listenpageTitle) == 0:
