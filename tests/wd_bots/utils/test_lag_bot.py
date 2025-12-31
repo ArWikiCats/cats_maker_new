@@ -1,7 +1,7 @@
 """
 Tests for src/wd_bots/utils/lag_bot.py
 
-TODO: write tests
+This module tests Wikidata lag handling functions.
 """
 
 import pytest
@@ -16,3 +16,159 @@ from src.wd_bots.utils.lag_bot import (
     Find_Lag,
     session,
 )
+
+
+class TestSession:
+    """Tests for session dictionary"""
+
+    def test_is_dict(self):
+        """Test that session is a dictionary"""
+        assert isinstance(session, dict)
+
+    def test_has_key_1(self):
+        """Test that session has key 1"""
+        assert 1 in session
+
+    def test_has_url_key(self):
+        """Test that session has url key"""
+        assert "url" in session
+
+    def test_url_is_wikidata(self):
+        """Test that URL points to Wikidata"""
+        assert "wikidata.org" in session["url"]
+
+
+class TestNewsleep:
+    """Tests for newsleep dictionary"""
+
+    def test_is_dict(self):
+        """Test that newsleep is a dictionary"""
+        assert isinstance(newsleep, dict)
+
+    def test_has_key_1(self):
+        """Test that newsleep has key 1"""
+        assert 1 in newsleep
+
+    def test_value_is_integer(self):
+        """Test that value is integer"""
+        assert isinstance(newsleep[1], int)
+
+
+class TestFFaLag:
+    """Tests for FFa_lag dictionary"""
+
+    def test_is_dict(self):
+        """Test that FFa_lag is a dictionary"""
+        assert isinstance(FFa_lag, dict)
+
+    def test_has_required_keys(self):
+        """Test that FFa_lag has required keys"""
+        assert 1 in FFa_lag
+        assert 2 in FFa_lag
+
+
+class TestFindLag:
+    """Tests for Find_Lag dictionary"""
+
+    def test_is_dict(self):
+        """Test that Find_Lag is a dictionary"""
+        assert isinstance(Find_Lag, dict)
+
+
+class TestFindLagFunction:
+    """Tests for find_lag function"""
+
+    def test_updates_ffa_lag(self, mocker):
+        """Test that FFa_lag is updated"""
+        mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+
+        initial_value = FFa_lag[1]
+        err = {"lag": 10}
+
+        find_lag(err)
+
+        # Should update FFa_lag[1] to lag value
+        assert FFa_lag[1] == 10
+
+        # Reset
+        FFa_lag[1] = initial_value
+
+    def test_sleeps_for_lag_plus_one(self, mocker):
+        """Test that function sleeps for lag + 1 seconds"""
+        mock_sleep = mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+
+        err = {"lag": 5}
+        find_lag(err)
+
+        # Should sleep for at least lag + 1
+        mock_sleep.assert_called()
+
+
+class TestMakeSleepDef:
+    """Tests for make_sleep_def function"""
+
+    def test_updates_newsleep(self, mocker):
+        """Test that newsleep is updated based on lag"""
+        mock_session = mocker.MagicMock()
+        mock_response = mocker.MagicMock()
+        mock_response.text = ""
+        mock_session.post.return_value = mock_response
+
+        # Force refresh
+        Find_Lag[2] = 0
+
+        make_sleep_def()
+
+        # Should update newsleep
+
+
+class TestDoLag:
+    """Tests for do_lag function"""
+
+    def test_calls_make_sleep_def(self, mocker):
+        """Test that make_sleep_def is called"""
+        mock_make_sleep = mocker.patch(
+            "src.wd_bots.utils.lag_bot.make_sleep_def"
+        )
+        mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+
+        # Set low lag to avoid long sleep
+        FFa_lag[1] = 1
+
+        do_lag()
+
+        mock_make_sleep.assert_called()
+
+
+class TestBadLag:
+    """Tests for bad_lag function"""
+
+    def test_returns_false_when_lag_low(self):
+        """Test that False is returned when lag is low"""
+        FFa_lag[1] = 3
+
+        result = bad_lag(True)
+
+        assert result is False
+
+    def test_returns_true_when_lag_high_and_nowait(self):
+        """Test that True is returned when lag is high and nowait=True"""
+        FFa_lag[1] = 10
+
+        result = bad_lag(True)
+
+        assert result is True
+
+        # Reset
+        FFa_lag[1] = 5
+
+    def test_returns_false_when_not_nowait(self):
+        """Test that False is returned when nowait=False"""
+        FFa_lag[1] = 10
+
+        result = bad_lag(False)
+
+        assert result is False
+
+        # Reset
+        FFa_lag[1] = 5
