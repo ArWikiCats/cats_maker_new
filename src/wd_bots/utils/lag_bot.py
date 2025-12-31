@@ -11,21 +11,17 @@ import time
 import requests
 
 from ...helps import logger
+from ...config import settings
 
 # ---
 session = {1: None}
 # ---
-if "testwikidata" in sys.argv:
-    session["url"] = "https://test.wikidata.org/w/api.php"
-else:
-    session["url"] = "https://www.wikidata.org/w/api.php"
+# Use wikidata endpoint from centralized config
+session["url"] = settings.wikidata.endpoint
 # ---
 newsleep = {1: 1}
 # ---
-maxlag = 5  # "3"
-# ---
-if "maxlag2" in sys.argv:
-    maxlag = 1
+maxlag = settings.wikidata.maxlag
 # ---
 FFa_lag = {1: maxlag, 2: maxlag}
 Find_Lag = {}
@@ -71,7 +67,7 @@ def make_sleep_def():
         # ---
         if not session[1]:
             session[1] = requests.session()
-            headers = {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
+            headers = {"User-Agent": settings.wikipedia.user_agent}
             session[1].headers.update(headers)
         # ---
         try:

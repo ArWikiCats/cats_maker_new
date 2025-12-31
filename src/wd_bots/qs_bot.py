@@ -14,6 +14,7 @@ import requests
 
 from ..new_api.useraccount import qs_token, qs_tokenbot
 from .utils import logger
+from ..config import settings
 
 Dir = Path(__file__).parent.parent
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
@@ -22,9 +23,7 @@ menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
 @functools.lru_cache(maxsize=1)
 def _load_session() -> requests.Session:
     Session = requests.Session()
-    Session.headers.update(
-        {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
-    )
+    Session.headers.update({"User-Agent": settings.wikipedia.user_agent})
     return Session
 
 

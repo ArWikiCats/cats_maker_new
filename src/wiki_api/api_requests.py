@@ -6,14 +6,13 @@ import sys
 from urllib.parse import urlencode
 import requests
 from ..helps import logger
+from ..config import settings
 
 
 @functools.lru_cache(maxsize=1)
 def _load_session() -> requests.Session:
     Session = requests.Session()
-    Session.headers.update(
-        {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
-    )
+    Session.headers.update({"User-Agent": settings.wikipedia.user_agent})
     return Session
 
 
@@ -49,7 +48,7 @@ def submitAPI(params, Code, family, printurl=False, **kwargs):
     # ---
     json1 = {}
     try:
-        r22 = Session.post(mainurl, data=params, timeout=10)
+        r22 = Session.post(mainurl, data=params, timeout=settings.wikipedia.default_timeout)
 
     except requests.exceptions.ReadTimeout:
         logger.debug(f"ReadTimeout: {mainurl}")
