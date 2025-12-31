@@ -11,7 +11,9 @@ from .sql_cat_checker import validate_categories_for_new_cat
 pages_in_arcat_toMake = {}
 
 
-def extract_fan_page_titles(enpageTitle):
+def extract_fan_page_titles(enpageTitle) -> list:
+    fapages = []
+
     if GET_SQL() and use_sqldb[1]:
         cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
         fapages = get_exclusive_category_titles(cat2, "") or []
@@ -20,7 +22,7 @@ def extract_fan_page_titles(enpageTitle):
     return fapages
 
 
-def get_listenpageTitle(artitle, enpageTitle1):
+def get_listenpageTitle(artitle, enpageTitle1) -> list[str]:
     # ---
     enpageTitle = enpageTitle1.strip()
     # ---
