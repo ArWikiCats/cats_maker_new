@@ -7,6 +7,7 @@ This module tests the category skip lists and template blacklists.
 import pytest
 
 from src.utils.skip_cats import (
+    False_entemps_line_to_sql,
     NO_Templates_lower,
     global_False_entemps,
     skip_encats,

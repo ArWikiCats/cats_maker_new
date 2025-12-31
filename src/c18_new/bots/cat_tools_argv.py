@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """
-from ..bots.cat_tools_argv import AAr_site, EEn_site, FR_site, Use_Labels, use_sqldb, Make_New_Cat
 """
 import sys
 

@@ -8,7 +8,10 @@ import pytest
 
 from src.api_sql.wiki_sql import (
     add_nstext_to_title,
+    GET_SQL,
     make_labsdb_dbs_p,
+    sql_new,
+    sql_new_title_ns,
     ns_text_tab_ar,
     ns_text_tab_en,
 )

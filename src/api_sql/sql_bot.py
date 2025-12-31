@@ -8,7 +8,7 @@ from datetime import datetime
 from pymysql.converters import escape_string
 
 from . import wiki_sql
-from .sql_qu import make_sql_connect
+from .mysql_client import make_sql_connect
 from .wiki_sql import ns_text_tab_ar
 from ..c18_new.log import logger
 
@@ -45,7 +45,7 @@ def MySQLdbar(arcatTitle):
     # ---
     host, dbs_p = wiki_sql.make_labsdb_dbs_p("ar")
     # ---
-    ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host, Return=[], return_dict=True)
+    ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host) or []
     # ---
     if not ar_results or len(ar_results) == 0:
         return arcats
@@ -87,7 +87,7 @@ def Make_sql(queries, wiki="", printqua=False):
     TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
     logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {TTime}')
     # ---
-    en_results = make_sql_connect(queries, host=host, db=dbs_p, Return=[])
+    en_results = make_sql_connect(queries, host=host, db=dbs_p) or []
     final = time.time()
     # ---end of sql--------------------------------------------
     for raw in en_results:
