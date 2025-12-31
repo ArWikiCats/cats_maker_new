@@ -8,6 +8,7 @@ import pytest
 
 from src.wiki_api.check_redirects import (
     _load_new_api,
+    load_non_redirects,
     remove_redirect_pages,
 )
 
@@ -42,175 +43,217 @@ class TestLoadNewApi:
         assert mock_new_api_class.call_count == 4
 
 
-class TestRemoveRedirectPages:
-    """Tests for remove_redirect_pages function"""
-    def test_removes_redirect_pages(self, mocker):
-        """Test that redirect pages are NOT removed (current implementation quirk)"""
-        # Note: The current implementation has a bug where redirects are not filtered
-        # because "redirect" is truthy and the condition is `v and x != "redirect"`
-        # rather than `v is True`
+class TestLoadNonRedirects:
+    """Tests for load_non_redirects helper function"""
+
+    def test_returns_non_redirect_pages(self, mocker):
+        """Test that load_non_redirects returns only non-redirect pages"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
             "Page1": True,
-            "Page2": "redirect",
-            "Page3": True,
-            "Page4": "redirect",
+            "Page2": True,
+            "redirect": False,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3", "Page4"])
+        result = load_non_redirects("en", ["Page1", "Page2", "Page3"])
 
-        # Current behavior: redirects are NOT filtered out
-        assert result == ["Page1", "Page2", "Page3", "Page4"]
+        assert result == ["Page1", "Page2"]
+        mock_api.Find_pages_exists_or_not.assert_called_once_with(
+            ["Page1", "Page2", "Page3"], get_redirect=True
+        )
 
-    def test_removes_missing_pages(self, mocker):
-        """Test that missing pages (False value) are removed from the list"""
+    def test_filters_out_redirect_key(self, mocker):
+        """Test that 'redirect' key is filtered out from results"""
+        mock_api = mocker.MagicMock()
+        mock_api.Find_pages_exists_or_not.return_value = {
+            "Page1": True,
+            "redirect": True,
+        }
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+
+        result = load_non_redirects("en", ["Page1"])
+
+        assert "redirect" not in result
+        assert result == ["Page1"]
+
+    def test_filters_out_false_values(self, mocker):
+        """Test that pages with False values are filtered out"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
             "Page1": True,
             "Page2": False,
             "Page3": True,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
+        result = load_non_redirects("en", ["Page1", "Page2", "Page3"])
 
         assert result == ["Page1", "Page3"]
 
-    def test_handles_empty_list(self, mocker):
-        """Test that empty list is handled correctly"""
+    def test_handles_empty_input(self, mocker):
+        """Test that load_non_redirects handles empty input list"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {}
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
-        result = remove_redirect_pages("en", [])
+        result = load_non_redirects("en", [])
 
         assert result == []
+        mock_api.Find_pages_exists_or_not.assert_called_once_with([], get_redirect=True)
 
     def test_handles_all_redirects(self, mocker):
-        """Test when all pages are redirects"""
+        """Test that load_non_redirects returns empty list when all pages are redirects"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
-            "Page1": "redirect",
-            "Page2": "redirect",
-            "Page3": "redirect",
+            "Page1": False,
+            "Page2": False,
+            "redirect": True,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
+        result = load_non_redirects("en", ["Page1", "Page2"])
 
         assert result == []
 
-    def test_handles_all_valid_pages(self, mocker):
-        """Test when all pages are valid (non-redirects)"""
-        mock_api = mocker.MagicMock()
-        mock_api.Find_pages_exists_or_not.return_value = {
-            "Page1": True,
-            "Page2": True,
-            "Page3": True,
-        }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
-
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
-
-        assert result == ["Page1", "Page2", "Page3"]
-
-    def test_calls_api_with_get_redirect_true(self, mocker):
-        """Test that Find_pages_exists_or_not is called with get_redirect=True"""
-        mock_api = mocker.MagicMock()
-        mock_api.Find_pages_exists_or_not.return_value = {}
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
-
-        remove_redirect_pages("en", ["Page1", "Page2"])
-
-        mock_api.Find_pages_exists_or_not.assert_called_once_with(["Page1", "Page2"], get_redirect=True)
-
     def test_uses_correct_language(self, mocker):
-        """Test that correct language is passed to _load_new_api"""
+        """Test that load_non_redirects uses the correct language code"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {}
-        mock_load_api = mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mock_new_api_class = mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
-        remove_redirect_pages("ar", ["صفحة1", "صفحة2"])
+        load_non_redirects("ar", ["Page1"])
 
-        mock_load_api.assert_called_once_with("ar")
+        mock_new_api_class.assert_called_once_with("ar", family="wikipedia")
 
-    def test_logs_removed_count(self, mocker):
-        """Test that the function logs the number of removed pages"""
+
+class TestRemoveRedirectPages:
+    """Tests for remove_redirect_pages function"""
+
+    def test_returns_non_redirect_pages(self, mocker):
+        """Test that remove_redirect_pages returns only non-redirect pages"""
+        mock_api = mocker.MagicMock()
+        mock_api.Find_pages_exists_or_not.return_value = {
+            "Science": True,
+            "Mathematics": True,
+            "redirect": False,
+        }
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.logger")
+
+        result = remove_redirect_pages("en", ["Science", "Mathematics", "Physics"])
+
+        assert result == ["Science", "Mathematics"]
+
+    def test_logs_removal_count(self, mocker):
+        """Test that remove_redirect_pages logs the number of removed redirects"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
             "Page1": True,
-            "Page2": "redirect",
-            "Page3": False,
+            "Page2": False,
+            "Page3": True,
+            "redirect": True,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
         mock_logger = mocker.patch("src.wiki_api.check_redirects.logger")
 
         result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
 
-        # Verify logging was called
+        # 3 input pages - 2 non-redirects = 1 removed
         mock_logger.info.assert_called_once()
-        # Check that the log message contains information about removed pages (2 removed)
-        log_message = mock_logger.info.call_args[0][0]
-        assert "2" in log_message or "Removed" in log_message
+        call_args = mock_logger.info.call_args[0][0]
+        assert "1" in call_args
+        assert "redirect" in call_args.lower()
 
-    def test_preserves_order(self, mocker):
-        """Test that the order of non-redirect pages is preserved"""
+    def test_logs_zero_removals(self, mocker):
+        """Test that remove_redirect_pages logs correctly when no redirects are removed"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
             "Page1": True,
-            "Page2": "redirect",
-            "Page3": True,
-            "Page4": "redirect",
-            "Page5": True,
+            "Page2": True,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mock_logger = mocker.patch("src.wiki_api.check_redirects.logger")
 
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3", "Page4", "Page5"])
+        result = remove_redirect_pages("en", ["Page1", "Page2"])
 
-        assert result == ["Page1", "Page3", "Page5"]
+        # 2 input pages - 2 non-redirects = 0 removed
+        mock_logger.info.assert_called_once()
+        call_args = mock_logger.info.call_args[0][0]
+        assert "0" in call_args
 
-    def test_handles_mixed_true_and_redirect_values(self, mocker):
-        """Test handling of mixed True and 'redirect' values"""
-        mock_api = mocker.MagicMock()
-        mock_api.Find_pages_exists_or_not.return_value = {
-            "ExistingPage": True,
-            "RedirectPage": "redirect",
-            "MissingPage": False,
-            "AnotherExisting": True,
-        }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
-
-        result = remove_redirect_pages("en", ["ExistingPage", "RedirectPage", "MissingPage", "AnotherExisting"])
-
-        assert len(result) == 2
-        assert "ExistingPage" in result
-        assert "AnotherExisting" in result
-        assert "RedirectPage" not in result
-        assert "MissingPage" not in result
-
-    def test_handles_api_with_no_results(self, mocker):
-        """Test when API returns no results for given pages"""
+    def test_handles_empty_input(self, mocker):
+        """Test that remove_redirect_pages handles empty input list"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {}
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mock_logger = mocker.patch("src.wiki_api.check_redirects.logger")
 
-        result = remove_redirect_pages("en", ["NonexistentPage1", "NonexistentPage2"])
+        result = remove_redirect_pages("en", [])
 
         assert result == []
+        mock_logger.info.assert_called_once()
 
-    def test_integration_with_real_page_titles(self, mocker):
-        """Test with realistic Wikipedia page title patterns"""
+    def test_handles_all_redirects(self, mocker):
+        """Test that remove_redirect_pages handles case where all pages are redirects"""
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
-            "Category:Science": True,
-            "Category:Math": "redirect",
-            "Category:Physics": True,
-            "Category:Chemistry": False,
+            "Page1": False,
+            "Page2": False,
+            "Page3": False,
+            "redirect": True,
         }
-        mocker.patch("src.wiki_api.check_redirects._load_new_api", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mock_logger = mocker.patch("src.wiki_api.check_redirects.logger")
 
-        result = remove_redirect_pages("en", ["Category:Science", "Category:Math", "Category:Physics", "Category:Chemistry"])
+        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
 
-        assert result == ["Category:Science", "Category:Physics"]
+        assert result == []
+        # 3 input pages - 0 non-redirects = 3 removed
+        call_args = mock_logger.info.call_args[0][0]
+        assert "3" in call_args
 
+    def test_preserves_order(self, mocker):
+        """Test that remove_redirect_pages preserves the order of non-redirect pages"""
+        mock_api = mocker.MagicMock()
+        # Dictionary order is preserved in Python 3.7+
+        mock_api.Find_pages_exists_or_not.return_value = {
+            "Page1": True,
+            "Page2": False,
+            "Page3": True,
+            "Page4": True,
+            "redirect": False,
+        }
+        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.logger")
+
+        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3", "Page4"])
+
+        assert result == ["Page1", "Page3", "Page4"]
+
+    def test_works_with_different_languages(self, mocker):
+        """Test that remove_redirect_pages works with different language codes"""
+        mock_api = mocker.MagicMock()
+        mock_api.Find_pages_exists_or_not.return_value = {
+            "صفحة": True,
+        }
+        mock_new_api_class = mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
+        mocker.patch("src.wiki_api.check_redirects.logger")
+
+        result = remove_redirect_pages("ar", ["صفحة"])
+
+        assert result == ["صفحة"]
+        mock_new_api_class.assert_called_once_with("ar", family="wikipedia")
+
+    def test_calls_load_non_redirects(self, mocker):
+        """Test that remove_redirect_pages uses load_non_redirects internally"""
+        mock_load_non_redirects = mocker.patch(
+            "src.wiki_api.check_redirects.load_non_redirects",
+            return_value=["Page1", "Page2"]
+        )
+        mocker.patch("src.wiki_api.check_redirects.logger")
+
+        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
+
+        mock_load_non_redirects.assert_called_once_with("en", ["Page1", "Page2", "Page3"])
+        assert result == ["Page1", "Page2"]
