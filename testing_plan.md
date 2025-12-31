@@ -52,11 +52,6 @@ This plan aims to create comprehensive tests for all project functions excluding
 **مثال على Mock:**
 ```python
 @pytest.fixture
-def mock_wikipedia_api(mocker):
-    """Mock Wikipedia API calls"""
-    return mocker.patch('src.wiki_api.arAPI.submitAPI')
-
-@pytest.fixture
 def mock_wikidata_api(mocker):
     """Mock Wikidata API calls"""
     return mocker.patch('src.wd_bots.wd_api_bot.Get_infos_wikidata')
@@ -155,7 +150,6 @@ tests/
 │       └── test_out_json.py
 └── wiki_api/
     ├── __init__.py
-    ├── test_arAPI.py             # اختبار arAPI.py
     ├── test_himoBOT2.py          # اختبار himoBOT2.py
     └── test_wd_sparql.py         # اختبار wd_sparql.py
 │   ├── test_LCN_new.py           # اختبار LCN_new.py
@@ -213,12 +207,8 @@ tests/
 ### 3.4 wiki_api ⭐⭐⭐ (أولوية عالية جداً / Very High Priority)
 
 **الاختبارات المطلوبة:**
-- [x] اختبار إرسال طلبات API (GET/POST) ✅ (test_arAPI.py)
 - [x] اختبار الحصول على معلومات الصفحات ✅ (test_himoBOT2.py)
 - [x] اختبار الحصول على الصفحات الجديدة ✅ (test_himoBOT2.py)
-- [x] اختبار إضافة نص للصفحات (رأس/نهاية) ✅ (test_arAPI.py)
-- [x] اختبار إنشاء صفحات جديدة ✅ (test_arAPI.py)
-- [x] اختبار حفظ التعديلات ✅ (test_arAPI.py)
 - [x] اختبار SPARQL queries ✅ (test_himoBOT2.py)
 - [x] Mock جميع استدعاءات MediaWiki API ✅ (test_himoBOT2.py)
 - [x] اختبار معالجة الأخطاء والاستثناءات ✅ (test_himoBOT2.py)
@@ -591,7 +581,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 | mk_cats/utils | test_check_en.py | 10 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |
-| wiki_api | test_LCN_new.py, test_arAPI.py, test_himoBOT2.py | 58 | ✅ |
+| wiki_api | test_LCN_new.py.py, test_himoBOT2.py | 43 | ✅ |
 | temp | (existing tests) | 96 | ✅ |
 
 **Total Tests: 464 passing (3 skipped/failed new_api tests require network)**

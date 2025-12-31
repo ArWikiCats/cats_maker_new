@@ -37,13 +37,6 @@ def sample_page_info():
 
 # ===== Mock Fixtures for External Services =====
 
-
-@pytest.fixture
-def mock_wikipedia_api(mocker):
-    """Mock Wikipedia API calls (submitAPI)"""
-    return mocker.patch("src.wiki_api.arAPI.submitAPI")
-
-
 @pytest.fixture
 def mock_wikidata_api(mocker):
     """Mock Wikidata API calls"""

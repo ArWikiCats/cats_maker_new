@@ -292,7 +292,6 @@ cats_maker_new/
 │   │   └── get_bots.py     # Data retrieval
 │   │
 │   ├── wiki_api/           # Wikipedia API calls
-│   │   ├── arAPI.py        # Arabic Wikipedia API
 │   │   ├── himoBOT2.py     # General Wikipedia functions
 │   │   └── wd_sparql.py    # SPARQL queries
 │   │

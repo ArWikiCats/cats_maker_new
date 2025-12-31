@@ -4,7 +4,6 @@ from .LCN_new import (find_LCN, find_Page_Cat_without_hidden, get_arpage_inside_
 from .sub_cats_bot import sub_cats_query
 from .wd_sparql import get_query_result, get_query_data
 from . import himoBOT2
-from . import arAPI
 
 __all__ = [
     "submitAPI",
@@ -18,5 +17,4 @@ __all__ = [
     "get_query_data",
     "get_deleted_pages",
     "himoBOT2",
-    "arAPI",
 ]

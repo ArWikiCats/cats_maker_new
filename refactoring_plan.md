@@ -134,7 +134,6 @@ create_categories_from_list(liste, uselabs, callback)
 
 8. **wiki_api/** - استدعاءات API / API calls
    - himoBOT2.py: page_put(), Get_page_info_from_wikipedia()
-   - arAPI.py: submitAPI()
 
 9. **api_sql/** - قاعدة البيانات / Database operations
    - wiki_sql.py: sql_new(), sql_new_title_ns()

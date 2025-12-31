@@ -33,7 +33,7 @@ class TestMakeCategory:
 
     def test_returns_false_for_skip_encats(self, mocker):
         """Test that make_category returns False for categories in skip_encats"""
-        # Mock the arAPI.create_Page to not actually create pages
+        # Mock the create_Page to not actually create pages
         mocker.patch("src.mk_cats.create_category_page.create_Page", return_value=False)
 
         # Use a category that's in skip_encats
