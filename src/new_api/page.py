@@ -12,6 +12,7 @@ from .super.S_Page import super_page
 from .useraccount import User_tables_bot
 
 SuperMainPage = super_page.MainPage
+SuperNEW_API = bot_api.NEW_API
 User_tables = User_tables_bot
 user_agent = default_user_agent()
 change_codes = lang_codes.change_codes
@@ -46,16 +47,17 @@ def CatDepth(title, sitecode="", family="wikipedia", **kwargs):
     return result
 
 
-def NEW_API(lang="", family="wikipedia") -> bot_api.NEW_API:
+def NEW_API(lang="", family="wikipedia") -> SuperNEW_API:
     # ---
     login_bot = create_login_session(lang, family)
     # ---
-    result = bot_api.NEW_API(login_bot, lang=lang, family=family)
+    result = SuperNEW_API(login_bot, lang=lang, family=family)
     # ---
     return result
 
 
 __all__ = [
+    "SuperNEW_API",
     "SuperMainPage",
     "user_agent",
     "MainPage",
