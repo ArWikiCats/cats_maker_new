@@ -12,23 +12,13 @@ from ..helps import logger
 
 
 @functools.lru_cache(maxsize=1)
-def load_db_config() -> dict[str, Any]:
+def load_db_config(db: str, host: str) -> dict[str, Any]:
     # --- 1) تحقق من ملف الإنتاج ~/replica.my.cnf ---
     replica_cnf_path = Path.home() / "replica.my.cnf"
-    if replica_cnf_path.exists():
-        return {
-            "read_default_file": replica_cnf_path,
-            "charset": "utf8mb4",
-            "use_unicode": True,
-            "autocommit": True,
-            "cursorclass": DictCursor
-        }
-
     return {
-        "host": "localhost",
-        "user": "root",
-        "password": "root11",
-        "database": "arlexemes",
+        "host": host,
+        "database": db,
+        "read_default_file": str(replica_cnf_path),
         "charset": "utf8mb4",
         "use_unicode": True,
         "autocommit": True,
@@ -36,9 +26,9 @@ def load_db_config() -> dict[str, Any]:
     }
 
 
-def sql_connect_pymysql(query, db="", host="", Return=[], values=None):
+def _sql_connect_pymysql(query: str, db: str = "", host: str = "", Return: list = [], values: tuple = None) -> list:
     # ---
-    logger.debug("start sql_connect_pymysql:")
+    logger.debug("start _sql_connect_pymysql:")
     # ---
     params = None
     # ---
@@ -78,7 +68,7 @@ def sql_connect_pymysql(query, db="", host="", Return=[], values=None):
         return results
 
 
-def decode_value(value):
+def decode_value(value: bytes) -> str:
     try:
         value = value.decode("utf-8")  # Assuming UTF-8 encoding
     except BaseException:
@@ -89,7 +79,7 @@ def decode_value(value):
     return value
 
 
-def resolve_bytes(rows):
+def resolve_bytes(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     decoded_rows = []
     # ---
     for row in rows:
@@ -111,8 +101,15 @@ def make_sql_connect(query, db="", host="", Return=[], values=None):
     # ---
     logger.debug("<<lightyellow>> newsql::")
     # ---
-    rows = sql_connect_pymysql(query, db=db, host=host, Return=Return, values=values)
+    rows = _sql_connect_pymysql(query, db=db, host=host, Return=Return, values=values)
     # ---
     rows = resolve_bytes(rows)
     # ---
     return rows
+
+
+__all__ = [
+    "make_sql_connect",
+    "decode_value",
+    "resolve_bytes",
+]

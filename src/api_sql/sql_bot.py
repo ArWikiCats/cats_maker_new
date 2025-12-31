@@ -45,7 +45,7 @@ def MySQLdbar(arcatTitle):
     # ---
     host, dbs_p = wiki_sql.make_labsdb_dbs_p("ar")
     # ---
-    ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host, Return=[])
+    ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host) or []
     # ---
     if not ar_results or len(ar_results) == 0:
         return arcats
