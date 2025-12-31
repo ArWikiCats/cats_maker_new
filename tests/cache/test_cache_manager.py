@@ -143,21 +143,31 @@ class TestCacheManagerTTL:
         assert cache.get("key") == "value"
 
     def test_entry_expires_after_ttl(self):
-        """Test that entry expires after TTL."""
+        """Test that entry expires after TTL.
+        
+        Note: At the CacheEntry level, ttl=0 means expires immediately.
+        The CacheManager.set() method treats ttl=0 differently as "no expiration".
+        """
         from src.cache.cache_manager import CacheManager
 
         cache = CacheManager(default_ttl=3600)
-        # Create entry that expires immediately (1 millisecond)
+        # Create entry that expires immediately (ttl=0 at CacheEntry level means 0 seconds)
         cache._cache["key"] = __import__("src.cache.cache_manager", fromlist=["CacheEntry"]).CacheEntry("value", ttl=0)
         time.sleep(0.01)  # Wait for expiration
         assert cache.get("key") is None
 
     def test_ttl_zero_means_no_expiration(self):
-        """Test that TTL=0 means no expiration."""
+        """Test that TTL=0 in CacheManager.set() means no expiration.
+        
+        Note: The CacheManager.set() public API treats ttl=0 as a special case
+        meaning "no expiration". This is different from CacheEntry(ttl=0) which
+        means "expires immediately". This design allows users to explicitly
+        request permanent caching.
+        """
         from src.cache.cache_manager import CacheManager
 
         cache = CacheManager(default_ttl=1)  # Short default TTL
-        cache.set("key", "value", ttl=0)  # No expiration
+        cache.set("key", "value", ttl=0)  # ttl=0 in set() means no expiration
         time.sleep(0.01)  # Wait a bit
         assert cache.get("key") == "value"
 
