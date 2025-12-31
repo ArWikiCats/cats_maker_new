@@ -4,7 +4,7 @@ from ..tools_bots.sort_bot import CatSorting
 import re
 
 
-def ar_sort(categorylist):
+def sort_text(categorylist):
     finallradeh = []
     s_radeh = []
     # ---
@@ -38,7 +38,7 @@ def ar_sort(categorylist):
     return finallradeh
 
 
-def CatSorting(text, title):
+def sort_categories(text, title):
     """
     This function sorts the categories in a given text based on a specific page.
 
@@ -62,7 +62,7 @@ def CatSorting(text, title):
     for i in cats:
         new_text = new_text.replace(i, "")
     # ---
-    cats = ar_sort(cats)
+    cats = sort_text(cats)
     # ---
     for name in cats[1:]:
         if re.search(r"\[\[(.+?)\|[ \*]\]\]", name) or "[[تصنيف:" + title == name.split("]]")[0].split("|")[0]:
