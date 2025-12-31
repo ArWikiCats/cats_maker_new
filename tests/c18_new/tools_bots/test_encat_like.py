@@ -7,5 +7,5 @@ TODO: write tests
 import pytest
 
 from src.c18_new.tools_bots.encat_like import (
-    encat_like,
+    get_en_categories_like,
 )
