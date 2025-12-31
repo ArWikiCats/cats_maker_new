@@ -21,7 +21,7 @@ class TestMainFlowIntegration:
     def mock_all_external_services(self, mocker):
         """Mock all external API calls for integration testing."""
         # Mock Wikipedia API
-        mock_wiki_api = mocker.patch("src.wiki_api.himoBOT2.Get_page_info_from_wikipedia")
+        mock_wiki_api = mocker.patch("src.wiki_api.himoBOT2.get_page_info_from_wikipedia")
         mock_wiki_api.return_value = {"exists": False}
 
         # Mock Wikidata API
@@ -29,7 +29,7 @@ class TestMainFlowIntegration:
         mock_wikidata.return_value = {"q": "Q12345", "sitelinks": {}}
 
         # Mock LCN (Language Code Navigator)
-        mock_lcn = mocker.patch("src.b18_new.LCN_new.find_Page_Cat_without_hidden")
+        mock_lcn = mocker.patch("src.wiki_api.LCN_new.find_Page_Cat_without_hidden")
         mock_lcn.return_value = {}
 
         # Mock database queries
@@ -54,6 +54,10 @@ class TestMainFlowIntegration:
         # Mock to_wd.Log_to_wikidata
         mock_log_wd = mocker.patch("src.wd_bots.to_wd.Log_to_wikidata")
 
+        # Mock validate_categories_for_new_cat
+        mock_validate = mocker.patch("src.b18_new.sql_cat_checker.validate_categories_for_new_cat")
+        mock_validate.return_value = []
+
         # Mock make_ar_list_newcat2
         mock_make_ar_list = mocker.patch("src.b18_new.sql_cat.make_ar_list_newcat2")
         mock_make_ar_list.return_value = []
@@ -69,6 +73,7 @@ class TestMainFlowIntegration:
             "add_final": mock_add_final,
             "log_wd": mock_log_wd,
             "make_ar_list": mock_make_ar_list,
+            "validate": mock_validate,
         }
 
     @pytest.fixture
@@ -197,7 +202,7 @@ class TestModuleInteraction:
             }
         }
 
-        result = himoBOT2.Get_page_info_from_wikipedia_new("ar", "Test Page")
+        result = himoBOT2.get_page_info_from_wikipedia("ar", "Test Page")
 
         assert result is not None
         assert "title" in result
@@ -365,7 +370,7 @@ class TestDataFlowIntegration:
         })
 
         # Get page info
-        result = himoBOT2.Get_page_info_from_wikipedia_new("en", "Category:Science")
+        result = himoBOT2.get_page_info_from_wikipedia("en", "Category:Science")
 
         # Verify the data structure is suitable for category creation
         assert "title" in result

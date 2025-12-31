@@ -2,13 +2,13 @@
 """
 
 """
-from ...b18_new.cat_tools_enlist2 import get_ar_list_from_cat
-from ...b18_new.LCN_new import find_LCN, get_arpage_inside_encat
+
+from ...wiki_api import find_LCN, get_arpage_inside_encat
+from ...b18_new import get_ar_list_from_cat
 from ..bots.cat_tools_argv import EEn_site, use_sqldb
 from ..cat_tools2 import Categorized_Page_Generator
 from ..log import logger
-from ...api_sql.sql_bot import find_sql
-from .en_link_bot import en_title_for_arpage_cache
+from ...api_sql import find_sql
 
 
 def retrieve_ar_list_from_category(encat, enpageTitle):
@@ -111,24 +111,16 @@ def Get_ar_list_from_en_list(enlist):
             if new_list:
                 for p_w in new_list:
                     # ---
-                    fapagetitle = ""
+                    arpagetitle = ""
                     if "langlinks" in new_list[p_w] and "ar" in new_list[p_w]["langlinks"]:
-                        fapagetitle = new_list[p_w]["langlinks"]["ar"]
+                        arpagetitle = new_list[p_w]["langlinks"]["ar"]
                     # ---
-                    if fapagetitle:
+                    if arpagetitle:
                         # ---
-                        logger.debug(f"<<lightblue>>Adding {fapagetitle} to ar lists {p_w}<<default>>")
+                        logger.debug(f"<<lightblue>>Adding {arpagetitle} to ar lists {p_w}<<default>>")
                         # ---
-                        new_ar_list.append(fapagetitle)
+                        new_ar_list.append(arpagetitle)
                         en_done.append(p_w.replace("_", " "))
-        # ---
-        for xen in liste:
-            en = xen.replace("_", " ")
-            # ---
-            tat = en_title_for_arpage_cache(en)
-            if en not in en_done and tat:
-                logger.debug(f"<<lightblue>>Adding {tat} from En_title_for_ar page {xen}<<default>>")
-                new_ar_list.append(tat)
     # ---
     logger.info(f"<<lightyellow>> Get_ar_list_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
     # ---

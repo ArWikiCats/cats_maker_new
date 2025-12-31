@@ -3,7 +3,7 @@
 
 """
 
-from ...b18_new.LCN_new import find_LCN
+from ...wiki_api import find_LCN
 from ...helps import logger
 from ...utils.skip_cats import NO_Templates_lower, skip_encats
 

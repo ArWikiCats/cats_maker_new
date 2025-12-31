@@ -115,9 +115,9 @@ English Category Name
     ↓
 [get_listenpageTitle] → Member pages
     ↓
-[make_text] → Category page text (with templates)
+[generate_category_text] → Category page text (with templates)
     ↓
-[page_put] → Save to ar.wikipedia
+[page.save] → Save to ar.wikipedia
     ↓
 [Log_to_wikidata] → Update Wikidata sitelink
 ```
@@ -292,7 +292,6 @@ cats_maker_new/
 │   │   └── get_bots.py     # Data retrieval
 │   │
 │   ├── wiki_api/           # Wikipedia API calls
-│   │   ├── arAPI.py        # Arabic Wikipedia API
 │   │   ├── himoBOT2.py     # General Wikipedia functions
 │   │   └── wd_sparql.py    # SPARQL queries
 │   │
@@ -381,13 +380,13 @@ from src.mk_cats.mknew import ar_make_lab
 
 class TestArMakeLab:
     """Tests for ar_make_lab function"""
-    
+
     def test_returns_label_for_valid_category(self, mocker):
         """Test that valid categories return Arabic labels"""
         mocker.patch('src.mk_cats.mknew.filter_en.filter_cat', return_value=True)
-        mocker.patch('src.mk_cats.mknew.resolve_arabic_category_label', 
+        mocker.patch('src.mk_cats.mknew.resolve_arabic_category_label',
                      return_value='علوم')
-        
+
         result = ar_make_lab("Category:Science")
         assert result == "علوم"
 ```

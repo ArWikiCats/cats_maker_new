@@ -4,6 +4,7 @@ from src.new_api import useraccount
 from src.new_api.super import super_login
 
 
+@pytest.mark.network
 class TestAuthentication:
     @pytest.fixture
     def user_credentials(self):

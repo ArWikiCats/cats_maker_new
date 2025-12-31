@@ -49,8 +49,8 @@ create_categories_from_list(liste, uselabs, callback)
                 │   make_ar(en_page_title, ar_title, callback)
                 │       ├─ scan_ar_title(ar_title) → checked_title
                 │       │   └─ Get_Sitelinks_From_wikidata()
-                │       ├─ check_if_artitle_exists(en_title, ar_title) → bool
-                │       │   ├─ Get_page_info_from_wikipedia()
+                │       ├─ check_if_artitle_exists(ar_title) → bool
+                │       │   ├─ get_page_info_from_wikipedia()
                 │       │   └─ return exists or not
                 │       ├─ find_LCN(en_link) → ar_title
                 │       │   └─ submitAPI() with langlinks
@@ -64,12 +64,11 @@ create_categories_from_list(liste, uselabs, callback)
                 │       │   └─ return members list
                 │       ↓
                 │       new_category(en_title, ar_title, categories, qid, family)
-                │           ├─ make_text(en_title, ar_title, qid)
+                │           ├─ generate_category_text(en_title, ar_title, qid)
                 │           │   ├─ categorytext.py logic
-                │           │   ├─ Make_temp() for templates
-                │           │   ├─ Make_Portal() for portals
-                │           │   └─ getP373() from Wikidata
-                │           ├─ himoBOT2.page_put(title, text, summary)
+                │           │   ├─ generate_portal_content() for portals
+                │           │   └─ fetch_commons_category() from Wikidata
+                │           ├─ page_put(title, text, summary)
                 │           │   └─ Save page to Wikipedia
                 │           └─ return created title or False
                 │       ↓
@@ -79,11 +78,13 @@ create_categories_from_list(liste, uselabs, callback)
                 │       add_SubSub(en_cats, new_cat)
                 │       │   └─ Track subcategories
                 │       ↓
-                │       make_ar_list_newcat2(ar_title, en_title)
-                │       │   └─ Get members from new category
-                │       ↓
-                │       to_wd.Log_to_wikidata(ar_title, en_title, qid)
-                │           └─ Update Wikidata with sitelink
+                │       validate_categories_for_new_cat(ar_title, en_title)
+                │           ↓
+                │           make_ar_list_newcat2(ar_title, en_title)
+                │               │   └─ Get members from new category
+                │               ↓
+                │               to_wd.Log_to_wikidata(ar_title, en_title, qid)
+                │               └─ Update Wikidata with sitelink
                 │
                 └─ جمع النتائج: enriched_titles.extend(...)
 ```
@@ -107,10 +108,9 @@ create_categories_from_list(liste, uselabs, callback)
    - make_category() - المنطق الأساسي للإنشاء
 
 4. **mk_cats/categorytext.py** - توليد النصوص
-   - make_text() - توليد نص التصنيف
-   - Make_temp() - قوالب
-   - Make_Portal() - بوابات
-   - getP373() - جلب P373 من Wikidata
+   - generate_category_text() - توليد نص التصنيف
+   - generate_portal_content() - بوابات
+   - fetch_commons_category() - جلب P373 من Wikidata
 
 5. **b18_new/** - معالجة التصنيفات والروابط / Category and link processing
    - LCN_new.py: find_LCN(), find_Page_Cat_without_hidden()
@@ -133,8 +133,7 @@ create_categories_from_list(liste, uselabs, callback)
    - get_bots.py: Wikidata queries
 
 8. **wiki_api/** - استدعاءات API / API calls
-   - himoBOT2.py: page_put(), Get_page_info_from_wikipedia()
-   - arAPI.py: submitAPI()
+   - himoBOT2.py: page_put(), get_page_info_from_wikipedia()
 
 9. **api_sql/** - قاعدة البيانات / Database operations
    - wiki_sql.py: sql_new(), sql_new_title_ns()
@@ -212,9 +211,9 @@ English Category Name
     ↓
 [get_listenpageTitle] → Member pages
     ↓
-[make_text] → Category page text (with templates)
+[generate_category_text] → Category page text (with templates)
     ↓
-[page_put] → Save to ar.wikipedia
+[page.save] → Save to ar.wikipedia
     ↓
 [Log_to_wikidata] → Update Wikidata sitelink
 ```
@@ -239,7 +238,7 @@ class WikipediaRepository:
     def get_page_categories(self, title: str, lang: str) -> list:
         """Get categories for a page"""
         pass
-    
+
     def save_page(self, title: str, text: str, summary: str) -> bool:
         """Save a page to Wikipedia"""
         pass
@@ -249,7 +248,7 @@ class WikidataRepository:
     def get_sitelinks(self, qid: str) -> dict:
         """Get sitelinks from Wikidata"""
         pass
-    
+
     def get_label(self, qid: str, lang: str) -> str:
         """Get label for a Qid"""
         pass
@@ -261,7 +260,7 @@ class WikidataRepository:
 def make_ar(en_page_title, ar_title, callback=None):
     # استدعاء مباشر
     result = Get_Sitelinks_From_wikidata(...)
-    
+
 # After
 def make_ar(en_page_title, ar_title, wikidata_repo, callback=None):
     # استخدام repository
@@ -276,7 +275,7 @@ class CategoryProcessor:
         self.wiki = wiki_repo
         self.wikidata = wikidata_repo
         self.db = db_repo
-    
+
     def process_category(self, en_title: str) -> dict:
         """Pure business logic without I/O"""
         # Logic here
@@ -322,12 +321,12 @@ class CategoryNotFoundError(CatsMakerException):
 class ErrorHandler:
     def __init__(self, logger):
         self.logger = logger
-    
+
     def handle_api_error(self, error: Exception, context: dict):
         """Handle API errors consistently"""
         self.logger.error(f"API Error: {error}", extra=context)
         # Retry logic, fallback, etc.
-    
+
     def handle_database_error(self, error: Exception, context: dict):
         """Handle database errors"""
         self.logger.error(f"DB Error: {error}", extra=context)
@@ -352,15 +351,15 @@ class CacheManager:
     def __init__(self, backend='memory'):
         self.backend = backend
         self._cache = {}
-    
+
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache"""
         return self._cache.get(key)
-    
+
     def set(self, key: str, value: Any, ttl: int = 3600):
         """Set value in cache with TTL"""
         self._cache[key] = value
-    
+
     def invalidate(self, pattern: str):
         """Invalidate cache entries matching pattern"""
         pass
@@ -414,7 +413,7 @@ class Settings:
     wikipedia: WikipediaConfig = WikipediaConfig()
     wikidata: WikidataConfig = WikidataConfig()
     database: DatabaseConfig = DatabaseConfig()
-    
+
     # Global settings
     range_limit: int = 5
     debug: bool = False
@@ -448,31 +447,31 @@ def create_categories_from_list(liste: list[str], uselabs: bool = False, callbac
     """
     معالجة قائمة من التصنيفات الإنجليزية وإنشاء نظائرها العربية.
     Process a list of English categories and create their Arabic counterparts.
-    
+
     Args:
         liste: قائمة بأسماء التصنيفات الإنجليزية / List of English category names
         uselabs: استخدام التسميات من ArWikiCats / Use labels from ArWikiCats
         callback: دالة اختيارية للاستدعاء بعد كل تصنيف / Optional callback after each category
-    
+
     Returns:
         None
-    
+
     Raises:
         CategoryNotFoundError: إذا لم يتم العثور على التصنيف / If category not found
         WikipediaAPIError: عند فشل استدعاء API / On API call failure
-    
+
     Examples:
         >>> categories = ["Category:Science", "Category:Mathematics"]
         >>> create_categories_from_list(categories)
-        
+
         >>> def my_callback(title, **kwargs):
         ...     print(f"Processed: {title}")
         >>> create_categories_from_list(categories, callback=my_callback)
-    
+
     Notes:
         - يتم تخطي التصنيفات المكررة / Duplicate categories are skipped
         - التصنيفات المعالجة تُضاف إلى DONE_D / Processed categories added to DONE_D
-    
+
     See Also:
         - one_cat(): معالجة تصنيف واحد / Process one category
         - process_catagories(): المعالجة المتكررة / Recursive processing
@@ -551,8 +550,8 @@ def ar_make_lab(title: str, **kwargs) -> Optional[str]:
     pass
 
 def get_ar_list_from_en(
-    encat: str, 
-    us_sql: bool = True, 
+    encat: str,
+    us_sql: bool = True,
     wiki: str = "en"
 ) -> List[str]:
     """الحصول على قائمة عربية من تصنيف إنجليزي"""

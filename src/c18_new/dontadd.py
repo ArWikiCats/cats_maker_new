@@ -9,7 +9,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from ..api_sql.wiki_sql import GET_SQL, sql_new_title_ns
+from ..api_sql import GET_SQL, sql_new_title_ns
 from ..helps import logger
 
 Dir = Path(__file__).parent.parent.parent

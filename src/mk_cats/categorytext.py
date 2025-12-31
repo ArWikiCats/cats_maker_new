@@ -2,20 +2,39 @@
 """
 
 """
-from ..temp import main_make_temp
+from ..temp import main_make_temp_no_title
 from ..wd_bots.wd_api_bot import Get_P373_API
 from ..wiki_api import himoBOT2
 from .utils import portal_en_to_ar_lower
 from .categorytext_data import category_mapping, LocalLanguageLinks
 
-
-def Make_temp(enca, title):
-    ff, title = main_make_temp(enca, title)
-
-    return ff
+from ..new_api.page import MainPage
 
 
-def getP373(entitle, Qid):
+def get_page_link_data(title: str, sitecode: str, ns: int=100) -> list:
+    # ---
+    page = MainPage(title, sitecode)
+    # ---
+    json1 = page.page_links()
+    # ---
+    if not json1:
+        return []
+    # ---
+    data = []
+    # ---
+    # [{'ns': 14, 'title': 'تصنيف:مقالات بحاجة لشريط بوابات', 'exists': True}, {'ns': 14, 'title': 'تصنيف:مقالات بحاجة لصندوق معلومات', 'exists': False}]
+    # ---
+    for cx in json1:
+        page_ns = int(cx.get("ns"))
+        if not cx.get("title") or not cx.get("exists"):
+            continue
+        if page_ns == ns:
+            data.append(cx.get("title"))
+    # ---
+    return data
+
+
+def fetch_commons_category(entitle, Qid):
     template = ""
     P373 = Get_P373_API(q=Qid, titles=entitle, sites="enwiki")
 
@@ -25,15 +44,14 @@ def getP373(entitle, Qid):
     return template
 
 
-def Make_Portal(title, enca, return_list=False):
+def generate_portal_content(title, enca, return_list=False):
     lilo = []
-    en_links = himoBOT2.GetPagelinks(enca, sitecode="en")
+    en_links = get_page_link_data(enca, "en", 100)
 
     for x in en_links:
-        if en_links[x].get("ns") == 100 or en_links[x].get("ns") == "100":
-            cc = x.replace("Portal:", "")
-            if cc.lower() in portal_en_to_ar_lower:
-                lilo.append(portal_en_to_ar_lower[cc.lower()])
+        cc = x.replace("Portal:", "")
+        if cc.lower() in portal_en_to_ar_lower:
+            lilo.append(portal_en_to_ar_lower[cc.lower()])
 
     # lilo = [ portal_en_to_ar_lower[x.lower()] for x in en_params if x.lower() in portal_en_to_ar_lower ]
 
@@ -61,13 +79,13 @@ def Make_Portal(title, enca, return_list=False):
     return litp
 
 
-def make_text(enca, title, Qid):
-    ff = Make_temp(enca, title)
-    # ---#تصنيف:اكتشافات فلكيون
+def generate_category_text(enca, title, Qid):
+    ff = main_make_temp_no_title(enca, title)
+    # ---
     text = ""
-    text += Make_Portal(title, enca)
+    text += generate_portal_content(title, enca)
     text += "{{نسخ:#لوموجود:{{نسخ:اسم_الصفحة}}|{{مقالة تصنيف}}|}}\n"
-    text += getP373(enca, Qid)
+    text += fetch_commons_category(enca, Qid)
 
     if ff:
         text += "\n%s" % ff

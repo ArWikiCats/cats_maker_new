@@ -52,11 +52,6 @@ This plan aims to create comprehensive tests for all project functions excluding
 **مثال على Mock:**
 ```python
 @pytest.fixture
-def mock_wikipedia_api(mocker):
-    """Mock Wikipedia API calls"""
-    return mocker.patch('src.wiki_api.arAPI.submitAPI')
-
-@pytest.fixture
 def mock_wikidata_api(mocker):
     """Mock Wikidata API calls"""
     return mocker.patch('src.wd_bots.wd_api_bot.Get_infos_wikidata')
@@ -84,7 +79,6 @@ tests/
 │   ├── test_sql_bot.py           # اختبار sql_bot.py
 ├── b18_new/
 │   ├── __init__.py
-│   ├── test_LCN_new.py           # اختبار LCN_new.py
 │   ├── test_cat_tools.py         # اختبار cat_tools.py
 │   ├── test_cat_tools_enlist.py  # اختبار cat_tools_enlist.py
 │   ├── test_cat_tools_enlist2.py # اختبار cat_tools_enlist2.py
@@ -93,20 +87,15 @@ tests/
 ├── c18_new/
 │   ├── __init__.py
 │   ├── test_cat_tools2.py        # اختبار cat_tools2.py
+│   ├── test_dontadd.py           # اختبار dontadd.py
 │   ├── bots/
 │   │   ├── test_cat_tools_argv.py
 │   │   ├── test_english_page_title.py
 │   │   ├── test_filter_cat.py
 │   │   └── test_text_to_temp_bot.py
-│   ├── bots_helps/
-│   │   ├── test_dontadd.py
-│   │   └── test_funcs.py
 │   ├── cats_tools/
 │   │   ├── test_ar_from_en.py
 │   │   ├── test_ar_from_en2.py
-│   │   └── test_en_link_bot.py
-│   ├── network_calls/
-│   │   └── test_sub_cats_bot.py
 │   └── tools_bots/
 │       ├── test_encat_like.py
 │       ├── test_sort_bot.py
@@ -156,9 +145,10 @@ tests/
 │       └── test_out_json.py
 └── wiki_api/
     ├── __init__.py
-    ├── test_arAPI.py             # اختبار arAPI.py
     ├── test_himoBOT2.py          # اختبار himoBOT2.py
-    └── test_wd_sparql.py         # اختبار wd_sparql.py
+    ├── test_wd_sparql.py         # اختبار wd_sparql.py
+│   ├── test_LCN_new.py           # اختبار LCN_new.py
+│   └── test_sub_cats_bot.py
 ```
 
 ---
@@ -176,10 +166,10 @@ tests/
 - [x] اختبار scan_ar_title() - فحص العناوين ✅ (test_mknew.py)
 - [x] اختبار check_if_artitle_exists() - التحقق من الوجود ✅ (test_mknew.py)
 - [x] اختبار new_category() - إنشاء صفحة التصنيف ✅ (test_create_category_page.py)
-- [x] اختبار make_text() - إنشاء نص التصنيف ✅ (test_categorytext.py)
-- [x] اختبار Make_temp() و Make_Portal() ✅ (test_categorytext.py)
+- [x] اختبار generate_category_text() - إنشاء نص التصنيف ✅ (test_categorytext.py)
+- [x] اختبار generate_portal_content() ✅ (test_categorytext.py)
 - [x] اختبار check_en_temps() - فحص القوالب الإنجليزية ✅ (test_check_en.py)
-- [x] اختبار getP373() - الحصول على P373 من Wikidata ✅ (test_get_bots.py)
+- [x] اختبار fetch_commons_category() - الحصول على P373 من Wikidata ✅ (test_get_bots.py)
 - [x] Mock جميع استدعاءات الخدمات الخارجية ✅ (conftest.py fixtures)
 - [x] اختبارات تكامل للتدفق الكامل من create_categories_from_list ✅ (test_main_flow.py)
 - [x] اختبار معالجة قوائم التصنيفات المختلفة ✅ (test_mknew.py)
@@ -213,12 +203,8 @@ tests/
 ### 3.4 wiki_api ⭐⭐⭐ (أولوية عالية جداً / Very High Priority)
 
 **الاختبارات المطلوبة:**
-- [x] اختبار إرسال طلبات API (GET/POST) ✅ (test_arAPI.py)
 - [x] اختبار الحصول على معلومات الصفحات ✅ (test_himoBOT2.py)
 - [x] اختبار الحصول على الصفحات الجديدة ✅ (test_himoBOT2.py)
-- [x] اختبار إضافة نص للصفحات (رأس/نهاية) ✅ (test_arAPI.py)
-- [x] اختبار إنشاء صفحات جديدة ✅ (test_arAPI.py)
-- [x] اختبار حفظ التعديلات ✅ (test_arAPI.py)
 - [x] اختبار SPARQL queries ✅ (test_himoBOT2.py)
 - [x] Mock جميع استدعاءات MediaWiki API ✅ (test_himoBOT2.py)
 - [x] اختبار معالجة الأخطاء والاستثناءات ✅ (test_himoBOT2.py)
@@ -442,9 +428,9 @@ class TestAddNsTextToTitle:
 
 ### مثال 2: اختبار مع Mock
 ```python
-# tests/b18_new/test_LCN_new.py
+# tests/wiki_api/test_LCN_new.py
 import pytest
-from src.b18_new.LCN_new import find_LCN
+from src.wiki_api.LCN_new import find_LCN
 
 class TestFindLCN:
     """اختبارات لدالة find_LCN"""
@@ -583,15 +569,15 @@ def test_using_fixtures(sample_category_data, mock_database):
 | Module | Test Files | Tests Count | Status |
 |--------|------------|-------------|--------|
 | api_sql | test_wiki_sql.py, test_sql_qu.py | 42 | ✅ |
-| b18_new | test_LCN_new.py, test_cat_tools.py | 53 | ✅ |
+| b18_new | test_cat_tools.py | 21 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |
 | helps | test_log.py, test_printe_helper.py, test_jsonl_data.py | 77 | ✅ |
 | integration | test_main_flow.py | 18 | ✅ |
-| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py | 78 | ✅ |
+| mk_cats | test_categorytext.py, test_create_category_page.py, test_mknew.py | 67 | ✅ |
 | mk_cats/utils | test_check_en.py | 10 | ✅ |
 | utils | test_skip_cats.py | 14 | ✅ |
 | wd_bots | test_get_bots.py | 29 | ✅ |
-| wiki_api | test_arAPI.py, test_himoBOT2.py | 32 | ✅ |
+| wiki_api | test_LCN_new.py.py, test_himoBOT2.py | 43 | ✅ |
 | temp | (existing tests) | 96 | ✅ |
 
 **Total Tests: 464 passing (3 skipped/failed new_api tests require network)**

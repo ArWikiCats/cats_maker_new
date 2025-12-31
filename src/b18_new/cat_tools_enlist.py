@@ -2,20 +2,17 @@
 """
 
 """
-import sys
-from ..c18_new.bots.cat_tools_argv import EEn_site, FR_site, use_sqldb
-from ..c18_new.cats_tools.en_link_bot import english_page_link
-from ..api_sql.sql_bot import MySQLdb_finder_New
-from . import sql_cat
-from ..api_sql import wiki_sql
-
+from ..c18_new.bots.cat_tools_argv import use_sqldb
+from ..api_sql import GET_SQL, MySQLdb_finder_New
 from ..helps import logger
+from .sql_cat import make_ar_list_newcat2
+from .sql_cat_checker import validate_categories_for_new_cat
 
 pages_in_arcat_toMake = {}
 
 
 def extract_fan_page_titles(enpageTitle):
-    if wiki_sql.GET_SQL() and use_sqldb[1]:
+    if GET_SQL() and use_sqldb[1]:
         cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
         # ---
         try:
@@ -31,11 +28,10 @@ def get_listenpageTitle(artitle, enpageTitle1):
     # ---
     enpageTitle = enpageTitle1.strip()
     # ---
-    listenpageTitle = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True) or []
+    listenpageTitle = []
     # ---
-    listenpage2 = sql_cat.make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True, wiki="en") or []
-    # ---
-    listenpageTitle.extend(listenpage2)
+    if validate_categories_for_new_cat(artitle, enpageTitle1, wiki="en"):
+        listenpageTitle = make_ar_list_newcat2(artitle, enpageTitle1, us_sql=True) or []
     # ---
     if not listenpageTitle:
         fapages = extract_fan_page_titles(enpageTitle)

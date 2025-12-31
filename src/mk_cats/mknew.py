@@ -3,22 +3,23 @@ python3 core8/pwb.py mk_cats/mknew
 """
 import sys
 
-from ..b18_new.cat_tools_enlist2 import MakeLitApiWay
+from ..b18_new import MakeLitApiWay
+from ..b18_new import get_listenpageTitle
+from ..b18_new import add_SubSub, get_SubSub_keys, get_SubSub_value
+
+from ..wiki_api import find_Page_Cat_without_hidden
+
+from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2, validate_categories_for_new_cat
 
 from ..c18_new.bots.cat_tools_argv import use_sqldb
-from ..b18_new.cat_tools_enlist import get_listenpageTitle
-
 from .add_bot import add_to_final_list
-from ..b18_new.cat_tools import add_SubSub, get_SubSub_keys, get_SubSub_value
-from ..b18_new.LCN_new import find_Page_Cat_without_hidden
-from ..b18_new.sql_cat import get_ar_list_from_en, make_ar_list_newcat2
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
-from ..wiki_api import himoBOT2
 from ..wd_bots import to_wd
 from ..helps import logger
 from .utils import filter_en
 from .create_category_page import new_category
 from .utils.check_en import check_en_temps
+from ..new_api.page import MainPage
 
 try:
     from ArWikiCats import resolve_arabic_category_label, logger as cat_logger  # type: ignore
@@ -95,17 +96,16 @@ def scan_ar_title(title):
     return True
 
 
-def check_if_artitle_exists(en_title_1, test_title):
+def check_if_artitle_exists(test_title):
     if not test_title.startswith("تصنيف:"):
         test_title = f"تصنيف:{test_title}"
 
-    test_page = himoBOT2.Get_page_info_from_wikipedia(wiki_site_ar["code"], test_title, Workredirects=False)
-
-    if test_page and test_page["exists"]:
+    page = MainPage(test_title, wiki_site_ar["code"], family="wikipedia")
+    # ---
+    if page.exists():
         logger.debug(f"<<lightred>>* category:{test_title} already exists in arwiki.")
-
         return False
-
+    # ---
     return True
 
 
@@ -121,7 +121,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     en_page_title = en_page_title.replace("[[", "").replace("]]", "").strip()
     en_page_title = en_page_title.replace("_", " ")
 
-    if not check_if_artitle_exists(en_page_title, ar_title):
+    if not check_if_artitle_exists(ar_title):
         logger.debug("<<lightred>> artitle already exists.")
         return []
 
@@ -197,30 +197,33 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         logger.debug(" get_listenpageTitle == [] ")
         return []
 
-    opuo = ""
+    formatted_member_list = ""
 
     if members and len(members) < 30:
-        opuo = ",".join(members)
+        formatted_member_list = ",".join(members)
 
-    logger.debug(f"Add to {len(members)} pages: {opuo}")
+    logger.debug(f"Add to {len(members)} pages: {formatted_member_list}")
 
     # إنشاء التصنيف وإضافته للصفحات
 
-    hhh = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
+    created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
 
-    if hhh:
-        add_to_final_list(members, ar_title, callback=callback)
-
-        add_SubSub(en_cats_of_new_cat, hhh)
-
-        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True, arcat_created=True) or []
-
-        if listen != []:
-            add_to_final_list(listen, ar_title, callback=callback)
-
-        to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
-    else:
+    if not created_category:
         to_wd.add_label(qid, ar_title)
+        return en_cats_of_new_cat
+
+    add_to_final_list(members, ar_title, callback=callback)
+
+    add_SubSub(en_cats_of_new_cat, created_category)
+
+    if validate_categories_for_new_cat(ar_title, en_page_title, wiki="en"):
+        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
+
+    if listen != []:
+        add_to_final_list(listen, ar_title, callback=callback)
+
+    to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
+
     return en_cats_of_new_cat
 
 

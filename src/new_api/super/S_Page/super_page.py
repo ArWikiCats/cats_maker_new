@@ -751,7 +751,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
                 return "missing"
         return False
 
-    def Create(self, text="", summary="", nodiff="", noask=False):
+    def Create(self, text="", summary="", nodiff="", noask=False) -> bool:
         # ---
         """
         Creates a new page with the specified text and summary.
