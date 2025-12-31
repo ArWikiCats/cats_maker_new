@@ -3,6 +3,7 @@ import pytest
 from src.new_api.page import MainPage
 
 
+@pytest.mark.network
 class TestMainPage:
     @pytest.fixture
     def test_page(self):
