@@ -8,11 +8,27 @@ This module tests:
 """
 
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+import pymysql.cursors
+from unittest.mock import MagicMock
 
-from src.api_sql.mysql_client import (
-    make_sql_connect,
-)
+from src.api_sql.mysql_client import _sql_connect_pymysql
+
+
+@pytest.fixture
+def mock_mysql_connection(mocker):
+    """Fixture to mock pymysql connection and cursor objects."""
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    # Setup context managers for connection and cursor
+    mock_conn.__enter__.return_value = mock_conn
+    mock_conn.__exit__.return_value = False
+    mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+    mock_conn.cursor.return_value.__exit__.return_value = False
+
+    # Patch pymysql.connect
+    mock_connect = mocker.patch("pymysql.connect", return_value=mock_conn)
+
+    return mock_conn, mock_cursor, mock_connect
 
 
 class TestSqlConnectPymysql:
@@ -22,8 +38,6 @@ class TestSqlConnectPymysql:
         """Test that _sql_connect_pymysql returns default value on connection error."""
         mocker.patch("pymysql.connect", side_effect=Exception("Connection failed"))
 
-        from src.api_sql.mysql_client import _sql_connect_pymysql
-
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=[])
 
         assert result == []
@@ -32,27 +46,14 @@ class TestSqlConnectPymysql:
         """Test that _sql_connect_pymysql returns custom default value on error."""
         mocker.patch("pymysql.connect", side_effect=Exception("Connection failed"))
 
-        from src.api_sql.mysql_client import _sql_connect_pymysql
-
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["default"])
 
         assert result == ["default"]
 
-    def test_uses_dict_cursor_when_requested(self, mocker):
+    def test_uses_dict_cursor_when_requested(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql uses DictCursor."""
-        import pymysql.cursors
-
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
+        _, mock_cursor, mock_connect = mock_mysql_connection
         mock_cursor.fetchall.return_value = [{"col": "value"}]
-
-        mock_connect = mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
 
         _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 
@@ -60,19 +61,10 @@ class TestSqlConnectPymysql:
         call_kwargs = mock_connect.call_args[1]
         assert call_kwargs["cursorclass"] == pymysql.cursors.DictCursor
 
-    def test_executes_query_with_values(self, mocker):
+    def test_executes_query_with_values(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql passes values to execute."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
+        _, mock_cursor, _ = mock_mysql_connection
         mock_cursor.fetchall.return_value = []
-
-        mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
 
         _sql_connect_pymysql(
             "SELECT * FROM table WHERE id = %s",
@@ -86,92 +78,45 @@ class TestSqlConnectPymysql:
             (123,)
         )
 
-    def test_returns_fetchall_results(self, mocker):
+    def test_returns_fetchall_results(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql returns fetchall results."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
+        _, mock_cursor, _ = mock_mysql_connection
         mock_cursor.fetchall.return_value = [("row1",), ("row2",)]
-
-        mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
 
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 
         assert result == [("row1",), ("row2",)]
 
-    def test_returns_default_on_execute_error(self, mocker):
+    def test_returns_default_on_execute_error(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql returns default on execute error."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
+        _, mock_cursor, _ = mock_mysql_connection
         mock_cursor.execute.side_effect = Exception("Execute error")
-
-        mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
 
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["error"])
 
         assert result == ["error"]
 
-    def test_returns_default_on_fetchall_error(self, mocker):
+    def test_returns_default_on_fetchall_error(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql returns default on fetchall error."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
+        _, mock_cursor, _ = mock_mysql_connection
         mock_cursor.fetchall.side_effect = Exception("Fetchall error")
-
-        mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
 
         result = _sql_connect_pymysql("SELECT 1", db="test", host="localhost", Return=["fetch_error"])
 
         assert result == ["fetch_error"]
 
-    def test_sets_charset_to_utf8mb4(self, mocker):
+    def test_sets_charset_to_utf8mb4(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql uses utf8mb4 charset."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
-        mock_cursor.fetchall.return_value = []
-
-        mock_connect = mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
+        _, _, mock_connect = mock_mysql_connection
 
         _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 
         call_kwargs = mock_connect.call_args[1]
         assert call_kwargs["charset"] == "utf8mb4"
 
-    def test_enables_autocommit(self, mocker):
+    def test_enables_autocommit(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql enables autocommit."""
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
-        mock_cursor.fetchall.return_value = []
-
-        mock_connect = mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
+        _, _, mock_connect = mock_mysql_connection
 
         _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 

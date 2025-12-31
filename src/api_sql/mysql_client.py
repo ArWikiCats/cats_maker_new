@@ -79,7 +79,7 @@ def decode_value(value: bytes) -> str:
     return value
 
 
-def resolve_bytes(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     decoded_rows = []
     # ---
     for row in rows:
@@ -103,7 +103,7 @@ def make_sql_connect(query, db="", host="", Return=[], values=None):
     # ---
     rows = _sql_connect_pymysql(query, db=db, host=host, Return=Return, values=values)
     # ---
-    rows = resolve_bytes(rows)
+    rows = decode_bytes_in_list(rows)
     # ---
     return rows
 
@@ -111,5 +111,5 @@ def make_sql_connect(query, db="", host="", Return=[], values=None):
 __all__ = [
     "make_sql_connect",
     "decode_value",
-    "resolve_bytes",
+    "decode_bytes_in_list",
 ]
