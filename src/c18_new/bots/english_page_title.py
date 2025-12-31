@@ -6,7 +6,7 @@ from ..bots.english_page_title import get_english_page_title
 import sys
 from ..cats_tools.en_link_bot import english_page_link
 from ..log import logger
-from ...wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
+from ...wd_bots import Get_Sitelinks_From_wikidata
 
 
 def get_en_link_from_ar_text(title, site, sitetarget):

@@ -2,13 +2,8 @@
 """
 """
 import functools
-import re
-import sys
 from ..helps import logger
 from .api_requests import submitAPI
-
-Get_Redirect = {1: True} if "getred" in sys.argv else {1: False}
-redirects_table = {}
 
 
 @functools.lru_cache(maxsize=1000)
@@ -16,13 +11,8 @@ def get_page_info_from_wikipedia(
     sitecode,
     title,
     findtemp="",
-    Workredirects=False,
-    findiwlinks=False,
-    Print=True,
-    nohidden=False,
 ):
-    if Print:
-        logger.debug(f'himoBOT2.get_page_info_from_wikipedia for "{sitecode}:{title}"')
+    logger.debug(f'himoBOT2.get_page_info_from_wikipedia for "{sitecode}:{title}"')
     # ---
     if sitecode.endswith("wiki"):
         sitecode = sitecode[:-4]
@@ -40,14 +30,8 @@ def get_page_info_from_wikipedia(
         "tllimit": "max",
     }
     # ---Template:Category redirect
-    if nohidden:
-        params["clshow"] = "!hidden"
-    if findiwlinks:
-        params["prop"] += "|iwlinks"
     if findtemp:
         params["tltemplates"] = findtemp  # للتأكد إذا كانت المقالة تستخدم قالب بذرة
-    if Workredirects or Get_Redirect[1]:
-        params["redirects"] = 1
     # ---
     # purge_ar(title, sitecode)
     # ---
@@ -86,9 +70,7 @@ def get_page_info_from_wikipedia(
                 title2 = xio["to"]
     # ---
     for red in query.get("redirects", []):
-        if Print:
-            logger.debug(f"page is redirects to : \"{red['to']}\"")
-        redirects_table[red["from"]] = red["to"]
+        logger.debug(f"page is redirects to : \"{red['to']}\"")
         # ---
         table2 = dict(tata)
         table2["isRedirectPage"] = True
@@ -110,15 +92,9 @@ def get_page_info_from_wikipedia(
         table[titlle]["title"] = titlle
         # ---
         if id2 == "-1":
-            if Print:
-                logger.debug(f'a {numb}/{len(pages)} titlle:{sitecode}:{titlle}, id :"{id2}"')
+            logger.debug(f'a {numb}/{len(pages)} titlle:{sitecode}:{titlle}, id :"{id2}"')
             table[titlle]["exists"] = False
             continue
-        # ---
-        if titlle in redirects_table:
-            table[titlle]["isRedirectPage"] = True
-            table[titlle]["from"] = titlle
-            table[titlle]["to"] = redirects_table[titlle]
         # ---
         table[titlle]["ns"] = kk.get("ns", "")
         if "missing" in kk:
@@ -152,42 +128,3 @@ def get_page_info_from_wikipedia(
         result = table[title2]
     # ---
     return result
-
-
-@functools.lru_cache(maxsize=1000)
-def GetPagelinks(title, sitecode=""):
-    langcode = sitecode if sitecode else "ar"
-    # ---
-    _result = {
-        "parse": {
-            "title": "وحدة:Wikidata/تتبع",
-            "pageid": 3196192,
-            "links": [{"ns": 828, "*": "وحدة:Wikidata/تتبع/طباعة"}, {"ns": 828, "exists": "", "*": "وحدة:Wikidata2"}],
-        }
-    }
-    # ---
-    params = {
-        "action": "parse",
-        "prop": "links",
-        "page": title,
-        # "redirects":1,
-        # "normalize": 1,
-    }
-    json1 = submitAPI(params, langcode, "wikipedia")
-    # ---
-    tab = {}
-    # ---
-    if not json1:
-        return tab
-    # ---
-    parse = json1.get("parse", {})
-    # title = parse.get("title", "" )
-    # ---
-    for cx in parse.get("links", []):
-        ti = cx["*"]
-        # tab[ti] = cx
-        tab[ti] = {x: va for x, va in cx.items() if x != "*"}
-    # ---
-    logger.debug(tab)
-    # ---
-    return tab

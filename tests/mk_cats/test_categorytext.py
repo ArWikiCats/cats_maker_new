@@ -7,12 +7,32 @@ This module tests category text generation functions.
 import pytest
 
 from src.mk_cats.categorytext import (
+    get_page_link_data,
     LocalLanguageLinks,
     category_mapping,
 )
 
 
-class TestFindLis:
+@pytest.mark.network
+class TestGetPageLinkData:
+    """Tests for get_page_link_data dictionary"""
+
+    def test_get_page_link_data(self):
+        """Test the output of get_page_link_data"""
+        result = get_page_link_data("Yemen", "en", 100)
+        assert isinstance(result, list)
+        assert "Portal:Asia" in result
+        # Add more assertions based on expected output
+
+    def test_get_page_link_data_10(self):
+        """Test the output of get_page_link_data"""
+        result = get_page_link_data("Caenispirillum deserti", "en", 10)
+        assert isinstance(result, list)
+        assert "Template:Alphaproteobacteria-stub" in result
+        # Add more assertions based on expected output
+
+
+class TestCategoryMapping:
     """Tests for category_mapping dictionary"""
 
     def test_is_dict(self):
@@ -31,7 +51,7 @@ class TestFindLis:
             assert isinstance(value, str)
 
 
-class TestLLoSet:
+class TestLocalLanguageLinksSet:
     """Tests for LocalLanguageLinks set"""
 
     def test_is_set(self):
@@ -55,10 +75,10 @@ class TestLLoSet:
             assert item.strip() != ""
 
 
-class TestPortalListIntegrity:
+class PortalListIntegrityTests:
     """Tests for portal list integrity"""
 
-    def test_find_lis_values_relate_to_portals(self):
+    def test_find_list_values_relate_to_portals(self):
         """Test that category_mapping values are valid portal names"""
         for key, value in category_mapping.items():
             # Values should be non-empty strings

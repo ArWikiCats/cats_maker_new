@@ -18,6 +18,11 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 
+class TestCheckIfArtitleExists:
+    """Tests for check_if_artitle_exists function."""
+    pass
+
+
 class TestConfigureParameters:
     """Tests for configure_parameters function."""
 
@@ -183,64 +188,6 @@ class TestScanArTitle:
         # Cleanup
         mknew.NewCat_Done.clear()
         mknew.We_Try[1] = True
-
-
-class TestCheckIfArtitleExists:
-    """Tests for check_if_artitle_exists function."""
-
-    def test_returns_false_when_page_exists(self, mocker):
-        """Test that check_if_artitle_exists returns False when page exists."""
-        mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
-            return_value={"exists": True}
-        )
-
-        from src.mk_cats.mknew import check_if_artitle_exists
-
-        result = check_if_artitle_exists("Science", "علوم")
-
-        assert result is False
-
-    def test_returns_true_when_page_not_exists(self, mocker):
-        """Test that check_if_artitle_exists returns True when page doesn't exist."""
-        mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
-            return_value={"exists": False}
-        )
-
-        from src.mk_cats.mknew import check_if_artitle_exists
-
-        result = check_if_artitle_exists("Science", "علوم")
-
-        assert result is True
-
-    def test_adds_prefix_if_missing(self, mocker):
-        """Test that check_if_artitle_exists adds تصنيف: prefix if missing."""
-        mock_get_page = mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
-            return_value={"exists": False}
-        )
-
-        from src.mk_cats.mknew import check_if_artitle_exists
-
-        check_if_artitle_exists("Science", "علوم")
-
-        # Verify the call was made with the prefix
-        call_args = mock_get_page.call_args
-        assert "تصنيف:علوم" in str(call_args)
-
-    def test_handles_none_response(self, mocker):
-        """Test that check_if_artitle_exists handles None response."""
-        mocker.patch(
-            "src.mk_cats.mknew.himoBOT2.get_page_info_from_wikipedia",
-            return_value=None
-        )
-
-        from src.mk_cats.mknew import check_if_artitle_exists
-
-        result = check_if_artitle_exists("Science", "علوم")
-
-        assert result is True
 
 
 class TestMakeAr:

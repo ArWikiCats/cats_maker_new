@@ -121,23 +121,21 @@ def do_sql(encat, arcat, us_sql=True, wiki="en"):
     return arlist_from_en
 
 
-def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en", arcat_created=False, arpage=False, enpage=False):
+def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en"):
     # ---
     encat = encat.replace("Category:Category:", "Category:")
     # ---
     encat = encat.replace("category:", "").replace("Category:", "").replace("Catégorie:", "")
-    encat2 = f"Category:{encat.replace('_', ' ')}"
     # ---
-    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "")
-    arcat2 = f"تصنيف:{arcat.replace('_', ' ')}"
-    # ---
-    no_wrk = ""
-    keepwork = True
+    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace('_', ' ')
+    arcat2 = f"تصنيف:{arcat}"
     # ---
     # فحص التصنيف الانجليزي
-    ioio_en = enpage or himoBOT2.get_page_info_from_wikipedia(wiki, encat2)
+    encat2 = f"Category:{encat.replace('_', ' ')}"
+    # ---
+    ioio_en = himoBOT2.get_page_info_from_wikipedia(wiki, encat2)
+    # ---
     if ioio_en:
-        # en_temp = ioio_en.get(encat2) or ioio_en
         # ---
         if not ioio_en:
             logger.info(f"<<lightred>> not ioio_en:({encat2})")
@@ -151,71 +149,44 @@ def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en", arcat_created=Fa
                 logger.info(f"<<lightred>> ioio_en:({encat2}) isRedirectPage")
                 return False
         # ---
-        # logger.info(ioio_en)
-        # ---
         ar_link = ioio_en.get("langlinks", {}).get("ar", "")
         if ar_link and ar_link != arcat2:
             logger.info(f"<<lightred>> find ar in encat. ({ar_link}) != ({arcat2}) ")
             return False
-            # keepwork = False
         # ---
         en_temp = ioio_en.get("templates", {})
-        # if encat2 in ioio_en and 'templates' in ioio_en[encat2]:
-        # logger.info(f"<<lightred>> en_temp:{','.join(en_temp)}" )
         for TargetTemp in en_temp:
             Target_Temp2 = TargetTemp.replace("Template:", "")
             if Target_Temp2.lower() in NO_Templates_lower and "keep" not in sys.argv:
-                no_wrk = Target_Temp2
-                logger.info(f"<<lightred>> encat:{encat2} has temp:{no_wrk} ")
+                logger.info(f"<<lightred>> encat:{encat2} has temp:{Target_Temp2} ")
                 return False
-                # break
     # ---
-    # if not no_wrk:
-    if keepwork:
+    # فحص التصنيف العربي
+    ioio_ar = himoBOT2.get_page_info_from_wikipedia("ar", arcat2)
+    # ---
+    if not ioio_ar:
+        logger.info(f"<<lightred>> not ioio_ar:({arcat2})")
+        return False
+    # ---
+    elif ioio_ar:
+        if not ioio_ar["exists"]:
+            logger.info(f"<<lightred>> ioio_ar:({arcat2}) not exists")
+        elif ioio_ar["isRedirectPage"]:
+            logger.info(f"<<lightred>> ioio_ar:({arcat2}) isRedirectPage")
+            return False
+    # ---
+    if ioio_ar:
+        en_link = ioio_ar.get("langlinks", {}).get("en", "")
+        if en_link and en_link != encat2:
+            logger.info(f"<<lightred>> find en in ioio_ar. ({en_link}) != ({encat2}) ")
+            return False
         # ---
-        # فحص التصنيف العربي
-        ioio_ar = arpage or himoBOT2.get_page_info_from_wikipedia("ar", arcat2)
-        # ---
-        if not ioio_ar:
-            logger.info(f"<<lightred>> not ioio_ar:({arcat2})")
-            return False  # return []
-        # ---
-        elif ioio_ar:
-            # if not ioio_ar['exists'] and not arcat_created :
-            if not ioio_ar["exists"]:
-                logger.info(f"<<lightred>> ioio_ar:({arcat2}) not exists")
-                if not arcat_created:
-                    return False  # return []
-            elif ioio_ar["isRedirectPage"]:
-                logger.info(f"<<lightred>> ioio_ar:({arcat2}) isRedirectPage")
-                return False  # return []
-        # ---
-        if ioio_ar:
-            # for x in ioio_ar:
-            # ar_temp = ioio_ar.get(arcat2) or ioio_ar
-            # ---
-            # logger.info(ioio_ar)
-            # ---
-            en_link = ioio_ar.get("langlinks", {}).get("en", "")
-            if en_link and en_link != encat2:
-                logger.info(f"<<lightred>> find en in ioio_ar. ({en_link}) != ({encat2}) ")
-                keepwork = False
+        ar_temp = ioio_ar.get("templates", {})
+        for TargetTemp in ar_temp:
+            TargetTemp2 = TargetTemp.replace("قالب:", "")
+            if TargetTemp2 in NO_Templates_ar and "keep" not in sys.argv:
+                logger.info(f"<<lightred>> arcat2:{arcat2} has temp:{TargetTemp2} ")
                 return False
-            # ---
-            ar_temp = ioio_ar.get("templates", {})
-            # logger.info(f"<<lightred>> ar_temp:{','.join(ar_temp)}" )
-            # if arcat2 in ioio_ar and 'templates' in ioio_ar[arcat2]:
-            for TargetTemp in ar_temp:
-                TargetTemp2 = TargetTemp.replace("قالب:", "")
-                if TargetTemp2 in NO_Templates_ar and "keep" not in sys.argv:
-                    no_wrk = TargetTemp2
-                    logger.info(f"<<lightred>> arcat2:{arcat2} has temp:{no_wrk} ")
-                    keepwork = False
-                    # break
-                    return False
-    # ---
-    if keepwork is False:
-        return []
     # ---
     result = do_sql(encat, arcat, us_sql=us_sql, wiki=wiki)
     # ---

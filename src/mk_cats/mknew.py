@@ -14,12 +14,12 @@ from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2
 from ..c18_new.bots.cat_tools_argv import use_sqldb
 from .add_bot import add_to_final_list
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
-from ..wiki_api import himoBOT2
 from ..wd_bots import to_wd
 from ..helps import logger
 from .utils import filter_en
 from .create_category_page import new_category
 from .utils.check_en import check_en_temps
+from ..new_api.page import MainPage
 
 try:
     from ArWikiCats import resolve_arabic_category_label, logger as cat_logger  # type: ignore
@@ -96,17 +96,16 @@ def scan_ar_title(title):
     return True
 
 
-def check_if_artitle_exists(en_title_1, test_title):
+def check_if_artitle_exists(test_title):
     if not test_title.startswith("تصنيف:"):
         test_title = f"تصنيف:{test_title}"
 
-    test_page = himoBOT2.get_page_info_from_wikipedia(wiki_site_ar["code"], test_title, Workredirects=False)
-
-    if test_page and test_page["exists"]:
+    page = MainPage(test_title, wiki_site_ar["code"], family="wikipedia")
+    # ---
+    if page.exists():
         logger.debug(f"<<lightred>>* category:{test_title} already exists in arwiki.")
-
         return False
-
+    # ---
     return True
 
 
@@ -122,7 +121,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     en_page_title = en_page_title.replace("[[", "").replace("]]", "").strip()
     en_page_title = en_page_title.replace("_", " ")
 
-    if not check_if_artitle_exists(en_page_title, ar_title):
+    if not check_if_artitle_exists(ar_title):
         logger.debug("<<lightred>> artitle already exists.")
         return []
 
@@ -214,7 +213,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
 
         add_SubSub(en_cats_of_new_cat, hhh)
 
-        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True, arcat_created=True) or []
+        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
 
         if listen != []:
             add_to_final_list(listen, ar_title, callback=callback)

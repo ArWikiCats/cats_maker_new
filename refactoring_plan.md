@@ -49,7 +49,7 @@ create_categories_from_list(liste, uselabs, callback)
                 │   make_ar(en_page_title, ar_title, callback)
                 │       ├─ scan_ar_title(ar_title) → checked_title
                 │       │   └─ Get_Sitelinks_From_wikidata()
-                │       ├─ check_if_artitle_exists(en_title, ar_title) → bool
+                │       ├─ check_if_artitle_exists(ar_title) → bool
                 │       │   ├─ get_page_info_from_wikipedia()
                 │       │   └─ return exists or not
                 │       ├─ find_LCN(en_link) → ar_title
