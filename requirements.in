@@ -4,5 +4,6 @@ SPARQLWrapper>=2.0.0
 pymysql
 jsonlines
 sqlite_utils
+requests
 pytest
 pytest-mock
