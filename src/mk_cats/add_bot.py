@@ -15,7 +15,7 @@ Dont_add_to_pages = Dont_add_to_pages_def()
 
 def add_to_page(page_title, arcat, callback=None):
     # ---
-    start = time.time()
+    start = time.perf_counter()
     # ---
     logger.info(f"add_to_page page_title:{page_title} , cat:{arcat}")
     # ---
@@ -86,7 +86,7 @@ def add_to_page(page_title, arcat, callback=None):
             except Exception as e:
                 logger.info(f"<<lightred>> Error in callback: {e}")
     # ---
-    final = time.time()
+    final = time.perf_counter()
     delta = int(final - start)
     logger.info(f"add_bot.py done in {delta} seconds")
 

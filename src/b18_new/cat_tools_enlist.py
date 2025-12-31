@@ -3,7 +3,7 @@
 
 """
 from ..c18_new.bots.cat_tools_argv import use_sqldb
-from ..api_sql import GET_SQL, MySQLdb_finder_New
+from ..api_sql import GET_SQL, get_exclusive_category_titles
 from ..helps import logger
 from .sql_cat import make_ar_list_newcat2
 from .sql_cat_checker import validate_categories_for_new_cat
@@ -14,12 +14,8 @@ pages_in_arcat_toMake = {}
 def extract_fan_page_titles(enpageTitle):
     if GET_SQL() and use_sqldb[1]:
         cat2 = enpageTitle.replace("Category:", "").replace("category:", "").strip()
-        # ---
-        try:
-            fapages = MySQLdb_finder_New(cat2, "")
-        except Exception as e:
-            logger.exception(e)
-        # ---
+        fapages = get_exclusive_category_titles(cat2, "") or []
+
     logger.info(f"<<lightgreen>>Adding {len(fapages)} pages to fapage lists<<default>>")
     return fapages
 

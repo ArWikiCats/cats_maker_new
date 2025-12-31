@@ -19,12 +19,13 @@ def decode_bytes(x):
     return x
 
 
-def MySQLdbar(arcatTitle):
+def fetch_arcat_titles(arcatTitle):
     # ---
-    arcats = []
+    if not arcatTitle:
+        return []
     # ---
     if not wiki_sql.GET_SQL():
-        return arcats
+        return []
     # ---
     arcatTitle = re.sub(r"تصنيف:", "", arcatTitle)
     arcatTitle = re.sub(r" ", "_", arcatTitle)
@@ -46,6 +47,8 @@ def MySQLdbar(arcatTitle):
     host, dbs_p = wiki_sql.make_labsdb_dbs_p("ar")
     # ---
     ar_results = make_sql_connect(ar_queries, db=dbs_p, host=host) or []
+    # ---
+    arcats = []
     # ---
     if not ar_results or len(ar_results) == 0:
         return arcats
@@ -70,11 +73,10 @@ def MySQLdbar(arcatTitle):
 def Make_sql(queries, wiki="", printqua=False):
     encats = []
     # ---
-    start = time.time()
-    final = time.time()
+    start = time.perf_counter()
     # ---
     if not wiki_sql.GET_SQL():
-        return encats
+        return []
     # ---
     if not wiki:
         wiki = "enwiki"
@@ -84,18 +86,17 @@ def Make_sql(queries, wiki="", printqua=False):
     if printqua:
         logger.info(queries)
     # ---
-    TTime = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
-    logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {TTime}')
+    start_time = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
+    logger.debug(f'<<yellow>> API/sql_py Make_sql 1 db:"{dbs_p}". {start_time}')
     # ---
     en_results = make_sql_connect(queries, host=host, db=dbs_p) or []
-    final = time.time()
-    # ---end of sql--------------------------------------------
+    # ---
     for raw in en_results:
         tit = decode_bytes(raw[0])
         tit = re.sub(r" ", "_", tit)
         encats.append(tit)
     # ---
-    delta = int(final - start)
+    delta = time.perf_counter() - start
     # ---
     logger.debug(f'API/sql_py Make_sql len(encats) = "{len(encats)}", in {delta} seconds')
     # ---
@@ -104,17 +105,33 @@ def Make_sql(queries, wiki="", printqua=False):
     return encats
 
 
-def MySQLdb_finder_New(encatTitle, arcatTitle):
+def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
     # ---
     logger.debug(f"<<yellow>> sql . MySQLdb_finder {encatTitle}: ")
     # ---
+    if not wiki_sql.GET_SQL():
+        return []
+    # ---
+    start = time.perf_counter()
+    # ---
+    encats = fetch_encat_titles(encatTitle)
+    # ---
+    arcats = fetch_arcat_titles(arcatTitle)
+    # ---
+    logger.debug(f">> {encatTitle=}, <<yellow>> {len(encats):,} <<default>> {len(arcats):,} ")
+    # ---
+    final_cat = [x for x in encats if x not in arcats]
+    # ---
+    delta = int(time.perf_counter() - start)
+    # ---
+    logger.info(f'sql_bot.py: get_exclusive_category_titles len(final_cat) = "{len(final_cat)}", in {delta} seconds')
+    # ---
+    return final_cat
+
+
+def fetch_encat_titles(encatTitle):
     item = encatTitle.replace("category:", "").replace("Category:", "").replace(" ", "_")
     item = str(encatTitle).replace("[[en:", "").replace("]]", "").replace(" ", "_").replace("Category:", "")
-    # ---
-    if not wiki_sql.GET_SQL():
-        return False
-    # ---
-    start = time.time()
     # ---
     item = escape_string(item)
     # ---
@@ -123,28 +140,7 @@ def MySQLdb_finder_New(encatTitle, arcatTitle):
         GROUP BY ll_title ;"""
     # ---
     encats = Make_sql(queries)
-    # ---
-    arcats = []
-    # ---
-    if arcatTitle:
-        arcats = MySQLdbar(arcatTitle)
-    # ---
-    logger.debug(f"encats: <<yellow>> {len(encats)} <<default>> {item}")
-    # ---
-    final_cat = []
-    # ---
-    for cat in encats:
-        if cat not in arcats:
-            final_cat.append(str(cat))
-    # ---
-    delta = int(time.time() - start)
-    # ---
-    logger.info(f'sql_bot.py: MySQLdb_finder_New len(final_cat) = "{len(final_cat)}", in {delta} seconds')
-    # ---
-    if final_cat:
-        return final_cat
-    # ---
-    return False
+    return encats
 
 
 def find_sql(enpageTitle):
@@ -154,7 +150,7 @@ def find_sql(enpageTitle):
     if not wiki_sql.GET_SQL():
         return []
     # ---
-    fapages = MySQLdb_finder_New(enpageTitle, "")
+    fapages = get_exclusive_category_titles(enpageTitle, "")
     # ---
     if not fapages:
         return []

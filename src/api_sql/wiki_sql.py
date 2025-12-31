@@ -170,12 +170,12 @@ def sql_new(queries, wiki="", printqua=False, values=[]):
         logger.info("no GET_SQL()")
         return []
     # ---
-    start = time.time()
-    final = time.time()
+    start = time.perf_counter()
+    final = time.perf_counter()
     # ---
     rows = mysql_client.make_sql_connect(queries, db=dbs_p, host=host, values=values)
     # ---
-    final = time.time()
+    final = time.perf_counter()
     # ---
     delta = int(final - start)
     # ---

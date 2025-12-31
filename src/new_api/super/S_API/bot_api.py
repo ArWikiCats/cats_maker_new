@@ -866,7 +866,7 @@ class NEW_API(BOTS_APIS):
     def get_cxtoken(self):
         # ---
         if self.cxtoken and self.cxtoken_expiration:
-            current_time = int(time.time())
+            current_time = int(time.perf_counter())
             if current_time < self.cxtoken_expiration:
                 return self.cxtoken
             else:

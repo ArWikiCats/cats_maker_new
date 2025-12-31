@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 
-from ..api_sql import GET_SQL, MySQLdb_finder_New, sql_new_title_ns, add_nstext_to_title, sql_new
+from ..api_sql import GET_SQL, get_exclusive_category_titles, sql_new_title_ns, add_nstext_to_title, sql_new
 """
-from .sql_bot import MySQLdb_finder_New, find_sql
+from .sql_bot import get_exclusive_category_titles, find_sql
 from .wiki_sql import GET_SQL, sql_new_title_ns, add_nstext_to_title, sql_new
 
 __all__ = [
-    "MySQLdb_finder_New",
+    "get_exclusive_category_titles",
     "GET_SQL",
     "sql_new_title_ns",
     "add_nstext_to_title",

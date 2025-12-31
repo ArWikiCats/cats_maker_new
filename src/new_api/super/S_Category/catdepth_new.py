@@ -62,7 +62,7 @@ def subcatquery(login_bot, title, sitecode=SITECODE, family=FAMILY, **kwargs):
             f"<<lightyellow>> catdepth_new.py sub cat query for {sitecode}:{title}, depth:{args2['depth']}, ns:{args2['ns']}, onlyns:{args2['onlyns']}"
         )
     # ---
-    start = time.time()
+    start = time.perf_counter()
     # ---
     bot = CategoryDepth(login_bot, title, **kwargs)
     # ---
@@ -71,7 +71,7 @@ def subcatquery(login_bot, title, sitecode=SITECODE, family=FAMILY, **kwargs):
     if get_revids:
         result = bot.get_revids()
     # ---
-    delta = int(time.time() - start)
+    delta = int(time.perf_counter() - start)
     # ---
     if "printresult" in sys.argv:
         logger.debug(result)
