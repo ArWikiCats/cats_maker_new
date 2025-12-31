@@ -28,7 +28,7 @@ Cats Maker New is a Python automation tool for creating Arabic Wikipedia categor
 - Line length: 120 characters
 - Use Black formatting style
 - Follow isort for import organization (multi-line imports with trailing commas)
-- Target Python 3.10+ features
+- Minimum Python version: 3.10 (currently tested with 3.13)
 
 ### Commands
 ```bash
@@ -167,6 +167,7 @@ python run.py DEBUG -encat:Mathematics
 
 ### Arabic Label Resolution
 ```python
+# ar_make_lab is re-exported from mk_cats/__init__.py
 from src.mk_cats import ar_make_lab
 
 # Get Arabic label for English category
@@ -175,6 +176,7 @@ ar_label = ar_make_lab("Category:Science")
 
 ### Category Processing
 ```python
+# create_categories_from_list is re-exported from mk_cats/__init__.py
 from src.mk_cats import create_categories_from_list
 
 categories = ["Category:Science", "Category:Mathematics"]
