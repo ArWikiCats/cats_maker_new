@@ -39,7 +39,7 @@ class TestSqlConnectPymysql:
         assert result == ["default"]
 
     def test_uses_dict_cursor_when_requested(self, mocker):
-        """Test that _sql_connect_pymysql uses DictCursor when return_dict=True."""
+        """Test that _sql_connect_pymysql uses DictCursor."""
         import pymysql.cursors
 
         mock_conn = MagicMock()
@@ -54,32 +54,11 @@ class TestSqlConnectPymysql:
 
         from src.api_sql.mysql_client import _sql_connect_pymysql
 
-        _sql_connect_pymysql("SELECT 1", db="test", host="localhost", return_dict=True)
+        _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
 
         # Check that DictCursor was used
         call_kwargs = mock_connect.call_args[1]
         assert call_kwargs["cursorclass"] == pymysql.cursors.DictCursor
-
-    def test_uses_regular_cursor_by_default(self, mocker):
-        """Test that _sql_connect_pymysql uses regular Cursor by default."""
-        import pymysql.cursors
-
-        mock_conn = MagicMock()
-        mock_cursor = MagicMock()
-        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-        mock_conn.__exit__ = MagicMock(return_value=False)
-        mock_conn.cursor.return_value.__enter__ = MagicMock(return_value=mock_cursor)
-        mock_conn.cursor.return_value.__exit__ = MagicMock(return_value=False)
-        mock_cursor.fetchall.return_value = []
-
-        mock_connect = mocker.patch("pymysql.connect", return_value=mock_conn)
-
-        from src.api_sql.mysql_client import _sql_connect_pymysql
-
-        _sql_connect_pymysql("SELECT 1", db="test", host="localhost")
-
-        call_kwargs = mock_connect.call_args[1]
-        assert call_kwargs["cursorclass"] == pymysql.cursors.Cursor
 
     def test_executes_query_with_values(self, mocker):
         """Test that _sql_connect_pymysql passes values to execute."""
