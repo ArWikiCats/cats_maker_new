@@ -14,28 +14,7 @@ from src.wd_bots.utils.lag_bot import (
     newsleep,
     FFa_lag,
     Find_Lag,
-    session,
 )
-
-
-class TestSession:
-    """Tests for session dictionary"""
-
-    def test_is_dict(self):
-        """Test that session is a dictionary"""
-        assert isinstance(session, dict)
-
-    def test_has_key_1(self):
-        """Test that session has key 1"""
-        assert 1 in session
-
-    def test_has_url_key(self):
-        """Test that session has url key"""
-        assert "url" in session
-
-    def test_url_is_wikidata(self):
-        """Test that URL points to Wikidata"""
-        assert "wikidata.org" in session["url"]
 
 
 class TestNewsleep:
