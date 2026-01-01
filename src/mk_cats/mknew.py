@@ -39,7 +39,7 @@ Already_Created = []
 Range = {1: settings.range_limit} # TODO: remove it
 We_Try = {1: settings.category.we_try} # TODO: remove it
 
-# TODO: moce it to the settings file!
+# TODO: move it to the settings file!
 wiki_site_ar = {"family": "wikipedia", "code": "ar"}
 wiki_site_en = {"family": "wikipedia", "code": "en"}
 
