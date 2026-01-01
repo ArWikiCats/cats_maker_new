@@ -32,22 +32,16 @@ try:
 except ImportError:
     resolve_arabic_category_label = None
 
+DONE_D = []
+NewCat_Done = {}
+Already_Created = []
 
-def configure_parameters():
-    DONE_D = []
-    NewCat_Done = {}
-    Already_Created = []
-    Range = {1: settings.range_limit}
-    We_Try = {1: settings.category.we_try}
+Range = {1: settings.range_limit} # TODO: remove it
+We_Try = {1: settings.category.we_try} # TODO: remove it
 
-    wiki_site_ar = {"family": "wikipedia", "code": "ar"}
-    wiki_site_en = {"family": "wikipedia", "code": "en"}
-
-    return DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en
-
-
-DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en = configure_parameters()
-
+# TODO: move it to the settings file!
+wiki_site_ar = {"family": "wikipedia", "code": "ar"}
+wiki_site_en = {"family": "wikipedia", "code": "en"}
 
 def ar_make_lab(title, **Kwargs):
     okay = filter_en.filter_cat(title)
@@ -71,7 +65,7 @@ def scan_ar_title(title):
     cat3 = str(title)
     if cat3 in NewCat_Done.keys():
         NewCat_Done[cat3] += 1
-        if We_Try[1] and cat3 in get_SubSub_keys():
+        if settings.category.we_try and cat3 in get_SubSub_keys():
             logger.debug(f'<<lightred>>2070:<<lightpurple>>new trying with cat: "{title}"')
             NewCat_Done[cat3] += 1
             return True
@@ -223,12 +217,12 @@ def process_catagories(cat, arlab, num, lenth, callback=None):
 
     ma_table = make_ar(cat, arlab, callback=callback)
 
-    for i in range(0, Range[1]):
+    for i in range(0, settings.range_limit):
         if not ma_table:
             break
 
         logger.debug("===========================")
-        logger.debug(f"**process_catagories: range: {i} of {Range[1]}: for {len(ma_table)} cats.")
+        logger.debug(f"**process_catagories: range: {i} of {settings.range_limit}: for {len(ma_table)} cats.")
         logger.debug("===========================")
 
         enriched_titles = []
