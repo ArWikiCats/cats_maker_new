@@ -89,7 +89,6 @@ tests/
 │   ├── test_cat_tools2.py        # اختبار cat_tools2.py
 │   ├── test_dontadd.py           # اختبار dontadd.py
 │   ├── bots/
-│   │   ├── test_cat_tools_argv.py
 │   │   ├── test_english_page_title.py
 │   │   ├── test_filter_cat.py
 │   │   └── test_text_to_temp_bot.py
@@ -568,7 +567,7 @@ def test_using_fixtures(sample_category_data, mock_database):
 |--------|------------|-------------|--------|
 | api_sql | test_wiki_sql.py, test_mysql_client.py, test_sql_bot.py | 57 | ✅ |
 | b18_new | test_cat_tools.py, test_cat_tools_enlist.py, test_cat_tools_enlist2.py, test_sql_cat.py | 45 | ✅ |
-| c18_new/bots | test_cat_tools_argv.py, test_english_page_title.py, test_filter_cat.py, test_text_to_temp_bot.py | 85 | ✅ |
+| c18_new/bots | test_english_page_title.py, test_filter_cat.py, test_text_to_temp_bot.py | 85 | ✅ |
 | c18_new/cats_tools | test_ar_from_en.py, test_ar_from_en2.py | 30 | ✅ |
 | c18_new/tools_bots | test_sort_bot.py, test_temp_bot.py | 27 | ✅ |
 | c18_new | test_cat_tools2.py, test_dontadd.py | 18 | ✅ |

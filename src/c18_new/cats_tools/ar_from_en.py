@@ -1,14 +1,12 @@
 #!/usr/bin/python3
-"""
+""" """
 
-"""
-
-from ...wiki_api import find_LCN, get_arpage_inside_encat
+from ...api_sql import find_sql
 from ...b18_new import get_ar_list_from_cat
-from ..bots.cat_tools_argv import EEn_site, use_sqldb
+from ...config import settings
+from ...wiki_api import find_LCN, get_arpage_inside_encat
 from ..cat_tools2 import Categorized_Page_Generator
 from ..log import logger
-from ...api_sql import find_sql
 
 
 def retrieve_ar_list_from_category(encat, enpageTitle):
@@ -75,7 +73,7 @@ def make_ar_list_from_en_cat(encat):
     # ---
     listenpageTitle2 = []
     # ---
-    if use_sqldb[1]:
+    if settings.database.use_sql:
         listenpageTitle2 = find_sql(enpageTitle)
     # ---
     if not listenpageTitle2:
@@ -106,7 +104,7 @@ def Get_ar_list_from_en_list(enlist):
             if part_list.startswith("|"):
                 part_list = part_list[len("|") :]
             # ---
-            new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=EEn_site["code"])
+            new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=settings.EEn_site["code"])
             # ---
             if new_list:
                 for p_w in new_list:
