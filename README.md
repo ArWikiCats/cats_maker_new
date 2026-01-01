@@ -173,7 +173,7 @@ English Category Name
 3. **Install optional dependencies (for full functionality):**
    ```bash
    # For Arabic category label resolution
-   pip install ArWikiCats --pre
+   pip install ArWikiCats==0.1.0b1
    ```
 
 ### Dependencies
