@@ -28,7 +28,53 @@ def extract_wikidata_qid(text):
     return qid
 
 
-def english_page_link(link, firstsite_code, second_site_code, text=""):
+def english_page_link_from_text(link, firstsite_code, second_site_code, text="") -> str:
+    # ---
+    tubb = (link, firstsite_code, second_site_code, "en_links")
+    # ---
+    logger.debug(">>sssss text: ")
+    qid = extract_wikidata_qid(text)
+    # ---
+    if not qid.startswith("Q"):
+        logger.debug(">> No valid qid found in text.")
+        return ""
+    # ---
+    logger.debug(f">> get qid from text: {qid} ")
+    logger.debug(f">> qid {qid} ")
+    # ---
+    data = Get_Sitelinks_from_qid(ssite="", ids=qid)
+    # ---
+    sitelinks = data.get("sitelinks", {})
+    # ---
+    logger.debug(f">> Sitelinks {len(sitelinks)=}")
+    # ---
+    table = {}
+    for x in sitelinks:
+        x2 = re.sub(r"wiki$", "", x)
+        table[x2] = sitelinks[x]
+    # ---
+    result = table.get(second_site_code, "")
+    # ---
+    logger.debug(f">> table: result : {result}")
+    # ---
+    if not result:
+        logger.debug(">> No link found for the specified site code.")
+        set_cache_L_C_N(tubb, False)
+        return False
+    # ---
+    if "#" in result:
+        logger.debug(">> Link contains '#', indicating a section link.")
+        set_cache_L_C_N(tubb, False)
+        return False
+    # ---
+    oppsite_tubb = (result, second_site_code, firstsite_code, "en_links")
+    set_cache_L_C_N(oppsite_tubb, link)
+    set_cache_L_C_N(tubb, result)
+    # ---
+    return result
+
+
+def english_page_link_from_api(link, firstsite_code, second_site_code, text=""):
     """
     This function is used to find the English page link for a given page on a Wikipedia-like site.
 
@@ -36,7 +82,6 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
         link (str): The title of the page to find the English link for.
         firstsite_code (str): The language code of the site that the page is on.
         second_site_code (str): The language code of the site to find the link for.
-        text (str, optional): The text of the page. Defaults to "".
 
     Returns:
         str: The title of the English page that corresponds to the given page, or False if no such page exists.
@@ -54,50 +99,9 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
     # ---
     link1 = link.replace("_", " ")
     # ---
-    if text:
-        logger.debug(">>sssss text: ")
-        qid = extract_wikidata_qid(text)
-        # ---
-        if qid.startswith("Q"):
-            logger.debug(f">> get qid from text: {qid} ")
-            logger.debug(f">> qid {qid} ")
-            Sitelinks = Get_Sitelinks_from_qid(ssite="", ids=qid)
-            # ---
-            if Sitelinks and "sitelinks" in Sitelinks:
-                # ---
-                Sitelinks = Sitelinks["sitelinks"]
-                logger.debug(">> Sitelinks ")
-                logger.debug(Sitelinks)
-                # ---
-                table = {}
-                for x in Sitelinks:
-                    x2 = re.sub(r"wiki$", "", x)
-                    table[x2] = Sitelinks[x]
-                # ---
-                # sitewiki = second_site_code + "wiki"
-                # logger.debug('>> sitewiki ' + sitewiki   )
-                logger.debug(table)
-                # ---
-                if second_site_code in table:
-                    result = table[second_site_code]
-                    logger.debug(">> table: result : " + result)
-                    if result.find("#") != -1:
-                        set_cache_L_C_N(tubb, False)
-                        return False
-                    oppsite_tubb = (result, second_site_code, firstsite_code, "en_links")
-                    set_cache_L_C_N(oppsite_tubb, link)
-                    # ---
-                    set_cache_L_C_N(tubb, result)
-                    # logger.debug( f" table ({enn})." )
-                    return result
-            # ---
-            logger.debug(">> Sitelinks ")
-            logger.debug(Sitelinks)
+    sasa = find_LCN(link, prop="categories|langlinks", first_site_code=firstsite_code) or {}
+    logger.debug(f">> sasa: {len(sasa)=}")
     # ---
-    # link = link.replace(' ', '_')
-    sasa = find_LCN(link, prop="categories|langlinks", first_site_code=firstsite_code)
-    # sasa = {}
-    logger.debug(sasa)
     results = ""
     # ---
     if sasa and link1 in sasa:
@@ -110,7 +114,7 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
             if ar_to_match and ar_to_match != link1:
                 logger.info(f">> ar_to_match:({ar_to_match}) != ar:({link1}).")
                 return False
-        # ---
+    # ---
     if text and results == "":
         match = re.search(r"\[\[en:(Category\:.+?)\]\]", text)
         if match:
@@ -120,14 +124,10 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
     Sitelinks2 = {}
     # ---
     if results:
-        # ---
         tavr = Get_Sitelinks_From_wikidata("enwiki", results)
-        # ---
         if tavr and "sitelinks" in tavr:
-            # ---
             Sitelinks2 = tavr["sitelinks"]
     else:
-        # ---
         tavr = Get_Sitelinks_From_wikidata(firstsite_code + "wiki", link)
         # ---
         if tavr and "sitelinks" in tavr:
@@ -135,14 +135,11 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
             Sitelinks2 = tavr["sitelinks"]
             logger.info("sitelinks 2020.")
     # ---
-    if Sitelinks2 != {}:
-        table = {}
-        for x in Sitelinks2:
-            x2 = re.sub(r"wiki$", "", x)
-            table[x2] = Sitelinks2[x]
+    for x in Sitelinks2:
+        x2 = re.sub(r"wiki$", "", x)
         # ---
-        if firstsite_code in table:
-            link1_other = table[firstsite_code]
+        if firstsite_code == x2:
+            link1_other = Sitelinks2[firstsite_code]
             if link1 != link1_other:
                 logger.info(f"link1 ({link1}) != link1_other ({link1_other}).")
                 set_cache_L_C_N(tubb, False)
@@ -157,6 +154,29 @@ def english_page_link(link, firstsite_code, second_site_code, text=""):
     set_cache_L_C_N(tubb, False)
     # ---
     return False
+
+
+def english_page_link(link, firstsite_code, second_site_code, text=""):
+    """
+    This function is used to find the English page link for a given page on a Wikipedia-like site.
+
+    Args:
+        link (str): The title of the page to find the English link for.
+        firstsite_code (str): The language code of the site that the page is on.
+        second_site_code (str): The language code of the site to find the link for.
+        text (str, optional): The text of the page. Defaults to "".
+
+    Returns:
+        str: The title of the English page that corresponds to the given page, or False if no such page exists.
+    """
+    if text:
+        # ---
+        results = english_page_link_from_text(link, firstsite_code, second_site_code, text)
+        if results:
+            return results
+    # ---
+    results = english_page_link_from_api(link, firstsite_code, second_site_code, text)
+    return results
 
 
 def get_en_link_from_ar_text(title, site, sitetarget):

@@ -4,6 +4,7 @@ Lag handling functionality
 This module provides functions for handling lag in Wikidata API requests.
 """
 
+import functools
 import re
 import sys
 import time
@@ -13,12 +14,6 @@ import requests
 from ...helps import logger
 from ...config import settings
 
-# ---
-session = {1: None}
-# ---
-# Use wikidata endpoint from centralized config
-session["url"] = settings.wikidata.endpoint
-# ---
 newsleep = {1: 1}
 # ---
 maxlag = settings.wikidata.maxlag
@@ -28,6 +23,43 @@ Find_Lag = {}
 Find_Lag_o = {1: True}
 Find_Lag[2] = time.time()
 Find_Lag[3] = 0
+
+
+@functools.lru_cache(maxsize=1)
+def _load_session() -> requests.Session:
+    session = requests.session()
+    headers = {"User-Agent": settings.wikipedia.user_agent}
+    session.headers.update(headers)
+    return session
+
+
+def post_request_for_lag() -> int:
+    r4fttext = ""
+    # ---
+    params = {
+        "action": "query",
+        "format": "json",
+        "maxlag": -1,
+        "titles": "MediaWiki",
+    }
+    # ---
+    session = _load_session()
+    # ---
+    try:
+        r4ft = session.post(settings.wikidata.endpoint, data=params)
+        r4fttext = r4ft.text
+        # ---
+    except Exception as e:
+        logger.warning(e, "log Error writing")
+    # ---
+    lag = re.match(r".*Waiting for [^ ]*: (\d+\.*\d*) seconds.*", r4fttext)
+    # ---
+    if not lag:
+        return 0
+    # ---
+    result = int(float(lag.group(1)))
+    # ---
+    return result
 
 
 def find_lag(err) -> None:
@@ -49,13 +81,6 @@ def make_sleep_def():
     # ---
     frr = int(time.time() - Find_Lag[2])
     # ---
-    params = {
-        "action": "query",
-        "format": "json",
-        "maxlag": -1,
-        "titles": "MediaWiki",
-    }
-    # ---
     if Find_Lag_o[1] or frr > 119:
         # ---
         Find_Lag_o[1] = False
@@ -63,25 +88,11 @@ def make_sleep_def():
         Find_Lag[3] += 1
         Find_Lag[2] = time.time()
         # ---
-        r4fttext = ""
+        lag = post_request_for_lag()
         # ---
-        if not session[1]:
-            session[1] = requests.session()
-            headers = {"User-Agent": settings.wikipedia.user_agent}
-            session[1].headers.update(headers)
-        # ---
-        try:
-            r4ft = session[1].post(session["url"], data=params)
-            r4fttext = r4ft.text
-            # ---
-        except Exception as e:
-            logger.warning(e, "log Error writing")
-        # ---
-        lag = re.match(r".*Waiting for [^ ]*: (\d+\.*\d*) seconds.*", r4fttext)
-        # ---
-        if lag:
-            FFa_lag[1] = int(float(lag.group(1)))
-            logger.debug(f"<<lightpurple>> bot.py {Find_Lag[3]} find lag:{float(lag.group(1))}, frr:{frr}")
+        if lag != 0:
+            FFa_lag[1] = int(float(lag))
+            logger.debug(f"<<lightpurple>> bot.py {Find_Lag[3]} find lag:{float(lag)}, frr:{frr}")
     # ---
     fain = 0
     # ---
@@ -110,7 +121,6 @@ def make_sleep_def():
     # ---
     if newsleep[1] != fain:
         logger.debug(f"change newsleep from {newsleep[1]} to {fain}, <<lightpurple>>  max lag:{FFa_lag[1]}.")
-        # logger.debug( '<<lightpurple>> bot.py make_sleep_def...' )
         newsleep[1] = fain
 
 
@@ -155,3 +165,9 @@ def bad_lag(nowait):
         return True
     # ---
     return False
+
+
+__all__ = [
+    "bad_lag",
+    "do_lag",
+]
