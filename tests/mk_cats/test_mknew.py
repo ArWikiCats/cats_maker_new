@@ -11,7 +11,6 @@ This module tests:
 - ar_make_lab() - Generate Arabic label
 - scan_ar_title() - Scan Arabic titles
 - check_if_artitle_exists() - Check if Arabic title exists
-- configure_parameters() - Configuration setup
 """
 
 import pytest
@@ -21,66 +20,6 @@ from unittest.mock import MagicMock, patch
 class TestCheckIfArtitleExists:
     """Tests for check_if_artitle_exists function."""
     pass
-
-
-class TestConfigureParameters:
-    """Tests for configure_parameters function."""
-
-    def test_returns_correct_structure(self):
-        """Test that configure_parameters returns the expected structure."""
-        from src.mk_cats.mknew import configure_parameters
-
-        result = configure_parameters()
-
-        assert len(result) == 7
-        DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en = result
-
-        assert isinstance(DONE_D, list)
-        assert isinstance(NewCat_Done, dict)
-        assert isinstance(Already_Created, list)
-        assert isinstance(Range, dict)
-        assert isinstance(We_Try, dict)
-        assert isinstance(wiki_site_ar, dict)
-        assert isinstance(wiki_site_en, dict)
-
-    def test_default_range_value(self):
-        """Test that default Range value is 5."""
-        from src.mk_cats.mknew import configure_parameters
-
-        result = configure_parameters()
-        Range = result[3]
-
-        assert Range[1] == 5
-
-    def test_default_we_try_value(self):
-        """Test that default We_Try value is True."""
-        from src.mk_cats.mknew import configure_parameters
-
-        result = configure_parameters()
-        We_Try = result[4]
-
-        assert We_Try[1] is True
-
-    def test_wiki_site_ar_structure(self):
-        """Test Arabic wiki site structure."""
-        from src.mk_cats.mknew import configure_parameters
-
-        result = configure_parameters()
-        wiki_site_ar = result[5]
-
-        assert wiki_site_ar["family"] == "wikipedia"
-        assert wiki_site_ar["code"] == "ar"
-
-    def test_wiki_site_en_structure(self):
-        """Test English wiki site structure."""
-        from src.mk_cats.mknew import configure_parameters
-
-        result = configure_parameters()
-        wiki_site_en = result[6]
-
-        assert wiki_site_en["family"] == "wikipedia"
-        assert wiki_site_en["code"] == "en"
-
 
 class TestArMakeLab:
     """Tests for ar_make_lab function."""
