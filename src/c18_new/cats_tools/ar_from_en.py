@@ -104,7 +104,7 @@ def Get_ar_list_from_en_list(enlist):
             if part_list.startswith("|"):
                 part_list = part_list[len("|") :]
             # ---
-            new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=settings.EEn_site["code"])
+            new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=settings.EEn_site.code)
             # ---
             if new_list:
                 for p_w in new_list:

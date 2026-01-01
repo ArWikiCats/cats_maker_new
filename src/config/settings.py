@@ -450,6 +450,7 @@ class Settings:
                 self.category.work_fr = True
             if arg_name == "descqs":
                 self.category.descqs = True
+
             if arg_name in ("-minmembers", "-min-members") and value:
                 self.category.min_members = _safe_int(value, self.category.min_members)
 
@@ -460,6 +461,7 @@ class Settings:
                 self.query.depth = _safe_int(value, self.query.depth)
             if arg_name in ("to", "-to") and value:
                 self.query.to_limit = _safe_int(value, self.query.to_limit)
+
             if arg_name == "nons10":
                 self.query.ns_no_10 = True
             if arg_name == "ns:14":
@@ -472,9 +474,11 @@ class Settings:
                 if value in ("wikiquote", "wikisource"):
                     self.site.custom_family = value
                     self.category.use_labels = True
+
             if arg_name in ("-uselang", "uselang") and value:
                 self.site.custom_lang = value
                 self.category.make_new_cat = False
+
             if arg_name in ("-slang", "slang") and value:
                 self.site.secondary_lang = value
                 self.site.secondary_family = "wikipedia"

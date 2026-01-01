@@ -19,10 +19,10 @@ def get_ar_list_title_from_en_list(enlist, wiki="en"):
             if part_list.startswith("|"):
                 part_list = part_list[len("|") :]
             # ---
-            sito_code = settings.EEn_site["code"]
+            sito_code = settings.EEn_site.code
             # ---
             if wiki == "fr":
-                sito_code = settings.FR_site["code"]
+                sito_code = settings.FR_site.code
             # ---
             new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=sito_code)
             # ---

@@ -347,8 +347,8 @@ print(settings.category.we_try)  # True
 print(settings.bot.ask)  # False
 
 # Access computed site properties
-print(settings.EEn_site["code"])  # 'en'
-print(settings.AAr_site["family"])  # 'wikipedia'
+print(settings.EEn_site.code)  # 'en'
+print(settings.AAr_site.family)  # 'wikipedia'
 
 # Access global settings
 print(settings.range_limit)  # 5
