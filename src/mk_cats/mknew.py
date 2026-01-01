@@ -1,28 +1,33 @@
 """
 python3 core8/pwb.py mk_cats/mknew
 """
-from ..b18_new import MakeLitApiWay
-from ..b18_new import get_listenpageTitle
-from ..b18_new import add_SubSub, get_SubSub_keys, get_SubSub_value
 
+from ..b18_new import (
+    MakeLitApiWay,
+    add_SubSub,
+    get_ar_list_from_en,
+    get_listenpageTitle,
+    get_SubSub_keys,
+    get_SubSub_value,
+    make_ar_list_newcat2,
+    validate_categories_for_new_cat,
+)
 from ..config import settings
-from ..wiki_api import find_Page_Cat_without_hidden
-
-from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2, validate_categories_for_new_cat
-
-from ..c18_new.bots.cat_tools_argv import use_sqldb
-from .add_bot import add_to_final_list
-from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
-from ..wd_bots import to_wd
 from ..helps import logger
-from .utils import filter_en
-from .create_category_page import new_category
-from .utils.check_en import check_en_temps
 from ..new_api.page import MainPage
+from ..wd_bots import to_wd
+from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
+from ..wiki_api import find_Page_Cat_without_hidden
 from ..wiki_api.check_redirects import remove_redirect_pages
+from .add_bot import add_to_final_list
+from .create_category_page import new_category
+from .utils import filter_en
+from .utils.check_en import check_en_temps
 
 try:
-    from ArWikiCats import resolve_arabic_category_label, logger as cat_logger  # type: ignore
+    from ArWikiCats import logger as cat_logger  # type: ignore
+    from ArWikiCats import resolve_arabic_category_label
+
     cat_logger.setLevel("ERROR")
 except ImportError:
     resolve_arabic_category_label = None
@@ -160,7 +165,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     # add cat to final list
     members = get_listenpageTitle(ar_title, en_page_title)
 
-    if use_sqldb[1] is False or members == []:
+    if settings.database.use_sql is False or members == []:
         liste = MakeLitApiWay(en_page_title, Type="all")
         if liste:
             for ccat in liste:

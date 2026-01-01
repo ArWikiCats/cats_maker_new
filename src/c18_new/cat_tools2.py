@@ -7,7 +7,6 @@
 """
 from ..config import settings
 from ..new_api.page import CatDepth
-from .bots.cat_tools_argv import EEn_site
 from .log import logger
 
 tatone_ns = [0, 14, 10, 100]
@@ -26,7 +25,9 @@ def Categorized_Page_Generator(enpageTitle, typee):
     # ---
     NN_cat_member = []
     # ---
-    cat_member = CatDepth(enpageTitle, sitecode=EEn_site["code"], family="wikipedia", depth=0, ns=nss, with_lang="ar")
+    cat_member = CatDepth(
+        enpageTitle, sitecode=settings.EEn_site["code"], family="wikipedia", depth=0, ns=nss, with_lang="ar"
+    )
     # ---
     for title in cat_member:
         if int(cat_member[title]["ns"]) in tatone_ns:

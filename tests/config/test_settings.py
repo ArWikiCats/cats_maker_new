@@ -4,6 +4,7 @@ Tests for the centralized settings configuration module.
 
 import os
 import sys
+
 import pytest
 
 
@@ -194,7 +195,7 @@ class TestSettings:
 
     def test_has_database_config(self):
         """Test Settings has database config."""
-        from src.config.settings import Settings, DatabaseConfig
+        from src.config.settings import DatabaseConfig, Settings
 
         s = Settings()
         assert isinstance(s.database, DatabaseConfig)
@@ -292,7 +293,7 @@ class TestGlobalSettings:
 
     def test_settings_is_settings_type(self):
         """Test that global settings is Settings type."""
-        from src.config import settings, Settings
+        from src.config import Settings, settings
 
         assert isinstance(settings, Settings)
 
@@ -348,3 +349,180 @@ class TestModuleExports:
         from src.config import DatabaseConfig
 
         assert DatabaseConfig is not None
+
+
+class TestWikiSiteInfo:
+    """Tests for WikiSiteInfo dataclass."""
+
+    def test_default_values(self):
+        """Test default values for WikiSiteInfo."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert info.family == "wikipedia"
+        assert info.code == "en"
+        assert info.use is False
+
+    def test_custom_values(self):
+        """Test custom values for WikiSiteInfo."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo(family="commons", code="commons", use=True)
+        assert info.family == "commons"
+        assert info.code == "commons"
+        assert info.use is True
+
+    def test_getitem_family(self):
+        """Test dictionary-like access for family."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo(family="wikiquote", code="en")
+        assert info["family"] == "wikiquote"
+
+    def test_getitem_code(self):
+        """Test dictionary-like access for code."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo(family="wikipedia", code="fr")
+        assert info["code"] == "fr"
+
+    def test_getitem_use(self):
+        """Test dictionary-like access for use."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo(use=True)
+        assert info["use"] is True
+
+    def test_getitem_key_1(self):
+        """Test dictionary-like access for key 1 (alias for use)."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo(use=True)
+        assert info[1] is True
+
+    def test_getitem_invalid_key(self):
+        """Test dictionary-like access raises KeyError for invalid key."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        with pytest.raises(KeyError):
+            _ = info["invalid"]
+
+    def test_contains_family(self):
+        """Test 'in' operator for family."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert "family" in info
+
+    def test_contains_code(self):
+        """Test 'in' operator for code."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert "code" in info
+
+    def test_contains_use(self):
+        """Test 'in' operator for use."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert "use" in info
+
+    def test_contains_key_1(self):
+        """Test 'in' operator for key 1."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert 1 in info
+
+    def test_not_contains_invalid(self):
+        """Test 'in' operator returns False for invalid key."""
+        from src.config.settings import WikiSiteInfo
+
+        info = WikiSiteInfo()
+        assert "invalid" not in info
+
+
+class TestEEnSiteProperty:
+    """Tests for Settings.EEn_site property."""
+
+    def test_default_values(self):
+        """Test default EEn_site values."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.EEn_site["family"] == "wikipedia"
+        assert s.EEn_site["code"] == "en"
+
+    def test_commons_site(self):
+        """Test EEn_site when use_commons is True."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        s.site.use_commons = True
+        assert s.EEn_site["family"] == "commons"
+        assert s.EEn_site["code"] == "commons"
+
+    def test_custom_family(self):
+        """Test EEn_site with custom_family."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        s.site.custom_family = "wikiquote"
+        assert s.EEn_site["family"] == "wikiquote"
+        assert s.EEn_site["code"] == "en"
+
+    def test_custom_lang(self):
+        """Test EEn_site with custom_lang."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        s.site.custom_lang = "de"
+        assert s.EEn_site["family"] == "wikipedia"
+        assert s.EEn_site["code"] == "de"
+
+
+class TestAArSiteProperty:
+    """Tests for Settings.AAr_site property."""
+
+    def test_default_values(self):
+        """Test default AAr_site values."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.AAr_site["family"] == "wikipedia"
+        assert s.AAr_site["code"] == "ar"
+
+    def test_custom_family(self):
+        """Test AAr_site with custom_family."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        s.site.custom_family = "wikiquote"
+        assert s.AAr_site["family"] == "wikiquote"
+        assert s.AAr_site["code"] == "ar"
+
+
+class TestFRSiteProperty:
+    """Tests for Settings.FR_site property."""
+
+    def test_default_values(self):
+        """Test default FR_site values."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.FR_site["code"] == "fr"
+        assert s.FR_site["use"] is False
+
+    def test_secondary_site(self):
+        """Test FR_site with secondary language."""
+        from src.config.settings import Settings
+
+        s = Settings()
+        s.site.use_secondary = True
+        s.site.secondary_lang = "es"
+        s.site.secondary_family = "wikipedia"
+        assert s.FR_site["code"] == "es"
+        assert s.FR_site["family"] == "wikipedia"
+        assert s.FR_site["use"] is True

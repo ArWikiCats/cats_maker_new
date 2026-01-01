@@ -205,6 +205,37 @@ class SiteConfig:
 
 
 @dataclass
+class WikiSiteInfo:
+    """Configuration for a wiki site with family and code.
+
+    Attributes:
+        family: Wiki family (e.g., "wikipedia", "commons", "wikiquote")
+        code: Language/site code (e.g., "en", "ar", "commons")
+        use: Whether this site is enabled for use
+    """
+
+    family: str = "wikipedia"
+    code: str = "en"
+    use: bool = False
+
+    def __getitem__(self, key):
+        """Support dictionary-like access for backward compatibility."""
+        if key == "family":
+            return self.family
+        elif key == "code":
+            return self.code
+        elif key == "use":
+            return self.use
+        elif key == 1:
+            return self.use
+        raise KeyError(key)
+
+    def __contains__(self, key):
+        """Support 'in' operator for backward compatibility."""
+        return key in ("family", "code", "use", 1)
+
+
+@dataclass
 class Settings:
     """Main settings container for all project configurations.
 
@@ -239,6 +270,42 @@ class Settings:
     debug: bool = False
     log_level: str = "INFO"
 
+    @property
+    def EEn_site(self) -> WikiSiteInfo:
+        """Get the English/source site configuration.
+
+        Returns computed site info based on commons, custom_family, and custom_lang settings.
+        """
+        if self.site.use_commons:
+            return WikiSiteInfo(family="commons", code="commons", use=True)
+        if self.site.custom_family:
+            return WikiSiteInfo(family=self.site.custom_family, code="en", use=True)
+        if self.site.custom_lang:
+            return WikiSiteInfo(family="wikipedia", code=self.site.custom_lang, use=True)
+        return WikiSiteInfo(family=self.wikipedia.en_family, code=self.wikipedia.en_code, use=False)
+
+    @property
+    def AAr_site(self) -> WikiSiteInfo:
+        """Get the Arabic/target site configuration.
+
+        Returns computed site info based on custom_family settings.
+        """
+        if self.site.custom_family:
+            return WikiSiteInfo(family=self.site.custom_family, code="ar", use=True)
+        return WikiSiteInfo(family=self.wikipedia.ar_family, code=self.wikipedia.ar_code, use=False)
+
+    @property
+    def FR_site(self) -> WikiSiteInfo:
+        """Get the secondary/French site configuration.
+
+        Returns computed site info based on secondary language settings.
+        """
+        if self.site.use_secondary:
+            return WikiSiteInfo(
+                family=self.site.secondary_family or "wikipedia", code=self.site.secondary_lang or "fr", use=True
+            )
+        return WikiSiteInfo(family="", code="fr", use=False)
+
     def __post_init__(self):
         """Process command-line arguments and environment variables."""
         self._process_env_vars()
@@ -258,9 +325,7 @@ class Settings:
         if os.environ.get("WIKIPEDIA_USER_AGENT"):
             self.wikipedia.user_agent = os.environ["WIKIPEDIA_USER_AGENT"]
         if os.environ.get("WIKIPEDIA_TIMEOUT"):
-            self.wikipedia.default_timeout = _safe_int(
-                os.environ["WIKIPEDIA_TIMEOUT"], self.wikipedia.default_timeout
-            )
+            self.wikipedia.default_timeout = _safe_int(os.environ["WIKIPEDIA_TIMEOUT"], self.wikipedia.default_timeout)
 
         # Wikidata config
         if os.environ.get("WIKIDATA_ENDPOINT"):

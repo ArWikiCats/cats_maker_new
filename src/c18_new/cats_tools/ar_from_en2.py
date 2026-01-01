@@ -1,12 +1,9 @@
 #!/usr/bin/python3
-"""
-
-"""
-from ..bots.cat_tools_argv import EEn_site, FR_site
-from ..log import logger
+""" """
+from ...config import settings
 from ...new_api.page import CatDepth
-
 from ...wiki_api import find_LCN
+from ..log import logger
 
 
 def get_ar_list_title_from_en_list(enlist, wiki="en"):
@@ -22,10 +19,10 @@ def get_ar_list_title_from_en_list(enlist, wiki="en"):
             if part_list.startswith("|"):
                 part_list = part_list[len("|") :]
             # ---
-            sito_code = EEn_site["code"]
+            sito_code = settings.EEn_site["code"]
             # ---
             if wiki == "fr":
-                sito_code = FR_site["code"]
+                sito_code = settings.FR_site["code"]
             # ---
             new_list = find_LCN(part_list, prop="langlinks", lllang="ar", first_site_code=sito_code)
             # ---
@@ -39,9 +36,7 @@ def get_ar_list_title_from_en_list(enlist, wiki="en"):
                         new_ar_list.append(arpagetitle)
                         en_done.append(arpagetitle.replace("_", " "))
     # ---
-    logger.info(
-        f"<<lightyellow>> get_ar_list_title_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}"
-    )
+    logger.info(f"<<lightyellow>> get_ar_list_title_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
     # ---
     return new_ar_list
 
@@ -53,13 +48,7 @@ def en_category_members(enpageTitle, wiki="en"):
     namespace_ids = [0, 14, 100]
     # ---
     cat_members = CatDepth(
-        enpageTitle,
-        sitecode=wiki,
-        family="wikipedia",
-        depth=0, ns="all",
-        without_lang="",
-        with_lang="ar",
-        tempyes=[]
+        enpageTitle, sitecode=wiki, family="wikipedia", depth=0, ns="all", without_lang="", with_lang="ar", tempyes=[]
     )
     # ---
     en_titles = []

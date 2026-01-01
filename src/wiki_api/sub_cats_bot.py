@@ -1,13 +1,10 @@
 #!/usr/bin/python3
-"""
+""" """
 
-
-"""
-
-from ..wiki_api import set_cache_L_C_N, get_cache_L_C_N
-from . import submitAPI
-from ..c18_new.bots.cat_tools_argv import EEn_site
 from ..c18_new.log import logger
+from ..config import settings
+from ..wiki_api import get_cache_L_C_N, set_cache_L_C_N
+from . import submitAPI
 
 API_n_CALLS = {1: 0}
 
@@ -25,7 +22,7 @@ def sub_cats_query(enlink, sitecode, ctype=""):
     if get_cache_L_C_N(tup):
         return get_cache_L_C_N(tup)
     # ---
-    langcode = EEn_site["code"]  # 'en'
+    langcode = settings.EEn_site["code"]  # 'en'
     if sitecode == "en":
         langcode = "ar"
     # ---
