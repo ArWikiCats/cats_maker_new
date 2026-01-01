@@ -3,12 +3,9 @@ python3 core8/pwb.py mk_cats/mknew
 """
 
 from ..b18_new import (
-    MakeLitApiWay,
     add_SubSub,
     get_ar_list_from_en,
-    get_listenpageTitle,
     get_SubSub_keys,
-    get_SubSub_value,
     make_ar_list_newcat2,
     validate_categories_for_new_cat,
 )
@@ -18,9 +15,9 @@ from ..new_api.page import MainPage
 from ..wd_bots import to_wd
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
 from ..wiki_api import find_Page_Cat_without_hidden
-from ..wiki_api.check_redirects import remove_redirect_pages
 from .add_bot import add_to_final_list
 from .create_category_page import new_category
+from .members_helper import collect_category_members
 from .utils import filter_en
 from .utils.check_en import check_en_temps
 
@@ -36,12 +33,13 @@ DONE_D = []
 NewCat_Done = {}
 Already_Created = []
 
-Range = {1: settings.range_limit} # TODO: remove it
-We_Try = {1: settings.category.we_try} # TODO: remove it
+Range = {1: settings.range_limit}  # TODO: remove it
+We_Try = {1: settings.category.we_try}  # TODO: remove it
 
 # TODO: move it to the settings file!
 wiki_site_ar = {"family": "wikipedia", "code": "ar"}
 wiki_site_en = {"family": "wikipedia", "code": "en"}
+
 
 def ar_make_lab(title, **Kwargs):
     okay = filter_en.filter_cat(title)
@@ -94,23 +92,14 @@ def check_if_artitle_exists(test_title):
     return True
 
 
-def make_ar(en_page_title, ar_title, callback=None):  # -> list:
-    if not ar_title.strip():
-        logger.debug("<<lightred>> ar_title is empty.")
-        return []
+def _normalize_en_page_title(en_page_title: str) -> str:
+    """Clean and normalize an English page title."""
+    title = en_page_title.replace("[[", "").replace("]]", "").strip()
+    return title.replace("_", " ")
 
-    if not scan_ar_title(ar_title):
-        logger.debug("<<lightred>> scan_ar_title failed.")
-        return []
 
-    en_page_title = en_page_title.replace("[[", "").replace("]]", "").strip()
-    en_page_title = en_page_title.replace("_", " ")
-
-    if not check_if_artitle_exists(ar_title):
-        logger.debug("<<lightred>> artitle already exists.")
-        return []
-
-    members = []
+def _get_site_identifiers():
+    """Get the Arabic and English site identifiers based on wiki family."""
     ar_site_wiki = "arwiki"
     en_site_lang = wiki_site_en["code"]  # "en"
 
@@ -118,20 +107,36 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         ar_site_wiki = f"ar{wiki_site_ar['family']}"
         en_site_lang = wiki_site_en["code"] + wiki_site_en["family"]
 
-    # check sitelinks
+    return ar_site_wiki, en_site_lang
+
+
+def _check_wikidata_sitelink(en_site_lang: str, en_page_title: str, ar_site_wiki: str):
+    """
+    Check if an Arabic sitelink exists in Wikidata.
+
+    Returns:
+        tuple: (has_ar_sitelink, ar_info_dict)
+    """
     ar_info = Get_Sitelinks_From_wikidata(en_site_lang, en_page_title) or {}
 
     if ar_info and ("sitelinks" in ar_info) and (ar_site_wiki in ar_info["sitelinks"]):
         ar_page = ar_info["sitelinks"][ar_site_wiki]
-
         logger.debug(f'found "{ar_site_wiki}" link "{ar_page}" for en cat. ')
+        return True, ar_info
 
-        return []
-    else:
-        logger.debug(f'No "{ar_site_wiki}" link for en cat "{en_page_title}", ar_title:"{ar_title}"')
+    logger.debug(f'No "{ar_site_wiki}" link for en cat "{en_page_title}"')
+    return False, ar_info
 
-    qid = ar_info.get("q", "")
 
+def _extract_parent_categories(en_page_title: str):
+    """
+    Extract parent categories for the English page.
+
+    Returns:
+        tuple: (en_cats_of_new_cat, cats_of_new_cat)
+            - en_cats_of_new_cat: English categories without Arabic equivalents
+            - cats_of_new_cat: Arabic category titles
+    """
     cates = find_Page_Cat_without_hidden(
         en_page_title,
         prop="langlinks",
@@ -142,74 +147,126 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     en_cats_of_new_cat = []
     cats_of_new_cat = []
 
-    if cates:
-        for cato in cates:
-            if "ar" in cates[cato]:
-                cats_of_new_cat.append(cates[cato]["ar"])
-            else:
-                en_cats_of_new_cat.append(cato)
+    if not cates:
+        return en_cats_of_new_cat, cats_of_new_cat
 
-        if en_cats_of_new_cat:
-            logger.debug(f"en_cats_of_new_cat : {','.join(en_cats_of_new_cat)}")
-        if cats_of_new_cat:
-            logger.debug(f"cats_of_new_cat : {','.join(cats_of_new_cat)}")
+    for cato in cates:
+        if "ar" in cates[cato]:
+            cats_of_new_cat.append(cates[cato]["ar"])
+        else:
+            en_cats_of_new_cat.append(cato)
 
-    Already_Created.append(en_page_title)
+    if en_cats_of_new_cat:
+        logger.debug(f"en_cats_of_new_cat : {','.join(en_cats_of_new_cat)}")
+    if cats_of_new_cat:
+        logger.debug(f"cats_of_new_cat : {','.join(cats_of_new_cat)}")
 
-    # add cat to final list
-    members = get_listenpageTitle(ar_title, en_page_title)
+    return en_cats_of_new_cat, cats_of_new_cat
 
-    if settings.database.use_sql is False or members == []:
-        liste = MakeLitApiWay(en_page_title, Type="all")
-        if liste:
-            for ccat in liste:
-                if ccat not in members:
-                    members.append(ccat)
-    # ---
-    sub_category_values = get_SubSub_value(en_page_title.strip())
 
-    if sub_category_values:
-        logger.debug('<<lightgreen>> New Adding for cats: "%s" : ' % en_page_title)
-        for cai in sub_category_values:
-            logger.debug('<<lightgreen>> New Adding "%s" to fapage list.............' % cai)
-            if cai not in members:
-                members.append(cai)
-
-    members = list(set(members))
-    members = [m for m in members if m and isinstance(m, str)]
-    members = remove_redirect_pages("ar", members)
-    if len(members) == 0:
-        logger.debug(" get_listenpageTitle == [] ")
-        return []
-
+def _log_members_info(members: list) -> None:
+    """Log information about collected members."""
     formatted_member_list = ""
-
     if members and len(members) < 30:
         formatted_member_list = ",".join(members)
-
     logger.debug(f"Add to {len(members)} pages: {formatted_member_list}")
 
-    # إنشاء التصنيف وإضافته للصفحات
 
+def _finalize_category_creation(
+    created_category, ar_title: str, en_page_title: str, qid: str, members: list, en_cats_of_new_cat: list, callback
+) -> list:
+    """
+    Finalize category creation: add members, update SubSub, and log to Wikidata.
+
+    Returns:
+        list: English categories of the new category
+    """
+    add_to_final_list(members, ar_title, callback=callback)
+    add_SubSub(en_cats_of_new_cat, created_category)
+
+    if validate_categories_for_new_cat(ar_title, en_page_title, wiki="en"):
+        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
+        if listen:
+            add_to_final_list(listen, ar_title, callback=callback)
+
+    to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
+
+    return en_cats_of_new_cat
+
+
+def make_ar(en_page_title, ar_title, callback=None):  # -> list:
+    """
+    Create an Arabic category based on the English category.
+
+    This function:
+    1. Validates inputs and performs early exits
+    2. Checks Wikidata sitelinks
+    3. Collects category members (delegated to members_helper)
+    4. Creates the category
+    5. Logs and updates Wikidata
+
+    Args:
+        en_page_title: The English category page title
+        ar_title: The Arabic category title
+        callback: Optional callback function for progress updates
+
+    Returns:
+        list: English categories that don't have Arabic equivalents
+    """
+    # Validation: Check empty Arabic title
+    if not ar_title.strip():
+        logger.debug("<<lightred>> ar_title is empty.")
+        return []
+
+    # Validation: Check if we've already processed this Arabic title
+    if not scan_ar_title(ar_title):
+        logger.debug("<<lightred>> scan_ar_title failed.")
+        return []
+
+    # Normalize the English page title
+    en_page_title = _normalize_en_page_title(en_page_title)
+
+    # Validation: Check if Arabic category already exists
+    if not check_if_artitle_exists(ar_title):
+        logger.debug("<<lightred>> artitle already exists.")
+        return []
+
+    # Get site identifiers for Wikidata lookup
+    ar_site_wiki, en_site_lang = _get_site_identifiers()
+
+    # Check Wikidata sitelinks - early exit if Arabic link exists
+    has_ar_sitelink, ar_info = _check_wikidata_sitelink(en_site_lang, en_page_title, ar_site_wiki)
+    if has_ar_sitelink:
+        return []
+
+    qid = ar_info.get("q", "")
+
+    # Extract parent categories
+    en_cats_of_new_cat, cats_of_new_cat = _extract_parent_categories(en_page_title)
+
+    # Mark as already created
+    Already_Created.append(en_page_title)
+
+    # Collect category members using the helper module
+    members = collect_category_members(ar_title, en_page_title)
+
+    if not members:
+        logger.debug(" collect_category_members returned empty list ")
+        return []
+
+    _log_members_info(members)
+
+    # Create the category
     created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
 
     if not created_category:
         to_wd.add_label(qid, ar_title)
         return en_cats_of_new_cat
 
-    add_to_final_list(members, ar_title, callback=callback)
-
-    add_SubSub(en_cats_of_new_cat, created_category)
-
-    if validate_categories_for_new_cat(ar_title, en_page_title, wiki="en"):
-        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
-
-    if listen != []:
-        add_to_final_list(listen, ar_title, callback=callback)
-
-    to_wd.Log_to_wikidata(ar_title, en_page_title, qid)
-
-    return en_cats_of_new_cat
+    # Finalize: add members, update SubSub, log to Wikidata
+    return _finalize_category_creation(
+        created_category, ar_title, en_page_title, qid, members, en_cats_of_new_cat, callback
+    )
 
 
 def process_catagories(cat, arlab, num, lenth, callback=None):
