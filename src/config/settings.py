@@ -450,7 +450,7 @@ class Settings:
                 self.category.work_fr = True
             if arg_name == "descqs":
                 self.category.descqs = True
-            if arg_name == "-minmembers" and value:
+            if arg_name in ("-minmembers", "-min-members") and value:
                 self.category.min_members = _safe_int(value, self.category.min_members)
 
             # Query config
