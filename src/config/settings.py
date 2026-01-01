@@ -104,10 +104,9 @@ class BotConfig:
         ask: Ask for confirmation before making changes
         no_diff: Don't show diff when asking for confirmation
         show_diff: Force show diff when asking for confirmation
-        no_fa: Disable false edit detection
+        no_fa: Dont check if the edit is false edit
         force_edit: Force bot edit (bypass nobots check)
         no_login: Disable login assertion
-        ibrahem_summary: Enable Ibrahem summary mode
         no_cookies: Disable cookie storage
     """
 
@@ -117,7 +116,6 @@ class BotConfig:
     no_fa: bool = False
     force_edit: bool = False
     no_login: bool = False
-    ibrahem_summary: bool = False
     no_cookies: bool = False
 
 
@@ -396,8 +394,6 @@ class Settings:
                 self.bot.force_edit = True
             if arg_name == "nologin":
                 self.bot.no_login = True
-            if arg_name == "ibrahemsummary":
-                self.bot.ibrahem_summary = True
             if arg_name == "nocookies":
                 self.bot.no_cookies = True
 

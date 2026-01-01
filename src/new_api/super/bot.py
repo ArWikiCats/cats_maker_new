@@ -42,7 +42,6 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # ---
         self.password = ""
         self.username_in = ""
-        self.Bot_or_himo = 0
         self.cookies_file = ""
         self.user_table_done = False
         self.user_agent = default_user_agent()
