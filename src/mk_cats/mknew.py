@@ -254,6 +254,14 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
         logger.debug(" collect_category_members returned empty list ")
         return []
 
+    # Check minimum members requirement
+    if len(members) < settings.category.min_members:
+        logger.debug(
+            f" collect_category_members returned {len(members)} members, "
+            f"less than minimum required ({settings.category.min_members}) "
+        )
+        return []
+
     _log_members_info(members)
 
     # Create the category

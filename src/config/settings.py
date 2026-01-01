@@ -149,6 +149,7 @@ class CategoryConfig:
         test_mode: Enable test mode
         work_fr: Work with French Wikipedia as fallback
         descqs: Use QuickStatements for descriptions
+        min_members: Minimum number of members required to create a category
     """
 
     stubs: bool = False
@@ -162,6 +163,7 @@ class CategoryConfig:
     test_mode: bool = False
     work_fr: bool = False
     descqs: bool = False
+    min_members: int = 5
 
 
 @dataclass
@@ -353,6 +355,10 @@ class Settings:
         if os.environ.get("LOG_LEVEL"):
             self.log_level = os.environ["LOG_LEVEL"]
 
+        # Category config
+        if os.environ.get("MIN_MEMBERS"):
+            self.category.min_members = _safe_int(os.environ["MIN_MEMBERS"], self.category.min_members)
+
     def _process_argv(self):
         """Process command-line arguments for configuration overrides."""
         for arg in sys.argv:
@@ -444,6 +450,8 @@ class Settings:
                 self.category.work_fr = True
             if arg_name == "descqs":
                 self.category.descqs = True
+            if arg_name == "-minmembers" and value:
+                self.category.min_members = _safe_int(value, self.category.min_members)
 
             # Query config
             if arg_name in ("-offset", "-off") and value:
