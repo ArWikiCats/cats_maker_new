@@ -3,9 +3,9 @@ Usage:
 from ..bots.english_page_title import get_english_page_title
 """
 
-import sys
 import re
 from ..log import logger
+from ...config import settings
 from ...wiki_api import find_LCN, set_cache_L_C_N, get_cache_L_C_N
 from ...wd_bots import Get_Sitelinks_from_qid, Get_Sitelinks_From_wikidata
 
@@ -225,7 +225,7 @@ def get_english_page_title(englishlink, pagetitle, text_new, ar_page_langlinks):
     if not en:
         en = english_page_link(pagetitle, en_site, en_site, text=text_new)
     # ---
-    if (not en or en == "") and "workfr" in sys.argv:
+    if (not en or en == "") and settings.category.work_fr:
         fr_page_title = False
         logger.info("<<lightred>>c18/scat/cat.py no en")
         logger.info(ar_page_langlinks)

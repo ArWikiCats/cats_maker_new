@@ -6,11 +6,11 @@ from .super.cookies_bot import get_cookies
 """
 import os
 import stat
-import sys
 from datetime import datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
 
+from ...config import settings
 from ...helps import logger
 
 statgroup = stat.S_IRWXU | stat.S_IRWXG
@@ -50,7 +50,7 @@ def del_cookies_file(file_path):
 
 def get_file_name(lang, family, username) -> Path:
     # ---
-    if "nocookies" in sys.argv:
+    if settings.bot.no_cookies:
         randome = os.urandom(8).hex()
         return ta_dir / f"{randome}.txt"
     # ---

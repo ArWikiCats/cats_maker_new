@@ -3,8 +3,8 @@ Usage:
 from ..bots.filter_cat import filter_cats_text
 """
 import re
-import sys
 
+from ...config import settings
 from ...wiki_api import get_deleted_pages
 from ..log import logger
 from ..tools_bots.temp_bot import templatequery, templatequerymulti
@@ -32,7 +32,7 @@ Skippe_Cat = [
 
 page_false_templates = ["شطب", "مقالات متعلقة", "بذرة", "ويكي بيانات", "تستند على"]
 
-if "-stubs" in sys.argv:
+if settings.category.stubs:
     page_false_templates.remove("بذرة")
 
 
@@ -119,7 +119,7 @@ def filter_cats_text(final_cats, ns, text_new):
                     final_cats.remove(item)
                 continue
             # ---
-            if "-stubs" not in sys.argv and "قالب:تصنيف مخفي" in cat_template:
+            if not settings.category.stubs and "قالب:تصنيف مخفي" in cat_template:
                 logger.info(f"<<lightred>>Category {item} had {{{{تصنيف مخفي}}}} so it is skipped! ")
                 if item in final_cats:
                     final_cats.remove(item)

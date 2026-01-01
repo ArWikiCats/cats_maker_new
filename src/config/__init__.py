@@ -10,6 +10,11 @@ from .settings import (
     WikipediaConfig,
     WikidataConfig,
     DatabaseConfig,
+    DebugConfig,
+    BotConfig,
+    CategoryConfig,
+    QueryConfig,
+    SiteConfig,
     settings,
 )
 
@@ -18,5 +23,10 @@ __all__ = [
     "WikipediaConfig",
     "WikidataConfig",
     "DatabaseConfig",
+    "DebugConfig",
+    "BotConfig",
+    "CategoryConfig",
+    "QueryConfig",
+    "SiteConfig",
     "settings",
 ]

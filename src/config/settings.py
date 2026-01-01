@@ -56,12 +56,14 @@ class WikidataConfig:
         sparql_endpoint: SPARQL query endpoint URL
         timeout: Default timeout for Wikidata requests
         maxlag: Maximum lag for Wikidata API requests
+        test_mode: Whether to use test.wikidata.org
     """
 
     endpoint: str = "https://www.wikidata.org/w/api.php"
     sparql_endpoint: str = "https://query.wikidata.org/sparql"
     timeout: int = 30
     maxlag: int = 5
+    test_mode: bool = False
 
 
 @dataclass
@@ -80,6 +82,129 @@ class DatabaseConfig:
 
 
 @dataclass
+class DebugConfig:
+    """Configuration for debug and logging options.
+
+    Attributes:
+        print_url: Print API URLs for debugging
+        print_bot_url: Print bot API URLs for debugging
+        print_data: Print data for debugging
+        print_text: Print text for debugging
+        print_disc: Print disc for debugging
+        print_result: Print result for debugging
+        print_pop: Print pop for debugging
+        raise_errors: Raise exceptions instead of handling them
+        do_post: Force POST requests for debugging
+    """
+
+    print_url: bool = False
+    print_bot_url: bool = False
+    print_data: bool = False
+    print_text: bool = False
+    print_disc: bool = False
+    print_result: bool = False
+    print_pop: bool = False
+    raise_errors: bool = False
+    do_post: bool = False
+
+
+@dataclass
+class BotConfig:
+    """Configuration for bot behavior.
+
+    Attributes:
+        ask: Ask for confirmation before making changes
+        no_diff: Don't show diff when asking for confirmation
+        show_diff: Force show diff when asking for confirmation
+        no_fa: Disable false edit detection
+        force_edit: Force bot edit (bypass nobots check)
+        no_login: Disable login assertion
+        ibrahem_summary: Enable Ibrahem summary mode
+        no_cookies: Disable cookie storage
+    """
+
+    ask: bool = False
+    no_diff: bool = False
+    show_diff: bool = False
+    no_fa: bool = False
+    force_edit: bool = False
+    no_login: bool = False
+    ibrahem_summary: bool = False
+    no_cookies: bool = False
+
+
+@dataclass
+class CategoryConfig:
+    """Configuration for category processing.
+
+    Attributes:
+        stubs: Process stub categories
+        make_new_cat: Create new categories
+        use_labels: Use Wikidata labels for category names
+        no_keep: Disable keeping categories in SPARQL results
+        keep: Keep categories despite template restrictions
+        we_try: Enable we_try mode for category processing
+        no_dontadd: Disable don't-add list fetching
+        test_add: Force test mode for dontadd list
+        test_mode: Enable test mode
+        work_fr: Work with French Wikipedia as fallback
+        descqs: Use QuickStatements for descriptions
+    """
+
+    stubs: bool = False
+    make_new_cat: bool = True
+    use_labels: bool = False
+    no_keep: bool = False
+    keep: bool = False
+    we_try: bool = True
+    no_dontadd: bool = False
+    test_add: bool = False
+    test_mode: bool = False
+    work_fr: bool = False
+    descqs: bool = False
+
+
+@dataclass
+class QueryConfig:
+    """Configuration for query parameters.
+
+    Attributes:
+        offset: Starting offset for queries
+        depth: Depth limit for category traversal
+        to_limit: Upper limit for results
+        ns_no_10: Exclude namespace 10 from results
+        ns_only_14: Only include namespace 14 in results
+    """
+
+    offset: int = 0
+    depth: int = 0
+    to_limit: int = 10000
+    ns_no_10: bool = False
+    ns_only_14: bool = False
+
+
+@dataclass
+class SiteConfig:
+    """Configuration for alternative site settings.
+
+    Attributes:
+        use_commons: Use Commons instead of Wikipedia
+        custom_family: Custom wiki family (e.g., wikiquote, wikisource)
+        custom_lang: Custom language code for en site
+        secondary_lang: Secondary language to use (e.g., fr)
+        secondary_family: Family for secondary language
+        use_secondary: Whether to use secondary language site
+    """
+
+    use_commons: bool = False
+    custom_family: str = ""
+    custom_lang: str = ""
+    secondary_lang: str = ""
+    secondary_family: str = ""
+    use_secondary: bool = False
+
+
+@dataclass
 class Settings:
     """Main settings container for all project configurations.
 
@@ -90,6 +215,11 @@ class Settings:
         wikipedia: Wikipedia API configuration
         wikidata: Wikidata API configuration
         database: Database connection configuration
+        debug_config: Debug and logging options
+        bot: Bot behavior configuration
+        category: Category processing configuration
+        query: Query parameters configuration
+        site: Alternative site settings
         range_limit: Maximum number of iterations for category processing
         debug: Enable debug mode
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
@@ -98,6 +228,11 @@ class Settings:
     wikipedia: WikipediaConfig = field(default_factory=WikipediaConfig)
     wikidata: WikidataConfig = field(default_factory=WikidataConfig)
     database: DatabaseConfig = field(default_factory=DatabaseConfig)
+    debug_config: DebugConfig = field(default_factory=DebugConfig)
+    bot: BotConfig = field(default_factory=BotConfig)
+    category: CategoryConfig = field(default_factory=CategoryConfig)
+    query: QueryConfig = field(default_factory=QueryConfig)
+    site: SiteConfig = field(default_factory=SiteConfig)
 
     # Global settings
     range_limit: int = 5
@@ -163,7 +298,7 @@ class Settings:
                 self.range_limit = _safe_int(value, self.range_limit)
 
             # Debug mode
-            if arg_name in ("-debug", "--debug"):
+            if arg_name in ("DEBUG", "-debug", "--debug"):
                 self.debug = True
 
             # SQL usage
@@ -173,12 +308,109 @@ class Settings:
                 self.database.use_sql = True
 
             # Wikidata test environment
-            if arg_name in ("testwikidata", "-testwikidata"):
+            if arg_name in ("testwikidata", "-testwikidata", "wikidata_test"):
                 self.wikidata.endpoint = "https://test.wikidata.org/w/api.php"
+                self.wikidata.test_mode = True
 
             # Maxlag configuration
             if arg_name == "maxlag2":
                 self.wikidata.maxlag = 1
+
+            # Debug config
+            if arg_name == "printurl":
+                self.debug_config.print_url = True
+            if arg_name == "printboturl":
+                self.debug_config.print_bot_url = True
+            if arg_name == "printdata":
+                self.debug_config.print_data = True
+            if arg_name == "printtext":
+                self.debug_config.print_text = True
+            if arg_name == "printdisc":
+                self.debug_config.print_disc = True
+            if arg_name == "printresult":
+                self.debug_config.print_result = True
+            if arg_name == "printpop":
+                self.debug_config.print_pop = True
+            if arg_name == "raise":
+                self.debug_config.raise_errors = True
+            if arg_name == "dopost":
+                self.debug_config.do_post = True
+
+            # Bot config
+            if arg_name == "ask":
+                self.bot.ask = True
+            if arg_name == "nodiff":
+                self.bot.no_diff = True
+            if arg_name == "diff":
+                self.bot.show_diff = True
+            if arg_name == "nofa":
+                self.bot.no_fa = True
+            if arg_name in ("botedit", "editbot"):
+                self.bot.force_edit = True
+            if arg_name == "nologin":
+                self.bot.no_login = True
+            if arg_name == "ibrahemsummary":
+                self.bot.ibrahem_summary = True
+            if arg_name == "nocookies":
+                self.bot.no_cookies = True
+
+            # Category config
+            if arg_name in ("-stubs", "stubs"):
+                self.category.stubs = True
+            if arg_name in ("-dontMakeNewCat", "-dontmakenewcat"):
+                self.category.make_new_cat = False
+            if arg_name == "-uselabels":
+                self.category.use_labels = True
+            if arg_name == "nokeep":
+                self.category.no_keep = True
+            if arg_name == "keep":
+                self.category.keep = True
+            if arg_name == "-We_Try":
+                self.category.we_try = True
+            if arg_name == "-nowetry":
+                self.category.we_try = False
+            if arg_name == "nodontadd":
+                self.category.no_dontadd = True
+            if arg_name == "testadd":
+                self.category.test_add = True
+            if arg_name == "test":
+                self.category.test_mode = True
+            if arg_name == "workfr":
+                self.category.work_fr = True
+            if arg_name == "descqs":
+                self.category.descqs = True
+
+            # Query config
+            if arg_name in ("-offset", "-off") and value:
+                self.query.offset = _safe_int(value, self.query.offset)
+            if arg_name == "depth" and value:
+                self.query.depth = _safe_int(value, self.query.depth)
+            if arg_name in ("to", "-to") and value:
+                self.query.to_limit = _safe_int(value, self.query.to_limit)
+            if arg_name == "nons10":
+                self.query.ns_no_10 = True
+            if arg_name == "ns:14":
+                self.query.ns_only_14 = True
+
+            # Site config
+            if arg_name in ("-commons", "commons"):
+                self.site.use_commons = True
+            if arg_name in ("-family", "family") and value:
+                if value in ("wikiquote", "wikisource"):
+                    self.site.custom_family = value
+                    self.category.use_labels = True
+            if arg_name in ("-uselang", "uselang") and value:
+                self.site.custom_lang = value
+                self.category.make_new_cat = False
+            if arg_name in ("-slang", "slang") and value:
+                self.site.secondary_lang = value
+                self.site.secondary_family = "wikipedia"
+                self.site.use_secondary = True
+                self.category.make_new_cat = False
+
+        # Calculate to_limit with offset if both are set
+        if self.query.to_limit != 0:
+            self.query.to_limit = self.query.to_limit + self.query.offset
 
 
 # Global settings instance

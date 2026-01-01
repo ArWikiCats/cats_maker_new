@@ -7,11 +7,11 @@ Exception:{'login': {'result': 'Failed', 'reason': 'You have made too many recen
 
 """
 import os
-import sys
 from http.cookiejar import MozillaCookieJar
 
 import requests
 
+from ...config import settings
 from ...helps import logger
 from ..api_utils.user_agent import default_user_agent
 from .cookies_bot import del_cookies_file, get_file_name
@@ -303,7 +303,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         if not self.user_table_done:
             logger.debug("<<green>> user_table_done == False!")
             # do error
-            if "raise" in sys.argv:
+            if settings.debug_config.raise_errors:
                 raise Exception("user_table_done == False!")
         # ---
         if self.family == "mdwiki":
@@ -318,7 +318,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # ---
         u_action = params.get("action", "")
         # ---
-        if "dopost" in sys.argv:
+        if settings.debug_config.do_post:
             logger.debug("<<green>> dopost:::")
             logger.debug(params)
             logger.debug("<<green>> :::dopost")

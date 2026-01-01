@@ -5,15 +5,14 @@
 # Categorized_Page_Generator(enpageTitle, Type)
 
 """
-import sys
-
+from ..config import settings
 from ..new_api.page import CatDepth
 from .bots.cat_tools_argv import EEn_site
 from .log import logger
 
 tatone_ns = [0, 14, 10, 100]
 
-if "-stubs" in sys.argv:
+if settings.category.stubs:
     tatone_ns = [14]
 
 

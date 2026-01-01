@@ -4,9 +4,9 @@
 #
 #
 import datetime
-import sys
 from functools import lru_cache
 import wikitextparser as wtp
+from ...config import settings
 from ...helps import logger
 
 # ---
@@ -163,7 +163,7 @@ def bot_May_Edit_do(text="", title_page="", botjob="all"):
     Returns:
         True if the bot is allowed to edit the page; False otherwise.
     """
-    if "botedit" in sys.argv or "editbot" in sys.argv:
+    if settings.bot.force_edit:
         return True
     # ---
     if botjob in ["", "fixref|cat|stub|tempcat|portal"]:

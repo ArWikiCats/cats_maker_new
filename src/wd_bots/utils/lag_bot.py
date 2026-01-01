@@ -6,7 +6,6 @@ This module provides functions for handling lag in Wikidata API requests.
 
 import functools
 import re
-import sys
 import time
 
 import requests
@@ -156,7 +155,7 @@ def do_lag():
 
 def bad_lag(nowait):
     # ---
-    if "testwikidata" in sys.argv:
+    if settings.wikidata.test_mode:
         return False
     # ---
     # if lag_bot.bad_lag(nowait): return ""

@@ -5,7 +5,11 @@ import json
 import requests
 import logging
 
-sys.argv.append("ask")
+from src.config import settings
+
+# Enable ask mode by default - now done via settings
+settings.bot.ask = True
+
 sys.path.append("D:/categories_bot/make2_new")
 
 try:
@@ -14,7 +18,7 @@ except ImportError:
     new_all = None
 
 from src.helps.log import logger as base_logger
-base_logger.set_level("DEBUG" if "DEBUG" in sys.argv else "INFO")
+base_logger.set_level("DEBUG" if settings.debug else "INFO")
 # base_logger.set_level("ERROR")
 
 from src.mk_cats import create_categories_from_list

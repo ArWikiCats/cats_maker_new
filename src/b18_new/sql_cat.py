@@ -2,11 +2,10 @@
 """
 
 """
-import sys
-
 from pymysql.converters import escape_string
 from ..api_sql import GET_SQL, sql_new_title_ns, sql_new
 from ..c18_new.cats_tools.ar_from_en2 import fetch_ar_titles_based_on_en_category
+from ..config import settings
 from .cat_tools_enlist2 import get_ar_list_from_cat
 from ..helps import logger
 
@@ -60,10 +59,10 @@ def get_ar_list_from_en(encat, us_sql=True, wiki="en"):
     # ---
     nss = "0, 10, 14"
     # ---
-    if "nons10" in sys.argv:
+    if settings.query.ns_no_10:
         nss = "0, 14"
     # ---
-    if "ns:14" in sys.argv:
+    if settings.query.ns_only_14:
         nss = "14"
     # ---
     en_qua = f"""

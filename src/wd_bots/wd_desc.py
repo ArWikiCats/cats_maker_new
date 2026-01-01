@@ -5,10 +5,10 @@
 
 import functools
 import json
-import sys
 import time
 from datetime import datetime
 from . import NewHimoAPIBot
+from ..config import settings
 from ..helps import logger
 
 
@@ -117,7 +117,7 @@ def wwdesc(NewDesc, qid, i, fixlang, ask="", tage=""):
     # ---
     logger.info(f'*work_api_desc {str(qid)} "{value}": try "{i}",{menet}:')
     # ---
-    if "printdisc" in sys.argv:
+    if settings.debug_config.print_disc:
         logger.info(data3)
     # ---
     skipp = get_wd_api_bot().New_Mult_Des_2(qid, data3, summary, "", return_result=True, ask=ask, tage=tage)

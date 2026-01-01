@@ -1,8 +1,8 @@
 """
 
 """
-import sys
 from datetime import datetime
+from ..config import settings
 from ..helps import logger
 from ..wiki_api import get_query_data
 
@@ -187,7 +187,7 @@ def sparql_generator_big_results(spq, offset=0, limit=5000, alllimit=0):
                 logger.info("Keep = False 1 ")
                 Keep = False
         # ---
-        if not generator or generator == [] or "nokeep" in sys.argv:
+        if not generator or generator == [] or settings.category.no_keep:
             logger.info("Keep = False 2 ")
             Keep = False
         # ---
