@@ -526,3 +526,70 @@ class TestFRSiteProperty:
         assert s.FR_site["code"] == "es"
         assert s.FR_site["family"] == "wikipedia"
         assert s.FR_site["use"] is True
+
+
+class TestCategoryConfig:
+    """Tests for CategoryConfig dataclass."""
+
+    def test_default_min_members(self):
+        """Test default min_members is 5."""
+        from src.config.settings import CategoryConfig
+
+        config = CategoryConfig()
+        assert config.min_members == 5
+
+    def test_custom_min_members(self):
+        """Test custom min_members can be set."""
+        from src.config.settings import CategoryConfig
+
+        config = CategoryConfig(min_members=10)
+        assert config.min_members == 10
+
+    def test_min_members_zero(self):
+        """Test min_members can be set to 0."""
+        from src.config.settings import CategoryConfig
+
+        config = CategoryConfig(min_members=0)
+        assert config.min_members == 0
+
+    def test_default_stubs(self):
+        """Test default stubs is False."""
+        from src.config.settings import CategoryConfig
+
+        config = CategoryConfig()
+        assert config.stubs is False
+
+    def test_default_make_new_cat(self):
+        """Test default make_new_cat is True."""
+        from src.config.settings import CategoryConfig
+
+        config = CategoryConfig()
+        assert config.make_new_cat is True
+
+
+class TestMinMembersEnvVar:
+    """Tests for MIN_MEMBERS environment variable."""
+
+    def test_env_min_members(self, monkeypatch):
+        """Test MIN_MEMBERS environment variable."""
+        monkeypatch.setenv("MIN_MEMBERS", "10")
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.category.min_members == 10
+
+    def test_env_min_members_zero(self, monkeypatch):
+        """Test MIN_MEMBERS environment variable with zero."""
+        monkeypatch.setenv("MIN_MEMBERS", "0")
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.category.min_members == 0
+
+    def test_env_min_members_invalid(self, monkeypatch):
+        """Test MIN_MEMBERS environment variable with invalid value uses default."""
+        monkeypatch.setenv("MIN_MEMBERS", "invalid")
+        from src.config.settings import Settings
+
+        s = Settings()
+        assert s.category.min_members == 5

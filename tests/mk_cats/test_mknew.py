@@ -425,3 +425,200 @@ class TestLegacyNames:
         from src.mk_cats.mknew import no_work, process_catagories
 
         assert no_work is process_catagories
+
+
+class TestMakeArMinMembers:
+    """Tests for minimum members check in make_ar function."""
+
+    def test_returns_empty_when_below_min_members(self, mocker):
+        """Test that make_ar returns empty list when members below min_members."""
+        from src.mk_cats import mknew
+
+        # Clear state
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+        mocker.patch.object(mknew, "scan_ar_title", return_value=True)
+        mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
+        mocker.patch(
+            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            return_value={"q": "Q12345"}
+        )
+        mocker.patch(
+            "src.mk_cats.mknew.find_Page_Cat_without_hidden",
+            return_value={}
+        )
+        # Return only 3 members (below default min_members of 5)
+        mocker.patch(
+            "src.mk_cats.mknew.collect_category_members",
+            return_value=["Article1", "Article2", "Article3"]
+        )
+        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings.category.min_members = 5
+
+        result = mknew.make_ar("Category:Science", "علوم")
+
+        assert result == []
+
+        # Cleanup
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+    def test_proceeds_when_at_min_members(self, mocker):
+        """Test that make_ar proceeds when members equals min_members."""
+        from src.mk_cats import mknew
+
+        # Clear state
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+        mocker.patch.object(mknew, "scan_ar_title", return_value=True)
+        mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
+        mocker.patch(
+            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            return_value={"q": "Q12345"}
+        )
+        mocker.patch(
+            "src.mk_cats.mknew.find_Page_Cat_without_hidden",
+            return_value={}
+        )
+        # Return exactly 5 members (equals default min_members)
+        mocker.patch(
+            "src.mk_cats.mknew.collect_category_members",
+            return_value=["Article1", "Article2", "Article3", "Article4", "Article5"]
+        )
+        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings.category.min_members = 5
+        mock_settings.range_limit = 5
+        mock_new_category = mocker.patch("src.mk_cats.mknew.new_category", return_value=True)
+        mocker.patch("src.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.mk_cats.mknew.add_SubSub")
+        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.mk_cats.mknew.to_wd.Log_to_wikidata")
+
+        result = mknew.make_ar("Category:Science", "علوم")
+
+        # Should have proceeded to create the category
+        mock_new_category.assert_called_once()
+
+        # Cleanup
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+    def test_proceeds_when_above_min_members(self, mocker):
+        """Test that make_ar proceeds when members above min_members."""
+        from src.mk_cats import mknew
+
+        # Clear state
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+        mocker.patch.object(mknew, "scan_ar_title", return_value=True)
+        mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
+        mocker.patch(
+            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            return_value={"q": "Q12345"}
+        )
+        mocker.patch(
+            "src.mk_cats.mknew.find_Page_Cat_without_hidden",
+            return_value={}
+        )
+        # Return 10 members (above default min_members of 5)
+        mocker.patch(
+            "src.mk_cats.mknew.collect_category_members",
+            return_value=["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"]
+        )
+        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings.category.min_members = 5
+        mock_settings.range_limit = 5
+        mock_new_category = mocker.patch("src.mk_cats.mknew.new_category", return_value=True)
+        mocker.patch("src.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.mk_cats.mknew.add_SubSub")
+        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.mk_cats.mknew.to_wd.Log_to_wikidata")
+
+        result = mknew.make_ar("Category:Science", "علوم")
+
+        # Should have proceeded to create the category
+        mock_new_category.assert_called_once()
+
+        # Cleanup
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+    def test_custom_min_members_value(self, mocker):
+        """Test that make_ar respects custom min_members value."""
+        from src.mk_cats import mknew
+
+        # Clear state
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+        mocker.patch.object(mknew, "scan_ar_title", return_value=True)
+        mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
+        mocker.patch(
+            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            return_value={"q": "Q12345"}
+        )
+        mocker.patch(
+            "src.mk_cats.mknew.find_Page_Cat_without_hidden",
+            return_value={}
+        )
+        # Return 7 members
+        mocker.patch(
+            "src.mk_cats.mknew.collect_category_members",
+            return_value=["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
+        )
+        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings.category.min_members = 10  # Custom value higher than 7
+        mock_settings.range_limit = 5
+
+        result = mknew.make_ar("Category:Science", "علوم")
+
+        # Should return empty list because 7 < 10
+        assert result == []
+
+        # Cleanup
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+    def test_min_members_zero_allows_any(self, mocker):
+        """Test that min_members of 0 allows any number of members."""
+        from src.mk_cats import mknew
+
+        # Clear state
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
+
+        mocker.patch.object(mknew, "scan_ar_title", return_value=True)
+        mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
+        mocker.patch(
+            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            return_value={"q": "Q12345"}
+        )
+        mocker.patch(
+            "src.mk_cats.mknew.find_Page_Cat_without_hidden",
+            return_value={}
+        )
+        # Return only 1 member
+        mocker.patch(
+            "src.mk_cats.mknew.collect_category_members",
+            return_value=["Article1"]
+        )
+        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings.category.min_members = 0  # Allow any
+        mock_settings.range_limit = 5
+        mock_new_category = mocker.patch("src.mk_cats.mknew.new_category", return_value=True)
+        mocker.patch("src.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.mk_cats.mknew.add_SubSub")
+        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.mk_cats.mknew.to_wd.Log_to_wikidata")
+
+        result = mknew.make_ar("Category:Science", "علوم")
+
+        # Should have proceeded to create the category
+        mock_new_category.assert_called_once()
+
+        # Cleanup
+        mknew.Already_Created.clear()
+        mknew.NewCat_Done.clear()
