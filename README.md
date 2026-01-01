@@ -26,7 +26,7 @@ Cats Maker New is a sophisticated Wikipedia bot designed to automate the creatio
 5. Links the new categories to Wikidata
 6. Adds the new categories to relevant pages
 
-This project is particularly useful for expanding the Arabic Wikipedia's category structure to match the more comprehensive English Wikipedia.
+The project uses a centralized dataclass-based configuration system and supports both command-line and programmatic usage. This is particularly useful for expanding the Arabic Wikipedia's category structure to match the more comprehensive English Wikipedia.
 
 ## Features
 
@@ -49,10 +49,12 @@ This project is particularly useful for expanding the Arabic Wikipedia's categor
 - **Duplicate Detection**: Tracks processed categories to avoid duplicates
 - **Error Handling**: Robust error handling with logging
 - **Caching**: In-memory caching for API responses
+- **Redirect Filtering**: Automatically filters redirect pages from member lists
+- **Minimum Members Threshold**: Configurable minimum member count before creating categories
 
 ## Architecture
 
-The project follows a layered architecture:
+The project follows a layered architecture with centralized configuration:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -62,11 +64,29 @@ The project follows a layered architecture:
               │
               ↓
 ┌─────────────────────────────────────────┐
+│      Configuration Layer                │
+│      config/settings.py                 │
+│      - WikipediaConfig, WikidataConfig  │
+│      - DatabaseConfig, CategoryConfig   │
+│      - BotConfig, DebugConfig           │
+└─────────────┬───────────────────────────┘
+              │
+              ↓
+┌─────────────────────────────────────────┐
 │      Business Logic Layer               │
 │      mk_cats/mknew.py                   │
 │      - create_categories_from_list()    │
 │      - one_cat(), process_catagories()  │
 │      - make_ar(), ar_make_lab()         │
+└─────────────┬───────────────────────────┘
+              │
+              ↓
+┌─────────────────────────────────────────┐
+│      Member Collection Layer            │
+│      mk_cats/members_helper.py          │
+│      - collect_category_members()       │
+│      - gather_members_from_sql/api      │
+│      - merge/filter/deduplicate         │
 └─────────────┬───────────────────────────┘
               │
               ↓
@@ -113,7 +133,13 @@ English Category Name
     ↓
 [find_Page_Cat_without_hidden] → Parent categories (English)
     ↓
-[get_listenpageTitle] → Member pages
+[collect_category_members] → Member pages (SQL, API, SubSub sources)
+    ↓
+[merge_member_lists] → Deduplicated member list
+    ↓
+[remove_redirects] → Filtered member list (no redirects)
+    ↓
+[min_members check] → Ensure minimum member threshold
     ↓
 [generate_category_text] → Category page text (with templates)
     ↓
@@ -178,15 +204,75 @@ python run.py DEBUG -encat:Mathematics
 
 ### Command Line Arguments
 
+#### Category Processing
+
 | Argument | Description | Example |
 |----------|-------------|---------|
 | `encat:<name>` | Process a single English category | `encat:Science` |
 | `quarry:<id>` | Fetch categories from Quarry query | `quarry:357357` |
-| `-depth:<n>` | Set recursion depth (default: 5) | `-depth:3` |
-| `-range:<n>` | Set range limit for processing | `-range:10` |
-| `-We_Try` | Enable retry mode | `-We_Try` |
+| `-range:<n>` | Set range limit for processing (default: 5) | `-range:10` |
+| `-We_Try` | Enable retry mode for failed categories | `-We_Try` |
 | `-nowetry` | Disable retry mode | `-nowetry` |
-| `DEBUG` | Enable debug logging | `DEBUG` |
+| `-minmembers:<n>` | Minimum members required to create category (default: 5) | `-minmembers:3` |
+| `-stubs` | Process stub categories | `-stubs` |
+| `-dontMakeNewCat` | Disable new category creation | `-dontMakeNewCat` |
+| `-uselabels` | Use Wikidata labels for category names | `-uselabels` |
+
+#### Debug and Logging
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `DEBUG` or `-debug` | Enable debug logging | `DEBUG` |
+| `printurl` | Print API URLs for debugging | `printurl` |
+| `printdata` | Print API data for debugging | `printdata` |
+| `printtext` | Print text output for debugging | `printtext` |
+| `printresult` | Print results for debugging | `printresult` |
+| `raise` | Raise exceptions instead of handling them | `raise` |
+
+#### Database and SQL
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `-nosql` | Disable SQL database usage | `-nosql` |
+| `usesql` | Enable SQL database usage | `usesql` |
+
+#### Wikidata
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `testwikidata` | Use Wikidata test environment | `testwikidata` |
+| `maxlag2` | Set Wikidata maxlag to 1 | `maxlag2` |
+| `descqs` | Use QuickStatements for descriptions | `descqs` |
+
+#### Bot Behavior
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `ask` | Ask for confirmation before making changes | `ask` |
+| `nodiff` | Don't show diff when asking for confirmation | `nodiff` |
+| `diff` | Force show diff when asking for confirmation | `diff` |
+| `nofa` | Disable false edit detection | `nofa` |
+| `botedit` | Force bot edit (bypass nobots check) | `botedit` |
+| `nologin` | Disable login assertion | `nologin` |
+
+#### Site Configuration
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `-commons` | Use Commons instead of Wikipedia | `-commons` |
+| `-family:<name>` | Custom wiki family (wikiquote, wikisource) | `-family:wikiquote` |
+| `-uselang:<code>` | Custom language code for source site | `-uselang:de` |
+| `-slang:<code>` | Secondary language for fallback | `-slang:fr` |
+
+#### Query Parameters
+
+| Argument | Description | Example |
+|----------|-------------|---------|
+| `-offset:<n>` | Starting offset for queries | `-offset:100` |
+| `depth:<n>` | Depth limit for category traversal (default: 0) | `depth:3` |
+| `-to:<n>` | Upper limit for results | `-to:500` |
+| `nons10` | Exclude namespace 10 from results | `nons10` |
+| `ns:14` | Only include namespace 14 in results | `ns:14` |
 
 ### Programmatic Usage
 
@@ -222,7 +308,20 @@ process_catagories("Category:Science", ar_label, num=1, lenth=1)
 
 ## Configuration
 
-Configuration is managed through the `src/config/settings.py` module, which provides dataclass-based settings that can be configured via environment variables or command-line arguments.
+Configuration is managed through the `src/config/settings.py` module, which provides dataclass-based settings that can be configured via environment variables or command-line arguments. All settings are centralized and type-safe.
+
+### Settings Classes
+
+The configuration system uses the following dataclasses:
+
+- **WikipediaConfig**: Wikipedia API settings (language codes, user agent, timeout)
+- **WikidataConfig**: Wikidata API settings (endpoints, timeout, maxlag)
+- **DatabaseConfig**: Database connection settings (host, port, use_sql)
+- **DebugConfig**: Debug and logging options (print_url, print_data, raise_errors)
+- **BotConfig**: Bot behavior settings (ask, no_diff, force_edit)
+- **CategoryConfig**: Category processing settings (stubs, min_members, we_try)
+- **QueryConfig**: Query parameters (offset, depth, to_limit)
+- **SiteConfig**: Alternative site settings (use_commons, custom_family)
 
 ### Usage
 
@@ -231,12 +330,25 @@ from src.config import settings
 
 # Access Wikipedia configuration
 print(settings.wikipedia.ar_code)  # 'ar'
+print(settings.wikipedia.user_agent)  # 'Himo bot/1.0...'
 
 # Access Wikidata configuration
 print(settings.wikidata.endpoint)  # 'https://www.wikidata.org/w/api.php'
+print(settings.wikidata.maxlag)  # 5
 
 # Access Database configuration
 print(settings.database.use_sql)  # True
+
+# Access Category configuration
+print(settings.category.min_members)  # 5
+print(settings.category.we_try)  # True
+
+# Access Bot configuration
+print(settings.bot.ask)  # False
+
+# Access computed site properties
+print(settings.EEn_site["code"])  # 'en'
+print(settings.AAr_site["family"])  # 'wikipedia'
 
 # Access global settings
 print(settings.range_limit)  # 5
@@ -273,6 +385,12 @@ print(settings.debug)  # False
 | `DATABASE_PORT` | Database port | `3306` |
 | `DATABASE_USE_SQL` | Whether to use SQL database for queries | `True` |
 
+#### Category Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MIN_MEMBERS` | Minimum members required to create a category | `5` |
+
 #### Global Settings
 
 | Variable | Description | Default |
@@ -280,19 +398,6 @@ print(settings.debug)  # False
 | `RANGE_LIMIT` | Maximum number of iterations for category processing | `5` |
 | `DEBUG` | Enable debug mode | `False` |
 | `LOG_LEVEL` | Logging level (DEBUG, INFO, WARNING, ERROR) | `INFO` |
-
-### Command-Line Arguments
-
-Configuration can also be overridden via command-line arguments:
-
-| Argument | Description | Example |
-|----------|-------------|---------|
-| `-range:<n>` | Set the range limit for processing | `-range:10` |
-| `-debug` or `--debug` | Enable debug mode | `-debug` |
-| `-nosql` | Disable SQL database usage | `-nosql` |
-| `usesql` | Enable SQL database usage | `usesql` |
-| `testwikidata` or `-testwikidata` | Use Wikidata test environment | `testwikidata` |
-| `maxlag2` | Set Wikidata maxlag to 1 | `maxlag2` |
 
 ### Blacklists
 
@@ -315,37 +420,49 @@ cats_maker_new/
 │
 ├── src/                     # Source code
 │   ├── config/             # Configuration management
-│   │   └── settings.py     # Centralized settings (dataclass-based)
+│   │   ├── __init__.py     # Exports settings
+│   │   └── settings.py     # Centralized dataclass-based settings
 │   │
 │   ├── mk_cats/            # Main category creation logic
+│   │   ├── __init__.py     # Module exports
 │   │   ├── mknew.py        # Core functions (create_categories_from_list)
 │   │   ├── categorytext.py # Text generation for category pages
 │   │   ├── create_category_page.py  # Page creation logic
-│   │   └── utils/          # Utility functions
+│   │   ├── members_helper.py # Category member collection/processing
+│   │   ├── add_bot.py      # Add categories to pages
+│   │   └── utils/          # Utility functions (filter_en, check_en, portal_list)
 │   │
 │   ├── b18_new/            # Category processing and links
 │   │   ├── LCN_new.py      # Language link discovery
-│   │   ├── cat_tools.py    # Category utilities
+│   │   ├── cat_tools.py    # Category utilities (SubSub)
 │   │   ├── sql_cat.py      # SQL-based category queries
-│   │   └── add_bot.py      # Add categories to pages
+│   │   └── sql_cat_checker.py # SQL category validation
 │   │
 │   ├── c18_new/            # Additional category tools
-│   │   ├── bots/           # Bot utilities
-│   │   ├── cats_tools/     # Category conversion tools
+│   │   ├── bots/           # Bot utilities (filter_cat, english_page_title)
+│   │   ├── cats_tools/     # Category conversion tools (ar_from_en)
 │   │   └── tools_bots/     # Helper bots
 │   │
 │   ├── wd_bots/            # Wikidata integration
 │   │   ├── wd_api_bot.py   # Wikidata API functions
 │   │   ├── to_wd.py        # Log to Wikidata
-│   │   └── get_bots.py     # Data retrieval
+│   │   ├── get_bots.py     # Data retrieval
+│   │   ├── qs_bot.py       # QuickStatements integration
+│   │   └── utils/          # Utilities (lag_bot, handle_wd_errors)
 │   │
 │   ├── wiki_api/           # Wikipedia API calls
 │   │   ├── himoBOT2.py     # General Wikipedia functions
-│   │   └── wd_sparql.py    # SPARQL queries
+│   │   ├── wd_sparql.py    # SPARQL queries
+│   │   ├── api_requests.py # HTTP request handling
+│   │   └── check_redirects.py # Redirect page filtering
 │   │
 │   ├── api_sql/            # Database operations
 │   │   ├── wiki_sql.py     # Wiki SQL queries
-│   │   └── mysql_client.py       # Query utilities
+│   │   └── mysql_client/   # MySQL connection handling
+│   │
+│   ├── new_api/            # Page API abstraction
+│   │   ├── page.py         # MainPage class
+│   │   └── super/          # API utilities (login, cookies, params)
 │   │
 │   ├── helps/              # Helper utilities
 │   │   ├── log.py          # Logging wrapper
@@ -359,15 +476,20 @@ cats_maker_new/
 │
 ├── tests/                  # Test suite
 │   ├── conftest.py        # Shared test fixtures
+│   ├── config/            # Configuration tests
 │   ├── mk_cats/           # mk_cats tests
 │   ├── b18_new/           # b18_new tests
+│   ├── c18_new/           # c18_new tests
 │   ├── wd_bots/           # wd_bots tests
 │   ├── wiki_api/          # wiki_api tests
-│   └── ...
+│   ├── api_sql/           # api_sql tests
+│   ├── integration/       # Integration tests
+│   └── temp/              # Template tests
 │
 └── .github/
-    └── workflows/
-        └── pytest.yaml    # CI/CD configuration
+    ├── workflows/
+    │   └── pytest.yaml    # CI/CD configuration
+    └── copilot-instructions.md  # Copilot coding agent instructions
 ```
 
 ## Testing
@@ -392,6 +514,9 @@ pytest -m unit
 
 # Run only integration tests
 pytest -m integration
+
+# Exclude network-dependent tests
+pytest -m "not network"
 ```
 
 ### Test Structure
@@ -404,19 +529,31 @@ The test suite covers:
 
 ### Test Coverage
 
-Current test coverage includes **1563 tests** covering:
+Current test coverage includes approximately **880+ tests** covering:
 
-| Module | Tests | Status |
-|--------|-------|--------|
-| api_sql | 28 | ✅ |
-| b18_new | 28 | ✅ |
-| c18_new | 18 | ✅ |
-| helps | 58 | ✅ |
-| mk_cats | 31 | ✅ |
-| utils | 14 | ✅ |
-| wd_bots | 29 | ✅ |
-| wiki_api | 32 | ✅ |
-| temp | 1326 | ✅ |
+| Module | Description | Status |
+|--------|-------------|--------|
+| api_sql | Database query functions | ✅ |
+| b18_new | Category processing and links | ✅ |
+| c18_new | Category tools and conversions | ✅ |
+| config | Settings and configuration | ✅ |
+| helps | Logging and utilities | ✅ |
+| mk_cats | Core category creation | ✅ |
+| utils | Skip lists and blacklists | ✅ |
+| wd_bots | Wikidata integration | ✅ |
+| wiki_api | Wikipedia API calls | ✅ |
+| temp | Template generation | ✅ |
+| integration | End-to-end tests | ✅ |
+
+### Test Markers
+
+The test suite uses the following pytest markers:
+
+- `unit`: Unit tests (fast, isolated)
+- `integration`: Integration tests (may require mocking)
+- `network`: Tests requiring network access (skipped by default in CI)
+- `slow`: Slow-running tests
+- `skip2`: Tests to skip temporarily
 
 ### Writing Tests
 
@@ -437,6 +574,13 @@ class TestArMakeLab:
 
         result = ar_make_lab("Category:Science")
         assert result == "علوم"
+
+    def test_returns_empty_for_filtered_category(self, mocker):
+        """Test that filtered categories return empty string"""
+        mocker.patch('src.mk_cats.mknew.filter_en.filter_cat', return_value=False)
+
+        result = ar_make_lab("Category:Stubs")
+        assert result == ""
 ```
 
 ## Contributing
@@ -490,5 +634,4 @@ This project is open source. See repository for license details.
 
 - Arabic Wikipedia community
 - Wikidata project
-- Pywikibot developers
 - ArWikiCats project
