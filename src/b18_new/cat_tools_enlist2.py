@@ -42,9 +42,9 @@ def get_ar_list_from_cat(cat, code="ar", typee="cat", return_list=True):
     # ---
     ctype = "subcat" if typee == "cat" else "page" if typee == "page" else ""
     # ---
-    l1 = sub_cats_query("Category:" + cat, code, ctype=ctype)
+    subcategories_result = sub_cats_query("Category:" + cat, code, ctype=ctype)
     # ---
-    categorymembers = l1.get("categorymembers", {}) if l1 else {}
+    categorymembers = subcategories_result.get("categorymembers", {}) if subcategories_result else {}
     # ---
     if categorymembers:
         lista = list(categorymembers)
