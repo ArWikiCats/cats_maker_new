@@ -2,10 +2,10 @@
 """
 !
 """
-import sys
 import json
 import re
 
+from ..config import settings
 from .utils import lag_bot, logger
 from .wd_login_wrap import log_in_wikidata
 from .wd_newapi_bot import WD_API
@@ -80,7 +80,7 @@ class NewHimoAPIBot:
         if not r4:
             return False
         # ---
-        if "printtext" in sys.argv:
+        if settings.debug_config.print_text:
             logger.debug(r4)
             # {"entity":{"sitelinks":{"arwiki":{"site":"arwiki","title":"قالب:Db-attack-deleted","badges":[],"url":"https://ar.wikipedia.org/wiki/%D9%82%D8%A7%D9%84%D8%A8:Db-attack-deleted"}},"id":"Q97928551","type":"item","lastrevid":1242627521,"nochange":""},"success":1}
         # ---
@@ -187,7 +187,7 @@ class NewHimoAPIBot:
             f'def Des_API: {Qid} description:"{lang}"@{desc}, maxlag:{lag_bot.FFa_lag[1]}, sleep({lag_bot.newsleep[1]})'
         )
         # ---
-        if not Save_2020_wd[1] and (ask is True or "ask" in sys.argv):
+        if not Save_2020_wd[1] and (ask is True or settings.bot.ask):
             # ---
             sa = ask_put(
                 f'<<lightyellow>> bot.py Add desc:<<lightyellow>>"{lang}:{desc}"<<default>> for {Qid} Yes or No ? {Main_User[1]} '
@@ -221,7 +221,7 @@ class NewHimoAPIBot:
         if cf == "reagain":
             if rea:
                 return self.Des_API(Qid, desc, lang, rea=False)
-            elif "descqs" in sys.argv:
+            elif settings.category.descqs:
                 qsline = f'{Qid}|D{lang}|"{desc}"'
                 QS_line(qsline, user="Mr.Ibrahembot")
 
@@ -232,7 +232,7 @@ class NewHimoAPIBot:
         # ---
         logger.debug(f"<<lightblue>> bot.New_Mult_Des_2:q:{q}")
         # ---
-        if not Save_2020_wd[1] and (ask is True or "ask" in sys.argv):
+        if not Save_2020_wd[1] and (ask is True or settings.bot.ask):
             logger.debug(f"<<lightyellow>> summary:{summary}")
             # ---
             sa = ask_put(

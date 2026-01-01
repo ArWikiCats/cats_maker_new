@@ -2,9 +2,9 @@
 
 """
 # ---
-import sys
 import time
 
+from ..config import settings
 from ..helps import logger
 from .bot_wd import WD_Functions
 from .utils import lag_bot
@@ -16,7 +16,7 @@ class WD_API(WD_Functions, WD_ERRORS_HANDLER):
         # ---
         self.login_bot = login_bot
         # ---
-        self.lang = "test" if "testwikidata" in sys.argv else "www"
+        self.lang = "test" if settings.wikidata.test_mode else "www"
         self.family = "wikidata"
         # ---
         self.usernamex = self.login_bot.user_login

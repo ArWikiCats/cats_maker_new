@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """
 """
-import sys
-
+from ...config import settings
 from ..log import logger
 
 # ---
@@ -21,81 +20,59 @@ To = {1: 10000}
 Depth = {1: 0}
 offseet = {1: 0}
 
-# ---
-for arg in sys.argv:
-    arg, _, value = arg.partition(":")
-    # ---
-    if arg == "-offset" or arg == "-off":
-        offseet[1] = int(value)
-    # ---
-    if arg == "depth":
-        Depth[1] = int(value)
-    # ---
-    if arg == "to" or arg == "-to":
-        To[1] = int(value)
-    # ---
-    if arg == "-commons" or arg == "commons":
-        EEn_site["family"] = "commons"
-        EEn_site["code"] = "commons"
-        # ---
-        logger.info(f"<<lightred>> EEn_site[family] = {EEn_site['family']}.")
-    # ---
-    # python3 core8/pwb.py c18/cat -family:wikiquote -newpages:20
-    if arg == "-family" or arg == "family":
-        if value == "wikiquote" or value == "wikisource":
-            # ---
-            EEn_site["family"] = "wikiquote"
-            EEn_site["code"] = "en"
-            # ---
+# Initialize from settings
+offseet[1] = settings.query.offset
+Depth[1] = settings.query.depth
+To[1] = settings.query.to_limit
+use_sqldb[1] = settings.database.use_sql
+Make_New_Cat[1] = settings.category.make_new_cat
+Use_Labels[1] = settings.category.use_labels
 
-            AAr_site["family"] = "wikiquote"
-            AAr_site["code"] = "ar"
-            # ---
-            logger.info(f'<<lightred>> EEn_site["family"] = {EEn_site["family"]}.')
-            logger.info(f'<<lightred>> AAr_site["family"] = {AAr_site["family"]}.')
-            Use_Labels[1] = True
-            logger.info("<<lightred>> -------------------------------")
-            logger.info("<<lightred>> Use_Labels.")
-    # ---
-    if arg == "-uselang" or arg == "uselang":
-        # ---
-        EEn_site["family"] = "wikipedia"
-        EEn_site["code"] = value
-        # ---
-        logger.info("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
-        Make_New_Cat[1] = False
-    # ---
-    # python3 core8/pwb.py c18/cat -page:شوليه_باي_دي_لا_لورا_2018 -slang:fr
-    # python3 core8/pwb.py c18/cat -ref:قالب:بيانات_قالب_من_ويكي_بيانات -ns:10 -slang:fr
+# Handle commons site
+if settings.site.use_commons:
+    EEn_site["family"] = "commons"
+    EEn_site["code"] = "commons"
+    logger.info(f"<<lightred>> EEn_site[family] = {EEn_site['family']}.")
 
-    if arg == "-slang" or arg == "slang":
-        FR_site["use"] = True
-        # ---
-        FR_site["family"] = "wikipedia"
-        FR_site["code"] = value
-        # ---
-        logger.info("<<lightred>> uselang[2] = {}:{}.".format(value, EEn_site["family"]))
-        logger.info('<<lightred>> FR_site["family"] = {}:{}.'.format(value, FR_site["family"]))
-        Make_New_Cat[1] = False
-    # ---
-    if arg == "usesql":
-        use_sqldb[1] = True
-        logger.info("<<lightred>> use My SQl .")
-    # ---
-    if arg == "-nosql":
-        use_sqldb[1] = False
-        logger.info("<<lightred>> dont_use_sqldb .")
-    # ---
-    if arg == "-dontMakeNewCat" or arg == "-dontmakenewcat":
-        Make_New_Cat[1] = False
-        logger.info("<<lightred>> -------------------------------")
-        logger.info("<<lightred>> dont New Categories.")
-    # ---
-    if arg == "-uselabels":
-        Use_Labels[1] = True
-        logger.info("<<lightred>> -------------------------------")
-        logger.info("<<lightred>> Use_Labels.")
+# Handle custom family (wikiquote, wikisource)
+if settings.site.custom_family:
+    EEn_site["family"] = settings.site.custom_family
+    EEn_site["code"] = "en"
+    AAr_site["family"] = settings.site.custom_family
+    AAr_site["code"] = "ar"
+    logger.info(f'<<lightred>> EEn_site["family"] = {EEn_site["family"]}.')
+    logger.info(f'<<lightred>> AAr_site["family"] = {AAr_site["family"]}.')
+    Use_Labels[1] = True
+    logger.info("<<lightred>> -------------------------------")
+    logger.info("<<lightred>> Use_Labels.")
 
-if To[1] != 0:
-    To[1] = To[1] + offseet[1]
+# Handle custom language
+if settings.site.custom_lang:
+    EEn_site["family"] = "wikipedia"
+    EEn_site["code"] = settings.site.custom_lang
+    logger.info("<<lightred>> uselang[2] = {}:{}.".format(settings.site.custom_lang, EEn_site["family"]))
+    Make_New_Cat[1] = False
+
+# Handle secondary language (slang)
+if settings.site.use_secondary:
+    FR_site["use"] = True
+    FR_site["family"] = settings.site.secondary_family
+    FR_site["code"] = settings.site.secondary_lang
+    logger.info("<<lightred>> uselang[2] = {}:{}.".format(settings.site.secondary_lang, EEn_site["family"]))
+    logger.info('<<lightred>> FR_site["family"] = {}:{}.'.format(settings.site.secondary_lang, FR_site["family"]))
+    Make_New_Cat[1] = False
+
+# Log SQL usage if disabled
+if not settings.database.use_sql:
+    logger.info("<<lightred>> dont_use_sqldb .")
+
+# Log make new cat if disabled
+if not settings.category.make_new_cat:
+    logger.info("<<lightred>> -------------------------------")
+    logger.info("<<lightred>> dont New Categories.")
+
+# Log use labels if enabled
+if settings.category.use_labels and not settings.site.custom_family:
+    logger.info("<<lightred>> -------------------------------")
+    logger.info("<<lightred>> Use_Labels.")
 # ---

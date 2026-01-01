@@ -2,8 +2,7 @@
 from .super.handel_errors import HANDEL_ERRORS
 
 """
-import sys
-
+from ...config import settings
 from ...helps import logger
 
 
@@ -86,5 +85,5 @@ class HANDEL_ERRORS:
             params["text"] = {}
             logger.error(f"<<lightred>>{function} ERROR: <<defaut>>info: {err_info}, {params=}")
         # ---
-        if "raise" in sys.argv:
+        if settings.debug_config.raise_errors:
             raise Exception(error)

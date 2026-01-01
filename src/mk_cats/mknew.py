@@ -1,12 +1,11 @@
 """
 python3 core8/pwb.py mk_cats/mknew
 """
-import sys
-
 from ..b18_new import MakeLitApiWay
 from ..b18_new import get_listenpageTitle
 from ..b18_new import add_SubSub, get_SubSub_keys, get_SubSub_value
 
+from ..config import settings
 from ..wiki_api import find_Page_Cat_without_hidden
 
 from ..b18_new import get_ar_list_from_en, make_ar_list_newcat2, validate_categories_for_new_cat
@@ -33,26 +32,12 @@ def configure_parameters():
     DONE_D = []
     NewCat_Done = {}
     Already_Created = []
-    Range = {1: 5}
-    We_Try = {1: True}
+    Range = {1: settings.range_limit}
+    We_Try = {1: settings.category.we_try}
 
     wiki_site_ar = {"family": "wikipedia", "code": "ar"}
     wiki_site_en = {"family": "wikipedia", "code": "en"}
 
-    for arg in sys.argv:
-        arg, _, value = arg.partition(":")
-
-        if arg == "-We_Try":
-            We_Try[1] = True
-            logger.debug("<<lightred>> We_Try.")
-
-        if arg == "-nowetry":
-            We_Try[1] = False
-            logger.debug("<<lightred>> NO We_Try.")
-
-        if arg == "-range":
-            Range[1] = int(value)
-            logger.debug("<<lightred>> Range : %d ." % Range[1])
     return DONE_D, NewCat_Done, Already_Created, Range, We_Try, wiki_site_ar, wiki_site_en
 
 

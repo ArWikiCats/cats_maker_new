@@ -2,7 +2,6 @@
 """
 """
 import functools
-import sys
 from urllib.parse import urlencode
 import requests
 from ..helps import logger
@@ -40,7 +39,7 @@ def submitAPI(params, Code, family, printurl=False, **kwargs):
     # ---
     url = f"https://{Code}.{family}.org/w/api.php?{encode_params}"
     # ---
-    if printurl or "printboturl" in sys.argv:
+    if printurl or settings.debug_config.print_bot_url:
         url2 = url.replace("&format=json", "").replace("?format=json", "?")
         logger.debug(f"printboturl: {url2}")
     # ---

@@ -1,10 +1,9 @@
 """
 
 """
-import sys
-
 import wikitextparser as wtp
 
+from ....config import settings
 from ....helps import logger
 from ...api_utils import botEdit
 from ...api_utils.ask_bot import ASK_BOT
@@ -67,7 +66,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
         if self.ns is False or self.ns != 0:
             return False
         # ---
-        if "nofa" in sys.argv:
+        if settings.bot.no_fa:
             return False
         # ---
         if not self.text:
@@ -697,7 +696,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
             logger.warning(f"<<lightgreen>> ** true .. [[{self.lang}:{self.family}:{self.title}]] ")
             # logger.debug('Done True...')
             # ---
-            if "printpop" in sys.argv:
+            if settings.debug_config.print_pop:
                 print(pop)
             # ---
             self.revisions_data.pageid = edit.get("pageid") or self.revisions_data.pageid

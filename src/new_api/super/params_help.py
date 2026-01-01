@@ -4,8 +4,8 @@ from .super.params_help import PARAMS_HELPS
 
 """
 import json
-import sys
 
+from ...config import settings
 from ...helps import logger
 
 
@@ -24,7 +24,7 @@ class PARAMS_HELPS:
             and self.lang == "ar"
             and params.get("summary")
             and self.username.find("bot") == -1
-            and "ibrahemsummary" not in sys.argv
+            and not settings.bot.ibrahem_summary
         ):
             params["summary"] = ""
 
@@ -41,7 +41,7 @@ class PARAMS_HELPS:
                 or params["action"].startswith("wb")
                 or self.family == "wikidata"
             ):
-                if "nologin" not in sys.argv and self.username:
+                if not settings.bot.no_login and self.username:
                     params["assertuser"] = self.username
 
         return params

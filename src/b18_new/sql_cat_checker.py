@@ -2,7 +2,7 @@
 """
 
 """
-import sys
+from ..config import settings
 from ..helps import logger
 from ..utils.skip_cats import global_False_entemps
 from ..wiki_api import himoBOT2
@@ -19,7 +19,7 @@ NO_Templates_ar = [
 # ---
 NO_Templates_lower = [x.lower() for x in global_False_entemps]
 # ---
-if "-stubs" in sys.argv or "stubs" in sys.argv:
+if settings.category.stubs:
     NO_Templates_ar.remove("تصنيف بذرة")
     NO_Templates_ar.remove("تصنيف مخفي")
 
@@ -53,7 +53,7 @@ def check_category_status(wiki, arcat, encat):
         en_temp = ioio_en.get("templates", {})
         for TargetTemp in en_temp:
             Target_Temp2 = TargetTemp.replace("Template:", "")
-            if Target_Temp2.lower() in NO_Templates_lower and "keep" not in sys.argv:
+            if Target_Temp2.lower() in NO_Templates_lower and not settings.category.keep:
                 logger.info(f"<<lightred>> encat:{encat2} has temp:{Target_Temp2} ")
                 return False
 
@@ -88,7 +88,7 @@ def check_arabic_category_status(arcat, encat):
         ar_temp = ioio_ar.get("templates", {})
         for TargetTemp in ar_temp:
             TargetTemp2 = TargetTemp.replace("قالب:", "")
-            if TargetTemp2 in NO_Templates_ar and "keep" not in sys.argv:
+            if TargetTemp2 in NO_Templates_ar and not settings.category.keep:
                 logger.info(f"<<lightred>> arcat2:{arcat2} has temp:{TargetTemp2} ")
                 return False
     return True

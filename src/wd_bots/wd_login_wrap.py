@@ -2,8 +2,7 @@
 
 """
 # ---
-import sys
-
+from ..config import settings
 from ..new_api import LoginWrap, User_tables_bot
 
 logins_cache = {}
@@ -13,7 +12,7 @@ def log_in_wikidata(Mr_or_bot="bot", www="www"):
     # ---
     users_data = User_tables_bot
     # ---
-    www2 = "test" if "wikidata_test" in sys.argv else "www"
+    www2 = "test" if settings.wikidata.test_mode else "www"
     # ---
     if www != "www":
         www2 = www

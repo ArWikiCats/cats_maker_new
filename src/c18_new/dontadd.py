@@ -6,11 +6,11 @@ import functools
 import os
 import json
 import stat
-import sys
 from datetime import datetime
 from pathlib import Path
 
 from ..api_sql import GET_SQL, sql_new_title_ns
+from ..config import settings
 from ..helps import logger
 
 Dir = Path(__file__).parent.parent.parent
@@ -24,7 +24,7 @@ statgroup = stat.S_IRWXU | stat.S_IRWXG
 def load_json(filename, empty_data="list"):
     data = {} if empty_data == "dict" else []
     # ---
-    if "test" in sys.argv:
+    if settings.category.test_mode:
         logger.debug(f"temps_params.py, jsonfile: {filename}")
     # ---
     if not os.path.isfile(filename):
@@ -95,10 +95,10 @@ def from_sql():
 def get_pages_nocat():
     data = {}
     # ---
-    if "nodontadd" in sys.argv or "test" in sys.argv:
+    if settings.category.no_dontadd or settings.category.test_mode:
         return data
     # ---
-    if "testadd" not in sys.argv:
+    if not settings.category.test_add:
         if str(Dir).find("/data/project/") == -1 and str(Dir).find("/mnt/") == -1:
             logger.info("dont get dontadd list in local server")
             return data

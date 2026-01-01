@@ -1,7 +1,7 @@
 """
 
 """
-import sys
+from ..config import settings
 
 # ---
 skip_encats = [
@@ -26,7 +26,7 @@ global_False_entemps = [
     # 'container category',      #تصنيف حاوية
 ]
 # ---
-if "-stubs" in sys.argv or "stubs" in sys.argv:
+if settings.category.stubs:
     global_False_entemps.remove("Hiddencat")
     global_False_entemps.remove("WPSS-cat")
     global_False_entemps.remove("Stub Category")

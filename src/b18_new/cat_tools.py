@@ -2,8 +2,7 @@
 """
 from .cat_tools import get_SubSub_value
 """
-import sys
-
+from ..config import settings
 from ..utils.skip_cats import global_False_entemps as NO_Templates
 from ..helps import logger
 from ..wiki_api import get_cache_L_C_N
@@ -27,7 +26,7 @@ nameblcklist = [
     "Nicknames",
 ]
 # ---
-if "-stubs" in sys.argv:
+if settings.category.stubs:
     nameblcklist.remove("stubs")
 
 

@@ -1,8 +1,7 @@
 """
 
 """
-import sys
-
+from ...config import settings
 from ...helps import logger
 
 
@@ -81,5 +80,5 @@ class WD_ERRORS_HANDLER:
         params["data"] = {}
         logger.debug(f"<<lightred>>{function} ERROR: <<defaut>>info: {err_info}, {params=}")
         # ---
-        if "raise" in sys.argv:
+        if settings.debug_config.raise_errors:
             raise Exception(error)

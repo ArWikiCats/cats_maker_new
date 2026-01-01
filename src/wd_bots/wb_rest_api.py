@@ -8,10 +8,10 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 
 """
 
-import sys
+import functools
+from ..config import settings
 from ..helps import logger
 from . import NewHimoAPIBot
-import functools
 
 wd_cach = {}
 
@@ -67,7 +67,7 @@ def Get_one_qid_info(qid, only=None):
     if only in props:
         url += "/" + only
     # ---
-    if "printurl" in sys.argv:
+    if settings.debug_config.print_url:
         logger.info(url)
     # ---
     result = get_rest_result(url)

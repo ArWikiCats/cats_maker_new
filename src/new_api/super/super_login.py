@@ -14,10 +14,10 @@ Exception:{'login': {'result': 'Failed', 'reason': 'You have made too many recen
 
 """
 import copy
-import sys
 import time
 import urllib.parse
 
+from ...config import settings
 from ...helps import logger
 from ..api_utils.user_agent import default_user_agent
 from .bot import LOGIN_HELPS
@@ -64,7 +64,7 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
         """
         Print the URL for debugging purposes.
         """
-        if "printurl" in sys.argv:
+        if settings.debug_config.print_url:
             # ---
             no_url = ["lgpassword", "format"]
             no_remove = ["titles", "title"]
@@ -209,7 +209,7 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
                 # ---
                 return self.post_params(params, Type=Type, addtoken=addtoken, max_retry=max_retry + 1)
         # ---
-        if "printdata" in sys.argv:
+        if settings.debug_config.print_data:
             logger.debug(data)
 
         return data
