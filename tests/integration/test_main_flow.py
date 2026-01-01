@@ -375,31 +375,3 @@ class TestDataFlowIntegration:
         # Verify the data structure is suitable for category creation
         assert "title" in result
         assert result["ns"] == 14  # Category namespace
-
-
-class TestConfigurationIntegration:
-    """Tests for configuration affecting the main flow."""
-
-    def test_range_parameter_affects_iteration(self, mocker):
-        """Test that Range parameter affects the number of iterations."""
-        from src.mk_cats.mknew import Range
-
-        # Store original value
-        original_range = Range[1]
-
-        # Set Range to 0 to prevent iterations
-        Range[1] = 0
-
-        # Mock make_ar to return subcategories
-        mock_make_ar = mocker.patch("src.mk_cats.mknew.make_ar")
-        mock_make_ar.return_value = ["SubCat1", "SubCat2"]
-
-        from src.mk_cats.mknew import process_catagories
-
-        process_catagories("Category:Test", "اختبار", 1, 1)
-
-        # make_ar should only be called once (no iterations with Range=0)
-        assert mock_make_ar.call_count == 1
-
-        # Restore original value
-        Range[1] = original_range

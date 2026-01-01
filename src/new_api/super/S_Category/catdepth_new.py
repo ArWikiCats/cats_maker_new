@@ -73,9 +73,6 @@ def subcatquery(login_bot, title, sitecode=SITECODE, family=FAMILY, **kwargs):
     # ---
     delta = time.perf_counter() - start
     # ---
-    if settings.debug_config.print_result:
-        logger.debug(result)
-    # ---
     if print_s:
         lenpages = bot.get_len_pages()
         # ---

@@ -44,7 +44,7 @@ create_categories_from_list(liste, uselabs, callback)
             └─ return list of Arabic pages
             ↓
             process_catagories(en_title, labb, num, lenth, callback)
-                ├─ حلقة متكررة: for i in range(0, Range[1]):
+                ├─ حلقة متكررة: for i in range(0, settings.range_limit):
                 │   ↓
                 │   make_ar(en_page_title, ar_title, callback)
                 │       ├─ scan_ar_title(ar_title) → checked_title

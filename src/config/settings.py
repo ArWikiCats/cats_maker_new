@@ -87,23 +87,11 @@ class DebugConfig:
 
     Attributes:
         print_url: Print API URLs for debugging
-        print_bot_url: Print bot API URLs for debugging
-        print_data: Print data for debugging
-        print_text: Print text for debugging
-        print_disc: Print disc for debugging
-        print_result: Print result for debugging
-        print_pop: Print pop for debugging
         raise_errors: Raise exceptions instead of handling them
         do_post: Force POST requests for debugging
     """
 
     print_url: bool = False
-    print_bot_url: bool = False
-    print_data: bool = False
-    print_text: bool = False
-    print_disc: bool = False
-    print_result: bool = False
-    print_pop: bool = False
     raise_errors: bool = False
     do_post: bool = False
 
@@ -390,18 +378,6 @@ class Settings:
             # Debug config
             if arg_name == "printurl":
                 self.debug_config.print_url = True
-            if arg_name == "printboturl":
-                self.debug_config.print_bot_url = True
-            if arg_name == "printdata":
-                self.debug_config.print_data = True
-            if arg_name == "printtext":
-                self.debug_config.print_text = True
-            if arg_name == "printdisc":
-                self.debug_config.print_disc = True
-            if arg_name == "printresult":
-                self.debug_config.print_result = True
-            if arg_name == "printpop":
-                self.debug_config.print_pop = True
             if arg_name == "raise":
                 self.debug_config.raise_errors = True
             if arg_name == "dopost":

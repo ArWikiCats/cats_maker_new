@@ -80,10 +80,6 @@ class NewHimoAPIBot:
         if not r4:
             return False
         # ---
-        if settings.debug_config.print_text:
-            logger.debug(r4)
-            # {"entity":{"sitelinks":{"arwiki":{"site":"arwiki","title":"قالب:Db-attack-deleted","badges":[],"url":"https://ar.wikipedia.org/wiki/%D9%82%D8%A7%D9%84%D8%A8:Db-attack-deleted"}},"id":"Q97928551","type":"item","lastrevid":1242627521,"nochange":""},"success":1}
-        # ---
         d = outbot_json(r4, fi=out, NoWait=nowait)
         # ---
         if d is True:

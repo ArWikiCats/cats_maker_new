@@ -21,6 +21,7 @@ class TestCheckIfArtitleExists:
     """Tests for check_if_artitle_exists function."""
     pass
 
+
 class TestArMakeLab:
     """Tests for ar_make_lab function."""
 
@@ -114,7 +115,6 @@ class TestScanArTitle:
         # Clear state
         mknew.Already_Created.clear()
         mknew.NewCat_Done.clear()
-        mknew.We_Try[1] = False
 
         # First call - should return True
         result1 = mknew.scan_ar_title("تصنيف:مكرر")
@@ -126,7 +126,6 @@ class TestScanArTitle:
 
         # Cleanup
         mknew.NewCat_Done.clear()
-        mknew.We_Try[1] = True
 
 
 class TestMakeAr:
@@ -227,14 +226,7 @@ class TestProcessCatagories:
         mocker.patch.object(mknew, "ar_make_lab", return_value="")
         mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=[])
 
-        # Set Range to 1 for this test
-        original_range = mknew.Range[1]
-        mknew.Range[1] = 1
-
         mknew.process_catagories("Category:Science", "علوم", 1, 10)
-
-        # Restore Range
-        mknew.Range[1] = original_range
 
         assert mock_make_ar.call_count >= 1
 
