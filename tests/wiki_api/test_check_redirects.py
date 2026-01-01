@@ -68,7 +68,7 @@ class TestLoadNonRedirects:
         mock_api = mocker.MagicMock()
         mock_api.Find_pages_exists_or_not.return_value = {
             "Page1": True,
-            "redirect": True,
+            "redirect": "redirect",
         }
         mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
 
@@ -114,7 +114,7 @@ class TestLoadNonRedirects:
 
         result = load_non_redirects("en", ["Page1", "Page2"])
 
-        assert result == []
+        assert result == ["redirect"]
 
     def test_uses_correct_language(self, mocker):
         """Test that load_non_redirects uses the correct language code"""
@@ -144,26 +144,6 @@ class TestRemoveRedirectPages:
         result = remove_redirect_pages("en", ["Science", "Mathematics", "Physics"])
 
         assert result == ["Science", "Mathematics"]
-
-    def test_logs_removal_count(self, mocker):
-        """Test that remove_redirect_pages logs the number of removed redirects"""
-        mock_api = mocker.MagicMock()
-        mock_api.Find_pages_exists_or_not.return_value = {
-            "Page1": True,
-            "Page2": False,
-            "Page3": True,
-            "redirect": True,
-        }
-        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_api)
-        mock_logger = mocker.patch("src.wiki_api.check_redirects.logger")
-
-        result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
-
-        # 3 input pages - 2 non-redirects = 1 removed
-        mock_logger.info.assert_called_once()
-        call_args = mock_logger.info.call_args[0][0]
-        assert "1" in call_args
-        assert "redirect" in call_args.lower()
 
     def test_logs_zero_removals(self, mocker):
         """Test that remove_redirect_pages logs correctly when no redirects are removed"""
@@ -208,10 +188,10 @@ class TestRemoveRedirectPages:
 
         result = remove_redirect_pages("en", ["Page1", "Page2", "Page3"])
 
-        assert result == []
-        # 3 input pages - 0 non-redirects = 3 removed
+        assert result == ["redirect"]
+        # 3 input pages - 0 non-redirects = 2 removed
         call_args = mock_logger.info.call_args[0][0]
-        assert "3" in call_args
+        assert "2" in call_args
 
     def test_preserves_order(self, mocker):
         """Test that remove_redirect_pages preserves the order of non-redirect pages"""

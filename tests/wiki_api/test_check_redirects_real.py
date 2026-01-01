@@ -20,13 +20,13 @@ class TestRemoveRedirectPagesReal:
         page_titles = ["Python (programming language)", "USA", "Nonexistent Page 12345"]
         non_redirects = remove_redirect_pages("en", page_titles)
         assert "Python (programming language)" in non_redirects
-        assert "USA" in non_redirects
+        assert "USA" not in non_redirects
         assert "Nonexistent Page 12345" not in non_redirects
 
     def test_removes_redirects_arabic(self):
         """Test that redirect pages are removed from the list"""
         page_titles = ["يمن", "اليمن"]
-        non_redirects = remove_redirect_pages("en", page_titles)
+        non_redirects = remove_redirect_pages("ar", page_titles)
         assert "يمن" not in non_redirects
         assert "اليمن" in non_redirects
 
