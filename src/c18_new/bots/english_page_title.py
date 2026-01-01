@@ -99,7 +99,7 @@ def english_page_link_from_api(link, firstsite_code, second_site_code, text=""):
     # ---
     link1 = link.replace("_", " ")
     # ---
-    sasa = find_LCN(link, prop="categories|langlinks", first_site_code=firstsite_code)
+    sasa = find_LCN(link, prop="categories|langlinks", first_site_code=firstsite_code) or {}
     logger.debug(f">> sasa: {len(sasa)=}")
     # ---
     results = ""
