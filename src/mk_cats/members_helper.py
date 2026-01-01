@@ -68,20 +68,20 @@ def gather_members_from_subsub(en_page_title: str) -> list:
 
 def merge_member_lists(*member_lists: list) -> list:
     """
-    Merge multiple member lists, removing duplicates.
+    Merge multiple member lists, removing duplicates while preserving order.
+
+    Uses dict.fromkeys() for O(n) deduplication instead of O(n²) list lookup.
 
     Args:
         *member_lists: Variable number of member lists to merge
 
     Returns:
-        A deduplicated list of all members
+        A deduplicated list of all members (order preserved)
     """
-    merged = []
-    for member_list in member_lists:
-        for member in member_list:
-            if member not in merged:
-                merged.append(member)
-    return merged
+    # Chain all lists and use dict.fromkeys() for efficient O(n) deduplication
+    from itertools import chain
+
+    return list(dict.fromkeys(chain.from_iterable(member_lists)))
 
 
 def filter_invalid_members(members: list) -> list:
