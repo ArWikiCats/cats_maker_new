@@ -251,7 +251,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     members = collect_category_members(ar_title, en_page_title)
 
     if not members:
-        logger.debug(" get_listenpageTitle == [] ")
+        logger.debug(" collect_category_members returned empty list ")
         return []
 
     _log_members_info(members)
