@@ -59,9 +59,7 @@ class TestLoadNonRedirects:
         result = load_non_redirects("en", ["Page1", "Page2", "Page3"])
 
         assert result == ["Page1", "Page2"]
-        mock_api.Find_pages_exists_or_not.assert_called_once_with(
-            ["Page1", "Page2", "Page3"], get_redirect=True
-        )
+        mock_api.Find_pages_exists_or_not.assert_called_once_with(["Page1", "Page2", "Page3"], get_redirect=True)
 
     def test_filters_out_redirect_key(self, mocker):
         """Test that 'redirect' key is filtered out from results"""
@@ -228,8 +226,7 @@ class TestRemoveRedirectPages:
     def test_calls_load_non_redirects(self, mocker):
         """Test that remove_redirect_pages uses load_non_redirects internally"""
         mock_load_non_redirects = mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
-            return_value=["Page1", "Page2"]
+            "src.wiki_api.check_redirects.load_non_redirects", return_value=["Page1", "Page2"]
         )
         mocker.patch("src.wiki_api.check_redirects.logger")
 

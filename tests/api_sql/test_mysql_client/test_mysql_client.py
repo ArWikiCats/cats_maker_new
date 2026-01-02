@@ -50,17 +50,9 @@ class TestSqlConnectPymysql:
         _, mock_cursor, _ = mock_mysql_connection
         mock_cursor.fetchall.return_value = []
 
-        _sql_connect_pymysql(
-            "SELECT * FROM table WHERE id = %s",
-            db="test",
-            host="localhost",
-            values=(123,)
-        )
+        _sql_connect_pymysql("SELECT * FROM table WHERE id = %s", db="test", host="localhost", values=(123,))
 
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT * FROM table WHERE id = %s",
-            (123,)
-        )
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM table WHERE id = %s", (123,))
 
     def test_returns_fetchall_results(self, mock_mysql_connection):
         """Test that _sql_connect_pymysql returns fetchall results."""

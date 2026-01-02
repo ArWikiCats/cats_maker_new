@@ -106,9 +106,7 @@ class TestDoLag:
 
     def test_calls_make_sleep_def(self, mocker):
         """Test that make_sleep_def is called"""
-        mock_make_sleep = mocker.patch(
-            "src.wd_bots.utils.lag_bot.make_sleep_def"
-        )
+        mock_make_sleep = mocker.patch("src.wd_bots.utils.lag_bot.make_sleep_def")
         mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
 
         # Set low lag to avoid long sleep

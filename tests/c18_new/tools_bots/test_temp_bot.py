@@ -61,8 +61,7 @@ class TestTemplatequery:
     def test_calls_find_LCN_for_uncached_link(self, mocker):
         """Test that find_LCN is called for uncached links"""
         mock_find_lcn = mocker.patch(
-            "src.c18_new.tools_bots.temp_bot.find_LCN",
-            return_value={"test": {"templates": ["قالب:test"]}}
+            "src.c18_new.tools_bots.temp_bot.find_LCN", return_value={"test": {"templates": ["قالب:test"]}}
         )
 
         # Use unique key to avoid cache
@@ -72,10 +71,7 @@ class TestTemplatequery:
 
     def test_returns_false_when_no_templates_found(self, mocker):
         """Test that False is returned when no templates are found"""
-        mocker.patch(
-            "src.c18_new.tools_bots.temp_bot.find_LCN",
-            return_value={"test": {}}
-        )
+        mocker.patch("src.c18_new.tools_bots.temp_bot.find_LCN", return_value={"test": {}})
 
         result = templatequery("no_templates_link", "ar")
         assert result is False
@@ -102,8 +98,7 @@ class TestTemplatequeryMulti:
     def test_calls_find_LCN_for_uncached_link(self, mocker):
         """Test that find_LCN is called for uncached links"""
         mock_find_lcn = mocker.patch(
-            "src.c18_new.tools_bots.temp_bot.find_LCN",
-            return_value={"test": {"templates": ["قالب:test"]}}
+            "src.c18_new.tools_bots.temp_bot.find_LCN", return_value={"test": {"templates": ["قالب:test"]}}
         )
 
         result = templatequerymulti("unique_multi_test_link_456", "ar")
@@ -112,10 +107,7 @@ class TestTemplatequeryMulti:
 
     def test_returns_false_when_find_lcn_returns_none(self, mocker):
         """Test that False is returned when find_LCN returns None"""
-        mocker.patch(
-            "src.c18_new.tools_bots.temp_bot.find_LCN",
-            return_value=None
-        )
+        mocker.patch("src.c18_new.tools_bots.temp_bot.find_LCN", return_value=None)
 
         result = templatequerymulti("null_result_link", "ar")
         assert result is False

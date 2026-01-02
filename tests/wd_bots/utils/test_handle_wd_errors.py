@@ -22,12 +22,7 @@ class TestWDErrorsHandler:
     def test_handle_abusefilter_error(self):
         """Test handling of abusefilter-disallowed error"""
         handler = WD_ERRORS_HANDLER()
-        error = {
-            "code": "abusefilter-disallowed",
-            "abusefilter": {
-                "description": "Test filter"
-            }
-        }
+        error = {"code": "abusefilter-disallowed", "abusefilter": {"description": "Test filter"}}
 
         result = handler.handle_err_wd(error)
 
@@ -36,12 +31,7 @@ class TestWDErrorsHandler:
     def test_handle_bot_delay_filter(self):
         """Test handling of bot delay filter"""
         handler = WD_ERRORS_HANDLER()
-        error = {
-            "code": "abusefilter-disallowed",
-            "abusefilter": {
-                "description": "تأخير البوتات 3 ساعات"
-            }
-        }
+        error = {"code": "abusefilter-disallowed", "abusefilter": {"description": "تأخير البوتات 3 ساعات"}}
 
         result = handler.handle_err_wd(error)
 
@@ -86,10 +76,7 @@ class TestWDErrorsHandler:
     def test_handle_unknown_error(self):
         """Test handling of unknown error"""
         handler = WD_ERRORS_HANDLER()
-        error = {
-            "code": "unknown_error",
-            "info": "Unknown error occurred"
-        }
+        error = {"code": "unknown_error", "info": "Unknown error occurred"}
         params = {"data": {"test": "data"}}
 
         result = handler.handle_err_wd(error, params=params)

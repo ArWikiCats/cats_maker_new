@@ -258,9 +258,7 @@ class TestGetP373API:
     def test_extracts_commons_category(self, mocker):
         """Test that function extracts Commons category from sitelinks"""
         mock_response = {
-            "entities": {
-                "Q123": {"sitelinks": {"commonswiki": {"title": "Category:Science"}}, "claims": {}}
-            }
+            "entities": {"Q123": {"sitelinks": {"commonswiki": {"title": "Category:Science"}}, "claims": {}}}
         }
         mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=mock_response)
 
@@ -298,9 +296,7 @@ class TestGetPropertyAPI:
 
     def test_extracts_property_values(self, mocker):
         """Test that function extracts property values from claims"""
-        mock_response = {
-            "claims": {"P31": [{"mainsnak": {"datavalue": {"value": {"id": "Q5"}}}}]}
-        }
+        mock_response = {"claims": {"P31": [{"mainsnak": {"datavalue": {"value": {"id": "Q5"}}}}]}}
         mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=mock_response)
 
         result = Get_Property_API(q="Q123", p="P31")

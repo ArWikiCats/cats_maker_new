@@ -18,10 +18,7 @@ class TestWdSparqlGeneratorUrl:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.get_query_data",
-            return_value={"results": {"bindings": []}}
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.get_query_data", return_value={"results": {"bindings": []}})
 
         result = wd_sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
 
@@ -38,7 +35,7 @@ class TestWdSparqlGeneratorUrl:
                         {"item": {"value": "http://www.wikidata.org/entity/Q456"}},
                     ]
                 }
-            }
+            },
         )
 
         result = wd_sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
@@ -57,7 +54,7 @@ class TestWdSparqlGeneratorUrl:
                         {"item": {"value": "http://www.wikidata.org/entity/P456"}},
                     ]
                 }
-            }
+            },
         )
 
         result = wd_sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
@@ -67,10 +64,7 @@ class TestWdSparqlGeneratorUrl:
 
     def test_returns_empty_list_for_no_data(self, mocker):
         """Test that empty list is returned when no data"""
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.get_query_data",
-            return_value={}
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.get_query_data", return_value={})
 
         result = wd_sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
 
@@ -88,7 +82,7 @@ class TestWdSparqlGeneratorUrl:
                         {"item": {"value": "http://www.wikidata.org/entity/Q200"}},
                     ]
                 }
-            }
+            },
         )
 
         result = wd_sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
@@ -101,10 +95,7 @@ class TestSparqlGeneratorUrl:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.get_query_data",
-            return_value={"results": {"bindings": []}}
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.get_query_data", return_value={"results": {"bindings": []}})
 
         result = sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
 
@@ -114,10 +105,7 @@ class TestSparqlGeneratorUrl:
         """Test that dict is returned when returndict=True"""
         mocker.patch(
             "src.wd_bots.wd_sparql_bot.get_query_data",
-            return_value={
-                "head": {"vars": ["item"]},
-                "results": {"bindings": []}
-            }
+            return_value={"head": {"vars": ["item"]}, "results": {"bindings": []}},
         )
 
         result = sparql_generator_url("SELECT * WHERE { ?s ?p ?o }", returndict=True)
@@ -130,15 +118,8 @@ class TestSparqlGeneratorUrl:
             "src.wd_bots.wd_sparql_bot.get_query_data",
             return_value={
                 "head": {"vars": ["item", "label"]},
-                "results": {
-                    "bindings": [
-                        {
-                            "item": {"value": "Q123"},
-                            "label": {"value": "Test"}
-                        }
-                    ]
-                }
-            }
+                "results": {"bindings": [{"item": {"value": "Q123"}, "label": {"value": "Test"}}]},
+            },
         )
 
         result = sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
@@ -153,12 +134,8 @@ class TestSparqlGeneratorUrl:
             "src.wd_bots.wd_sparql_bot.get_query_data",
             return_value={
                 "head": {"vars": ["item", "label"]},
-                "results": {
-                    "bindings": [
-                        {"item": {"value": "Q123"}}  # Missing label
-                    ]
-                }
-            }
+                "results": {"bindings": [{"item": {"value": "Q123"}}]},  # Missing label
+            },
         )
 
         result = sparql_generator_url("SELECT * WHERE { ?s ?p ?o }")
@@ -172,10 +149,7 @@ class TestSparqlGeneratorBigResults:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.sparql_generator_url",
-            return_value=[]
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.sparql_generator_url", return_value=[])
 
         result = sparql_generator_big_results("SELECT * WHERE { ?s ?p ?o }")
 
@@ -191,10 +165,7 @@ class TestSparqlGeneratorBigResults:
                 return [{"item": "Q1"}]
             return []
 
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.sparql_generator_url",
-            side_effect=mock_sparql
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.sparql_generator_url", side_effect=mock_sparql)
 
         result = sparql_generator_big_results("SELECT * WHERE { ?s ?p ?o }")
 
@@ -203,10 +174,7 @@ class TestSparqlGeneratorBigResults:
 
     def test_respects_limit_parameter(self, mocker):
         """Test that limit parameter is respected"""
-        mock_sparql = mocker.patch(
-            "src.wd_bots.wd_sparql_bot.sparql_generator_url",
-            return_value=[]
-        )
+        mock_sparql = mocker.patch("src.wd_bots.wd_sparql_bot.sparql_generator_url", return_value=[])
 
         sparql_generator_big_results("SELECT * WHERE { ?s ?p ?o }", limit=100)
 
@@ -215,10 +183,7 @@ class TestSparqlGeneratorBigResults:
 
     def test_respects_offset_parameter(self, mocker):
         """Test that offset parameter is respected"""
-        mock_sparql = mocker.patch(
-            "src.wd_bots.wd_sparql_bot.sparql_generator_url",
-            return_value=[]
-        )
+        mock_sparql = mocker.patch("src.wd_bots.wd_sparql_bot.sparql_generator_url", return_value=[])
 
         sparql_generator_big_results("SELECT * WHERE { ?s ?p ?o }", offset=50)
 
@@ -227,16 +192,9 @@ class TestSparqlGeneratorBigResults:
 
     def test_stops_at_alllimit(self, mocker):
         """Test that iteration stops at alllimit"""
-        mocker.patch(
-            "src.wd_bots.wd_sparql_bot.sparql_generator_url",
-            return_value=[{"item": "Q1"}] * 100
-        )
+        mocker.patch("src.wd_bots.wd_sparql_bot.sparql_generator_url", return_value=[{"item": "Q1"}] * 100)
 
-        result = sparql_generator_big_results(
-            "SELECT * WHERE { ?s ?p ?o }",
-            limit=50,
-            alllimit=50
-        )
+        result = sparql_generator_big_results("SELECT * WHERE { ?s ?p ?o }", limit=50, alllimit=50)
 
         # Should stop after reaching alllimit
         assert len(result) <= 100  # First batch only

@@ -175,10 +175,7 @@ class TestFindDocAndAdd:
         mock_page.get_text.return_value = ""
         mock_page.exists.return_value = False
 
-        mocker.patch(
-            "src.c18_new.bots.text_to_temp_bot.MainPage",
-            return_value=mock_page
-        )
+        mocker.patch("src.c18_new.bots.text_to_temp_bot.MainPage", return_value=mock_page)
 
         result = find_doc_and_add("[[تصنيف:علوم]]", "قالب:اختبار", create=False)
         assert result is False
@@ -189,10 +186,7 @@ class TestAddTextToTemplate:
 
     def test_handles_doc_page(self, mocker):
         """Test handling of /شرح pages"""
-        mocker.patch(
-            "src.c18_new.bots.text_to_temp_bot.add_to_doc_page",
-            return_value="نتيجة التوثيق"
-        )
+        mocker.patch("src.c18_new.bots.text_to_temp_bot.add_to_doc_page", return_value="نتيجة التوثيق")
 
         result = add_text_to_template("نص", "[[تصنيف:علوم]]", "قالب:اختبار/شرح")
         assert result == "نتيجة التوثيق"
@@ -207,10 +201,7 @@ class TestAddTextToTemplate:
 
     def test_handles_regular_template(self, mocker):
         """Test handling of regular templates"""
-        mocker.patch(
-            "src.c18_new.bots.text_to_temp_bot.find_doc_and_add",
-            return_value=False
-        )
+        mocker.patch("src.c18_new.bots.text_to_temp_bot.find_doc_and_add", return_value=False)
 
         text = "محتوى القالب"
         result = add_text_to_template(text, "[[تصنيف:علوم]]", "قالب:اختبار")

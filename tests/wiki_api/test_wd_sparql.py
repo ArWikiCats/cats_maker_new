@@ -19,10 +19,7 @@ class TestGetQueryData:
         """Test that empty dict is returned on exception"""
         mock_sparql = mocker.MagicMock()
         mock_sparql.query.side_effect = Exception("Network error")
-        mocker.patch(
-            "src.wiki_api.wd_sparql.SPARQLWrapper",
-            return_value=mock_sparql
-        )
+        mocker.patch("src.wiki_api.wd_sparql.SPARQLWrapper", return_value=mock_sparql)
 
         result = get_query_data("SELECT * WHERE { ?s ?p ?o }")
         assert result == {}
@@ -30,15 +27,10 @@ class TestGetQueryData:
     def test_returns_query_result(self, mocker):
         """Test that query result is returned"""
         mock_result = mocker.MagicMock()
-        mock_result.convert.return_value = {
-            "results": {"bindings": [{"item": {"value": "Q123"}}]}
-        }
+        mock_result.convert.return_value = {"results": {"bindings": [{"item": {"value": "Q123"}}]}}
         mock_sparql = mocker.MagicMock()
         mock_sparql.query.return_value = mock_result
-        mocker.patch(
-            "src.wiki_api.wd_sparql.SPARQLWrapper",
-            return_value=mock_sparql
-        )
+        mocker.patch("src.wiki_api.wd_sparql.SPARQLWrapper", return_value=mock_sparql)
 
         result = get_query_data("SELECT * WHERE { ?s ?p ?o }")
         assert "results" in result
@@ -49,10 +41,7 @@ class TestGetQueryData:
         mock_result = mocker.MagicMock()
         mock_result.convert.return_value = {}
         mock_sparql.query.return_value = mock_result
-        mocker.patch(
-            "src.wiki_api.wd_sparql.SPARQLWrapper",
-            return_value=mock_sparql
-        )
+        mocker.patch("src.wiki_api.wd_sparql.SPARQLWrapper", return_value=mock_sparql)
 
         get_query_data("SELECT * WHERE { ?s ?p ?o }")
 
@@ -60,9 +49,7 @@ class TestGetQueryData:
 
     def test_uses_wikidata_endpoint(self, mocker):
         """Test that Wikidata endpoint is used"""
-        mock_sparql_class = mocker.patch(
-            "src.wiki_api.wd_sparql.SPARQLWrapper"
-        )
+        mock_sparql_class = mocker.patch("src.wiki_api.wd_sparql.SPARQLWrapper")
         mock_sparql = mocker.MagicMock()
         mock_result = mocker.MagicMock()
         mock_result.convert.return_value = {}
@@ -82,14 +69,7 @@ class TestGetQueryResult:
         """Test that list of bindings is returned"""
         mocker.patch(
             "src.wiki_api.wd_sparql.get_query_data",
-            return_value={
-                "results": {
-                    "bindings": [
-                        {"item": {"value": "Q123"}},
-                        {"item": {"value": "Q456"}}
-                    ]
-                }
-            }
+            return_value={"results": {"bindings": [{"item": {"value": "Q123"}}, {"item": {"value": "Q456"}}]}},
         )
 
         result = get_query_result("SELECT * WHERE { ?s ?p ?o }")
@@ -99,10 +79,7 @@ class TestGetQueryResult:
 
     def test_returns_empty_list_on_no_results(self, mocker):
         """Test that empty list is returned when no results"""
-        mocker.patch(
-            "src.wiki_api.wd_sparql.get_query_data",
-            return_value={}
-        )
+        mocker.patch("src.wiki_api.wd_sparql.get_query_data", return_value={})
 
         result = get_query_result("SELECT * WHERE { ?s ?p ?o }")
 
@@ -110,10 +87,7 @@ class TestGetQueryResult:
 
     def test_returns_empty_list_on_empty_bindings(self, mocker):
         """Test that empty list is returned when bindings are empty"""
-        mocker.patch(
-            "src.wiki_api.wd_sparql.get_query_data",
-            return_value={"results": {"bindings": []}}
-        )
+        mocker.patch("src.wiki_api.wd_sparql.get_query_data", return_value={"results": {"bindings": []}})
 
         result = get_query_result("SELECT * WHERE { ?s ?p ?o }")
 
@@ -126,13 +100,10 @@ class TestGetQueryResult:
             return_value={
                 "results": {
                     "bindings": [
-                        {
-                            "item": {"value": "Q123", "type": "uri"},
-                            "label": {"value": "Test", "type": "literal"}
-                        }
+                        {"item": {"value": "Q123", "type": "uri"}, "label": {"value": "Test", "type": "literal"}}
                     ]
                 }
-            }
+            },
         )
 
         result = get_query_result("SELECT * WHERE { ?s ?p ?o }")

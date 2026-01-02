@@ -67,7 +67,7 @@ class TestFilterCat:
 
     def test_returns_false_for_disambiguation(self):
         """Test that Disambiguation categories with exact case match return False.
-        
+
         The blacklist check uses cat.lower().find(x) where x is the original
         blacklist item (not lowercased). So "Disambiguation" won't match
         "disambiguation" in the lowercased category string.
@@ -108,7 +108,7 @@ class TestFilterCat:
 
     def test_case_insensitive_blacklist(self):
         """Test blacklist matching behavior with different cases.
-        
+
         The code uses cat.lower().find(x) where x is not lowercased,
         so blacklist matching is effectively case-sensitive.
         """

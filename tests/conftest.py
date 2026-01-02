@@ -37,6 +37,7 @@ def sample_page_info():
 
 # ===== Mock Fixtures for External Services =====
 
+
 @pytest.fixture
 def mock_wikidata_api(mocker):
     """Mock Wikidata API calls"""

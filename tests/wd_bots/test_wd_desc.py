@@ -50,7 +50,7 @@ class TestDelKeys:
             "zh-my": "test",
             "zh-hk": "test",
             "zh-mo": "test",
-            "zh-tw": "test"
+            "zh-tw": "test",
         }
         result = del_keys(translation_map)
 
@@ -75,10 +75,7 @@ class TestGetWdApiBot:
     def test_returns_api_bot(self, mocker):
         """Test that API bot is returned"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.NewHimoAPIBot", return_value=mock_bot)
 
         get_wd_api_bot.cache_clear()
 
@@ -89,10 +86,7 @@ class TestGetWdApiBot:
     def test_caches_result(self, mocker):
         """Test that result is cached"""
         mock_bot = mocker.MagicMock()
-        mock_class = mocker.patch(
-            "src.wd_bots.wd_desc.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mock_class = mocker.patch("src.wd_bots.wd_desc.NewHimoAPIBot", return_value=mock_bot)
 
         get_wd_api_bot.cache_clear()
 
@@ -109,10 +103,7 @@ class TestWwdesc:
         """Test that language variants are removed"""
         mock_bot = mocker.MagicMock()
         mock_bot.New_Mult_Des_2.return_value = '{"success": 1}'
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
 
         NewDesc = {
             "en": {"language": "en", "value": "test"},
@@ -126,10 +117,7 @@ class TestWwdesc:
     def test_skips_only_en_variants(self, mocker):
         """Test that function skips when only en-gb and en-ca"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
 
         NewDesc = {
             "en-gb": {"language": "en-gb", "value": "test"},
@@ -144,10 +132,7 @@ class TestWwdesc:
     def test_returns_none_for_empty_queries(self, mocker):
         """Test that None is returned for empty queries"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
 
         result = wwdesc({}, "Q123", 1, [])
 
@@ -160,10 +145,7 @@ class TestWorkApiDesc:
     def test_removes_language_variants(self, mocker):
         """Test that language variants are removed"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
         mocker.patch("src.wd_bots.wd_desc.wwdesc")
 
         NewDesc = {
@@ -178,10 +160,7 @@ class TestWorkApiDesc:
     def test_handles_single_language(self, mocker):
         """Test handling of single language"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
 
         NewDesc = {"ar": {"language": "ar", "value": "اختبار"}}
 
@@ -192,10 +171,7 @@ class TestWorkApiDesc:
     def test_skips_tg_latn_single_language(self, mocker):
         """Test that tg-latn is skipped when only language"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
 
         NewDesc = {"tg-latn": {"language": "tg-latn", "value": "test"}}
 
@@ -206,10 +182,7 @@ class TestWorkApiDesc:
     def test_calls_wwdesc_for_multiple_languages(self, mocker):
         """Test that wwdesc is called for multiple languages"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_desc.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wd_desc.get_wd_api_bot", return_value=mock_bot)
         mock_wwdesc = mocker.patch("src.wd_bots.wd_desc.wwdesc")
 
         NewDesc = {

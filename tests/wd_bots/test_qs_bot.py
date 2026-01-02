@@ -54,17 +54,9 @@ class TestQSNewAPI:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
 
-        data = {
-            "sitelinks": {
-                "enwiki": {"site": "enwiki", "title": "Test"}
-            },
-            "claims": {}
-        }
+        data = {"sitelinks": {"enwiki": {"site": "enwiki", "title": "Test"}}, "claims": {}}
 
         QS_New_API(data)
 
@@ -76,17 +68,14 @@ class TestQSNewAPI:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
 
         data = {
             "sitelinks": {
                 "enwiki": {"site": "enwiki", "title": "Science"},
-                "arwiki": {"site": "arwiki", "title": "علوم"}
+                "arwiki": {"site": "arwiki", "title": "علوم"},
             },
-            "claims": {}
+            "claims": {},
         }
 
         QS_New_API(data)
@@ -101,21 +90,11 @@ class TestQSNewAPI:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
 
         data = {
             "sitelinks": {},
-            "claims": {
-                "P31": [{
-                    "mainsnak": {
-                        "property": "P31",
-                        "datavalue": {"value": {"id": "Q5"}}
-                    }
-                }]
-            }
+            "claims": {"P31": [{"mainsnak": {"property": "P31", "datavalue": {"value": {"id": "Q5"}}}}]},
         }
 
         QS_New_API(data)
@@ -128,10 +107,7 @@ class TestQSNewAPI:
         """Test that False is returned when no response"""
         mock_session = mocker.MagicMock()
         mock_session.post.return_value = None
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
 
         result = QS_New_API({"sitelinks": {}, "claims": {}})
 
@@ -147,10 +123,7 @@ class TestQSLine:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
         mocker.patch("src.wd_bots.qs_bot.time.sleep")
 
         QS_line('Q123|Lar|"Test"')
@@ -163,10 +136,7 @@ class TestQSLine:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
         mocker.patch("src.wd_bots.qs_bot.time.sleep")
 
         QS_line('Q123|Lar|"Test"')
@@ -178,10 +148,7 @@ class TestQSLine:
         """Test that False is returned when no response"""
         mock_session = mocker.MagicMock()
         mock_session.post.return_value = None
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
         mocker.patch("src.wd_bots.qs_bot.time.sleep")
 
         result = QS_line('Q123|Lar|"Test"')
@@ -194,10 +161,7 @@ class TestQSLine:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
         mock_sleep = mocker.patch("src.wd_bots.qs_bot.time.sleep")
 
         QS_line('Q123|Lar|"Test"')
@@ -210,10 +174,7 @@ class TestQSLine:
         mock_response = mocker.MagicMock()
         mock_response.text = '{"status": "ok"}'
         mock_session.post.return_value = mock_response
-        mocker.patch(
-            "src.wd_bots.qs_bot._load_session",
-            return_value=mock_session
-        )
+        mocker.patch("src.wd_bots.qs_bot._load_session", return_value=mock_session)
         mocker.patch("src.wd_bots.qs_bot.time.sleep")
 
         QS_line('Q123|Lar|"Test"', user="Mr.Ibrahembot")

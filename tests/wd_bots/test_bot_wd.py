@@ -22,10 +22,7 @@ class TestWDFunctions:
     def test_format_labels_descriptions(self):
         """Test format_labels_descriptions method"""
         wd = WD_Functions()
-        labels = {
-            "en": {"language": "en", "value": "Science"},
-            "ar": {"language": "ar", "value": "علوم"}
-        }
+        labels = {"en": {"language": "en", "value": "Science"}, "ar": {"language": "ar", "value": "علوم"}}
 
         result = wd.format_labels_descriptions(labels)
 
@@ -42,10 +39,9 @@ class TestWDFunctions:
         """Test _pages_with_prop method"""
         wd = WD_Functions()
 
-        mock_post_continue = mocker.MagicMock(return_value=[
-            {"title": "Page1", "value": "Q123"},
-            {"title": "Page2", "value": "Q456"}
-        ])
+        mock_post_continue = mocker.MagicMock(
+            return_value=[{"title": "Page1", "value": "Q123"}, {"title": "Page2", "value": "Q456"}]
+        )
 
         result = wd._pages_with_prop(mock_post_continue)
 
@@ -67,20 +63,14 @@ class TestWDFunctions:
         """Test Get_item_descriptions_or_labels method"""
         wd = WD_Functions()
 
-        mock_post_continue = mocker.MagicMock(return_value={
-            "success": 1,
-            "entities": {
-                "Q123": {
-                    "descriptions": {
-                        "en": {"language": "en", "value": "A description"}
-                    }
-                }
+        mock_post_continue = mocker.MagicMock(
+            return_value={
+                "success": 1,
+                "entities": {"Q123": {"descriptions": {"en": {"language": "en", "value": "A description"}}}},
             }
-        })
-
-        result = wd.Get_item_descriptions_or_labels(
-            mock_post_continue, "Q123", ty="descriptions"
         )
+
+        result = wd.Get_item_descriptions_or_labels(mock_post_continue, "Q123", ty="descriptions")
 
         assert "en" in result
         assert result["en"] == "A description"
@@ -91,9 +81,7 @@ class TestWDFunctions:
 
         mock_post_continue = mocker.MagicMock(return_value=None)
 
-        result = wd.Get_item_descriptions_or_labels(
-            mock_post_continue, "Q123"
-        )
+        result = wd.Get_item_descriptions_or_labels(mock_post_continue, "Q123")
 
         assert result == {}
 
@@ -101,17 +89,9 @@ class TestWDFunctions:
         """Test Get_Property_API method"""
         wd = WD_Functions()
 
-        mock_post_continue = mocker.MagicMock(return_value={
-            "claims": {
-                "P31": [{
-                    "mainsnak": {
-                        "datavalue": {
-                            "value": {"id": "Q5"}
-                        }
-                    }
-                }]
-            }
-        })
+        mock_post_continue = mocker.MagicMock(
+            return_value={"claims": {"P31": [{"mainsnak": {"datavalue": {"value": {"id": "Q5"}}}}]}}
+        )
 
         result = wd.Get_Property_API(mock_post_continue, q="Q123", p="P31")
 
@@ -133,10 +113,7 @@ class TestWDFunctions:
 
         mock_post_continue = mocker.MagicMock(return_value=None)
 
-        wd.Get_Property_API(
-            mock_post_continue, q="", p="P31",
-            sites="enwiki", titles="Test"
-        )
+        wd.Get_Property_API(mock_post_continue, q="", p="P31", sites="enwiki", titles="Test")
 
         call_args = mock_post_continue.call_args[0][0]
         assert call_args["sites"] == "enwiki"
