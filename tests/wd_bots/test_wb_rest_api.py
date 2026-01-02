@@ -30,10 +30,7 @@ class TestGetWdApiBot:
     def test_returns_api_bot(self, mocker):
         """Test that API bot is returned"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wb_rest_api.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wb_rest_api.NewHimoAPIBot", return_value=mock_bot)
 
         get_wd_api_bot.cache_clear()
 
@@ -44,10 +41,7 @@ class TestGetWdApiBot:
     def test_caches_result(self, mocker):
         """Test that result is cached"""
         mock_bot = mocker.MagicMock()
-        mock_class = mocker.patch(
-            "src.wd_bots.wb_rest_api.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mock_class = mocker.patch("src.wd_bots.wb_rest_api.NewHimoAPIBot", return_value=mock_bot)
 
         get_wd_api_bot.cache_clear()
 
@@ -64,10 +58,7 @@ class TestGetRestResult:
         """Test that function delegates to API bot"""
         mock_bot = mocker.MagicMock()
         mock_bot.get_rest_result.return_value = {"test": "data"}
-        mocker.patch(
-            "src.wd_bots.wb_rest_api.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.wb_rest_api.get_wd_api_bot", return_value=mock_bot)
 
         result = get_rest_result("https://example.com")
 
@@ -92,10 +83,7 @@ class TestGetOneQidInfo:
 
     def test_returns_default_structure(self, mocker):
         """Test that default structure is returned"""
-        mocker.patch(
-            "src.wd_bots.wb_rest_api.get_rest_result",
-            return_value={}
-        )
+        mocker.patch("src.wd_bots.wb_rest_api.get_rest_result", return_value={})
 
         result = Get_one_qid_info("Q999999")
 
@@ -108,12 +96,7 @@ class TestGetOneQidInfo:
 
     def test_extracts_labels(self, mocker):
         """Test that labels are extracted"""
-        mocker.patch(
-            "src.wd_bots.wb_rest_api.get_rest_result",
-            return_value={
-                "labels": {"en": "Test", "ar": "اختبار"}
-            }
-        )
+        mocker.patch("src.wd_bots.wb_rest_api.get_rest_result", return_value={"labels": {"en": "Test", "ar": "اختبار"}})
 
         result = Get_one_qid_info("Q12345_test")
 
@@ -124,12 +107,7 @@ class TestGetOneQidInfo:
         """Test that sitelinks are extracted"""
         mocker.patch(
             "src.wd_bots.wb_rest_api.get_rest_result",
-            return_value={
-                "sitelinks": {
-                    "enwiki": {"title": "Test Page"},
-                    "arwiki": {"title": "صفحة اختبار"}
-                }
-            }
+            return_value={"sitelinks": {"enwiki": {"title": "Test Page"}, "arwiki": {"title": "صفحة اختبار"}}},
         )
 
         result = Get_one_qid_info("Q12346_test")
@@ -139,10 +117,7 @@ class TestGetOneQidInfo:
 
     def test_handles_only_parameter(self, mocker):
         """Test handling of 'only' parameter"""
-        mock_get = mocker.patch(
-            "src.wd_bots.wb_rest_api.get_rest_result",
-            return_value={"en": "Test"}
-        )
+        mock_get = mocker.patch("src.wd_bots.wb_rest_api.get_rest_result", return_value={"en": "Test"})
 
         Get_one_qid_info("Q12347_test", only="labels")
 
@@ -156,8 +131,7 @@ class TestGetItemInfos:
     def test_returns_dict(self, mocker):
         """Test that function returns a dict"""
         mocker.patch(
-            "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
+            "src.wd_bots.wb_rest_api.Get_one_qid_info", return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
         )
 
         result = Get_item_infos(["Q123"])
@@ -167,8 +141,7 @@ class TestGetItemInfos:
     def test_processes_each_qid(self, mocker):
         """Test that each QID is processed"""
         mock_get = mocker.patch(
-            "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
+            "src.wd_bots.wb_rest_api.Get_one_qid_info", return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
         )
 
         Get_item_infos(["Q123", "Q456", "Q789"])
@@ -178,8 +151,7 @@ class TestGetItemInfos:
     def test_keys_are_qids(self, mocker):
         """Test that result keys are QIDs"""
         mocker.patch(
-            "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
+            "src.wd_bots.wb_rest_api.Get_one_qid_info", return_value={"labels": {}, "sitelinks": {}, "qid": "Q123"}
         )
 
         result = Get_item_infos(["Q123", "Q456"])
@@ -195,12 +167,7 @@ class TestGetP373:
         """Test that P373 is extracted from statements"""
         mocker.patch(
             "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={
-                "statements": {
-                    "P373": [{"value": {"content": "Science"}}]
-                },
-                "sitelinks": {}
-            }
+            return_value={"statements": {"P373": [{"value": {"content": "Science"}}]}, "sitelinks": {}},
         )
 
         result = Get_P373("Q123")
@@ -211,10 +178,7 @@ class TestGetP373:
         """Test fallback to commonswiki sitelink"""
         mocker.patch(
             "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={
-                "statements": {},
-                "sitelinks": {"commonswiki": "Category:Science"}
-            }
+            return_value={"statements": {}, "sitelinks": {"commonswiki": "Category:Science"}},
         )
 
         result = Get_P373("Q456")
@@ -225,10 +189,7 @@ class TestGetP373:
         """Test that Category: prefix is removed from sitelink"""
         mocker.patch(
             "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={
-                "statements": {},
-                "sitelinks": {"commonswiki": "Category:Test Category"}
-            }
+            return_value={"statements": {}, "sitelinks": {"commonswiki": "Category:Test Category"}},
         )
 
         result = Get_P373("Q789")
@@ -237,13 +198,7 @@ class TestGetP373:
 
     def test_returns_empty_string_when_not_found(self, mocker):
         """Test that empty string is returned when not found"""
-        mocker.patch(
-            "src.wd_bots.wb_rest_api.Get_one_qid_info",
-            return_value={
-                "statements": {},
-                "sitelinks": {}
-            }
-        )
+        mocker.patch("src.wd_bots.wb_rest_api.Get_one_qid_info", return_value={"statements": {}, "sitelinks": {}})
 
         result = Get_P373("Q000")
 

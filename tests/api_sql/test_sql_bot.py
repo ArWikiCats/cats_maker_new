@@ -29,28 +29,16 @@ class TestFetchArcatTitles:
 
     def test_returns_empty_list_when_sql_disabled(self, mocker):
         """Test that empty list is returned when SQL is disabled"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=False
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=False)
 
         result = fetch_arcat_titles("تصنيف:علوم")
         assert result == []
 
     def test_strips_tasneef_prefix(self, mocker):
         """Test that تصنيف: prefix is stripped"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p",
-            return_value=("host", "db")
-        )
-        mock_connect = mocker.patch(
-            "src.api_sql.sql_bot.make_sql_connect",
-            return_value=[]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p", return_value=("host", "db"))
+        mock_connect = mocker.patch("src.api_sql.sql_bot.make_sql_connect", return_value=[])
 
         fetch_arcat_titles("تصنيف:علوم")
 
@@ -60,18 +48,9 @@ class TestFetchArcatTitles:
 
     def test_replaces_spaces_with_underscores(self, mocker):
         """Test that spaces are replaced with underscores"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p",
-            return_value=("host", "db")
-        )
-        mock_connect = mocker.patch(
-            "src.api_sql.sql_bot.make_sql_connect",
-            return_value=[]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p", return_value=("host", "db"))
+        mock_connect = mocker.patch("src.api_sql.sql_bot.make_sql_connect", return_value=[])
 
         fetch_arcat_titles("علوم الحاسوب")
 
@@ -84,28 +63,16 @@ class TestMakeSql:
 
     def test_returns_empty_list_when_sql_disabled(self, mocker):
         """Test that empty list is returned when SQL is disabled"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=False
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=False)
 
         result = Make_sql("SELECT * FROM page")
         assert result == []
 
     def test_defaults_to_enwiki(self, mocker):
         """Test that default wiki is enwiki"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mock_make_labs = mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p",
-            return_value=("host", "db")
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.make_sql_connect",
-            return_value=[]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mock_make_labs = mocker.patch("src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p", return_value=("host", "db"))
+        mocker.patch("src.api_sql.sql_bot.make_sql_connect", return_value=[])
 
         Make_sql("SELECT * FROM page")
 
@@ -113,21 +80,15 @@ class TestMakeSql:
 
     def test_sorts_results(self, mocker):
         """Test that results are sorted"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p",
-            return_value=("host", "db")
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p", return_value=("host", "db"))
         mocker.patch(
             "src.api_sql.sql_bot.make_sql_connect",
             return_value=[
                 (b"Zebra",),
                 (b"Apple",),
                 (b"Mango",),
-            ]
+            ],
         )
 
         result = Make_sql("SELECT * FROM page")
@@ -140,37 +101,25 @@ class TestGetExclusiveCategoryTitles:
 
     def test_returns_empty_list_when_sql_disabled(self, mocker):
         """Test that empty list is returned when SQL is disabled"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=False
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=False)
 
         result = get_exclusive_category_titles("Science", "علوم")
         assert result == []
 
     def test_returns_difference_of_lists(self, mocker):
         """Test that result is difference of en and ar lists"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.fetch_arcat_titles",
-            return_value=["Page1", "Page2"]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.fetch_arcat_titles", return_value=["Page1", "Page2"])
 
         # Mock fetch_encat_titles indirectly through Make_sql
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p",
-            return_value=("host", "db")
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.make_labsdb_dbs_p", return_value=("host", "db"))
         mocker.patch(
             "src.api_sql.sql_bot.make_sql_connect",
             return_value=[
                 {"ll_title": b"Page1"},
                 {"ll_title": b"Page2"},
                 {"ll_title": b"Page3"},
-            ]
+            ],
         )
 
         # Page3 should be in result (in en but not in ar)
@@ -182,38 +131,23 @@ class TestFindSql:
 
     def test_returns_empty_list_when_sql_disabled(self, mocker):
         """Test that empty list is returned when SQL is disabled"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=False
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=False)
 
         result = find_sql("Science")
         assert result == []
 
     def test_returns_empty_list_for_no_results(self, mocker):
         """Test that empty list is returned when no results"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.get_exclusive_category_titles",
-            return_value=[]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.get_exclusive_category_titles", return_value=[])
 
         result = find_sql("EmptyCategory")
         assert result == []
 
     def test_replaces_underscores_with_spaces(self, mocker):
         """Test that underscores are replaced with spaces in results"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.get_exclusive_category_titles",
-            return_value=["Page_With_Underscores"]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.get_exclusive_category_titles", return_value=["Page_With_Underscores"])
 
         result = find_sql("Category")
 
@@ -221,14 +155,8 @@ class TestFindSql:
 
     def test_filters_empty_pages(self, mocker):
         """Test that empty page names are filtered"""
-        mocker.patch(
-            "src.api_sql.sql_bot.wiki_sql.GET_SQL",
-            return_value=True
-        )
-        mocker.patch(
-            "src.api_sql.sql_bot.get_exclusive_category_titles",
-            return_value=["Page1", "", "  ", "Page2"]
-        )
+        mocker.patch("src.api_sql.sql_bot.wiki_sql.GET_SQL", return_value=True)
+        mocker.patch("src.api_sql.sql_bot.get_exclusive_category_titles", return_value=["Page1", "", "  ", "Page2"])
 
         result = find_sql("Category")
 

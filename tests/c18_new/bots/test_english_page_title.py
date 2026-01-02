@@ -64,52 +64,27 @@ class TestEnglishPageLink:
 
     def test_returns_cached_value(self, mocker):
         """Test that cached values are returned"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.get_cache_L_C_N",
-            return_value="Science"
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.get_cache_L_C_N", return_value="Science")
 
         result = english_page_link("علوم", "ar", "en")
         assert result == "Science"
 
     def test_cleans_link_brackets(self, mocker):
         """Test that double brackets are removed from link"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.get_cache_L_C_N",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.find_LCN",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.set_cache_L_C_N"
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.get_cache_L_C_N", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.find_LCN", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.set_cache_L_C_N")
 
         english_page_link("[[علوم]]", "ar", "en")
         # Function should process without error
 
     def test_returns_false_when_no_langlink(self, mocker):
         """Test that False is returned when no langlink is found"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.get_cache_L_C_N",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.find_LCN",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata",
-            return_value=None
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.set_cache_L_C_N"
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.get_cache_L_C_N", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.find_LCN", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata", return_value=None)
+        mocker.patch("src.c18_new.bots.english_page_title.set_cache_L_C_N")
 
         result = english_page_link("nonexistent", "ar", "en")
         assert result is False
@@ -120,10 +95,7 @@ class TestGetEnLinkFromArText:
 
     def test_returns_empty_string_when_no_sitelinks(self, mocker):
         """Test that empty string is returned when no sitelinks"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata",
-            return_value=None
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata", return_value=None)
 
         result = get_en_link_from_ar_text("علوم", "arwiki", "enwiki")
         assert result == ""
@@ -132,7 +104,7 @@ class TestGetEnLinkFromArText:
         """Test that English sitelink is extracted"""
         mocker.patch(
             "src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata",
-            return_value={"sitelinks": {"enwiki": "Science"}}
+            return_value={"sitelinks": {"enwiki": "Science"}},
         )
 
         result = get_en_link_from_ar_text("علوم", "arwiki", "enwiki")
@@ -142,7 +114,7 @@ class TestGetEnLinkFromArText:
         """Test handling of wiki suffix in sitetarget"""
         mocker.patch(
             "src.c18_new.bots.english_page_title.Get_Sitelinks_From_wikidata",
-            return_value={"sitelinks": {"en": "Science", "enwiki": "Science"}}
+            return_value={"sitelinks": {"en": "Science", "enwiki": "Science"}},
         )
 
         result = get_en_link_from_ar_text("علوم", "arwiki", "en")
@@ -166,10 +138,7 @@ class TestGetEnglishPageTitle:
 
     def test_blacklists_sandbox_pages(self, mocker):
         """Test that Sandbox pages are blacklisted"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.get_en_link_from_ar_text",
-            return_value="User:Test/Sandbox"
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.get_en_link_from_ar_text", return_value="User:Test/Sandbox")
 
         result, site = get_english_page_title("", "علوم", "", {})
         # Sandbox pages should be rejected
@@ -177,14 +146,8 @@ class TestGetEnglishPageTitle:
 
     def test_returns_empty_when_no_english_found(self, mocker):
         """Test that empty strings are returned when no English found"""
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.get_en_link_from_ar_text",
-            return_value=""
-        )
-        mocker.patch(
-            "src.c18_new.bots.english_page_title.english_page_link",
-            return_value=False
-        )
+        mocker.patch("src.c18_new.bots.english_page_title.get_en_link_from_ar_text", return_value="")
+        mocker.patch("src.c18_new.bots.english_page_title.english_page_link", return_value=False)
 
         result, site = get_english_page_title("", "علوم", "", {})
         # Should return empty strings when nothing found

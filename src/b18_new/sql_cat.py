@@ -103,9 +103,9 @@ def make_ar_list_newcat2(arcat, encat, us_sql=False, wiki="en"):
     # ---
     encat = encat.replace("Category:Category:", "Category:")
     encat = encat.replace("category:", "").replace("Category:", "").replace("Catégorie:", "")
-    encat = encat.replace('_', ' ')
+    encat = encat.replace("_", " ")
     # ---
-    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace('_', ' ')
+    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace("_", " ")
     # ---
     result = do_sql(encat, arcat, us_sql=us_sql, wiki=wiki)
     # ---

@@ -60,7 +60,6 @@ ns_text_tab_en = {
 
 @functools.lru_cache(maxsize=1)
 def GET_SQL() -> bool:
-
     dir1 = "/mnt/nfs/labstore-secondary-tools-project/"
     dir2 = "/data/project/"
 

@@ -148,9 +148,7 @@ class TestMainFlowIntegration:
         # Clean up
         DONE_D.clear()
 
-    def test_process_catagories_calls_make_ar(
-        self, mocker, mock_all_external_services
-    ):
+    def test_process_catagories_calls_make_ar(self, mocker, mock_all_external_services):
         """Test that process_catagories calls make_ar with correct parameters."""
         from src.mk_cats.mknew import process_catagories
 
@@ -354,20 +352,21 @@ class TestDataFlowIntegration:
         from src.wiki_api import himoBOT2
 
         # Mock API response
-        mocker.patch("src.wiki_api.himoBOT2.submitAPI", return_value={
-            "query": {
-                "pages": {
-                    "123": {
-                        "title": "Category:Science",
-                        "pageid": 123,
-                        "ns": 14,
-                        "categories": [
-                            {"title": "Category:Academic disciplines"}
-                        ]
+        mocker.patch(
+            "src.wiki_api.himoBOT2.submitAPI",
+            return_value={
+                "query": {
+                    "pages": {
+                        "123": {
+                            "title": "Category:Science",
+                            "pageid": 123,
+                            "ns": 14,
+                            "categories": [{"title": "Category:Academic disciplines"}],
+                        }
                     }
                 }
-            }
-        })
+            },
+        )
 
         # Get page info
         result = himoBOT2.get_page_info_from_wikipedia("en", "Category:Science")

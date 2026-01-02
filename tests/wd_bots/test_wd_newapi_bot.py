@@ -96,9 +96,7 @@ class TestWDAPI:
         """Test that lag_work calls find_lag"""
         mock_login = mocker.MagicMock()
         mock_login.user_login = "testuser"
-        mock_find_lag = mocker.patch(
-            "src.wd_bots.wd_newapi_bot.lag_bot.find_lag"
-        )
+        mock_find_lag = mocker.patch("src.wd_bots.wd_newapi_bot.lag_bot.find_lag")
 
         api = WD_API(mock_login)
         api.lag_work({"lag": 10})

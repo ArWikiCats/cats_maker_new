@@ -88,10 +88,7 @@ class TestGetWdApiBot:
     def test_returns_api_bot_instance(self, mocker):
         """Test that function returns API bot instance"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.to_wd.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.NewHimoAPIBot", return_value=mock_bot)
 
         # Clear cache
         get_wd_api_bot.cache_clear()
@@ -103,10 +100,7 @@ class TestGetWdApiBot:
     def test_caches_result(self, mocker):
         """Test that result is cached"""
         mock_bot = mocker.MagicMock()
-        mock_class = mocker.patch(
-            "src.wd_bots.to_wd.NewHimoAPIBot",
-            return_value=mock_bot
-        )
+        mock_class = mocker.patch("src.wd_bots.to_wd.NewHimoAPIBot", return_value=mock_bot)
 
         get_wd_api_bot.cache_clear()
 
@@ -123,10 +117,7 @@ class TestAddLabel:
     def test_calls_labels_api(self, mocker):
         """Test that Labels_API is called"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
 
         add_label("Q123", "تسمية عربية")
 
@@ -135,16 +126,11 @@ class TestAddLabel:
     def test_passes_correct_parameters(self, mocker):
         """Test that correct parameters are passed"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
 
         add_label("Q123", "تسمية")
 
-        mock_bot.Labels_API.assert_called_with(
-            "Q123", "تسمية", "ar", True, nowait=True, tage="catelabels"
-        )
+        mock_bot.Labels_API.assert_called_with("Q123", "تسمية", "ar", True, nowait=True, tage="catelabels")
 
 
 class TestMakeNewItem:
@@ -154,10 +140,7 @@ class TestMakeNewItem:
         """Test that item is created with sitelinks"""
         mock_bot = mocker.MagicMock()
         mock_bot.New_API.return_value = "Q999"
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
         mocker.patch("src.wd_bots.to_wd.wwdesc")
 
         Make_New_item("تصنيف:علوم", "Category:Science")
@@ -170,10 +153,7 @@ class TestMakeNewItem:
         """Test that item is created with labels"""
         mock_bot = mocker.MagicMock()
         mock_bot.New_API.return_value = "Q999"
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
         mocker.patch("src.wd_bots.to_wd.wwdesc")
 
         Make_New_item("تصنيف:علوم", "Category:Science")
@@ -187,10 +167,7 @@ class TestMakeNewItem:
         """Test that P31 claim is added"""
         mock_bot = mocker.MagicMock()
         mock_bot.New_API.return_value = "Q999"
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
         mocker.patch("src.wd_bots.to_wd.wwdesc")
 
         Make_New_item("تصنيف:علوم", "Category:Science")
@@ -206,10 +183,7 @@ class TestLogToWikidata:
     def test_adds_sitelink_when_qid_provided(self, mocker):
         """Test that sitelink is added when QID is provided"""
         mock_bot = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
 
         Log_to_wikidata("تصنيف:علوم", "Category:Science", "Q123")
 
@@ -220,13 +194,8 @@ class TestLogToWikidata:
         """Test that new item is created when no QID"""
         mock_bot = mocker.MagicMock()
         mock_bot.Sitelink_API.return_value = False  # Not True, so create new
-        mocker.patch(
-            "src.wd_bots.to_wd.get_wd_api_bot",
-            return_value=mock_bot
-        )
-        mock_make_new = mocker.patch(
-            "src.wd_bots.to_wd.Make_New_item"
-        )
+        mocker.patch("src.wd_bots.to_wd.get_wd_api_bot", return_value=mock_bot)
+        mock_make_new = mocker.patch("src.wd_bots.to_wd.Make_New_item")
 
         Log_to_wikidata("تصنيف:علوم", "Category:Science", "")
 

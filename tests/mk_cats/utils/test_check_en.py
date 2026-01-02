@@ -38,9 +38,7 @@ class TestCheckEnTemps:
     def test_returns_true_when_no_templates(self, mocker):
         """Test that check_en_temps returns True when category has no templates."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {}
-        })
+        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={"Category:Test": {}})
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -52,9 +50,10 @@ class TestCheckEnTemps:
         """Test that check_en_temps returns True for allowed templates."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
         mocker.patch("src.mk_cats.utils.check_en.NO_Templates_lower", ["badtemplate"])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": ["Template:GoodTemplate"]}
-        })
+        mocker.patch(
+            "src.mk_cats.utils.check_en.find_LCN",
+            return_value={"Category:Test": {"templates": ["Template:GoodTemplate"]}},
+        )
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -66,9 +65,10 @@ class TestCheckEnTemps:
         """Test that check_en_temps returns False for blacklisted templates."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
         mocker.patch("src.mk_cats.utils.check_en.NO_Templates_lower", ["badtemplate"])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": ["Template:BadTemplate"]}
-        })
+        mocker.patch(
+            "src.mk_cats.utils.check_en.find_LCN",
+            return_value={"Category:Test": {"templates": ["Template:BadTemplate"]}},
+        )
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -80,9 +80,10 @@ class TestCheckEnTemps:
         """Test that template check is case insensitive."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
         mocker.patch("src.mk_cats.utils.check_en.NO_Templates_lower", ["badtemplate"])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": ["Template:BADTEMPLATE"]}
-        })
+        mocker.patch(
+            "src.mk_cats.utils.check_en.find_LCN",
+            return_value={"Category:Test": {"templates": ["Template:BADTEMPLATE"]}},
+        )
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -94,9 +95,10 @@ class TestCheckEnTemps:
         """Test that check_en_temps removes 'template:' prefix."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
         mocker.patch("src.mk_cats.utils.check_en.NO_Templates_lower", ["badtemplate"])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": ["template:badtemplate"]}
-        })
+        mocker.patch(
+            "src.mk_cats.utils.check_en.find_LCN",
+            return_value={"Category:Test": {"templates": ["template:badtemplate"]}},
+        )
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -113,18 +115,12 @@ class TestCheckEnTemps:
 
         check_en_temps("Category:Test")
 
-        mock_find_lcn.assert_called_once_with(
-            "Category:Test",
-            prop="templates|categories",
-            first_site_code="en"
-        )
+        mock_find_lcn.assert_called_once_with("Category:Test", prop="templates|categories", first_site_code="en")
 
     def test_handles_empty_templates_list(self, mocker):
         """Test that check_en_temps handles empty templates list."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": []}
-        })
+        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={"Category:Test": {"templates": []}})
 
         from src.mk_cats.utils.check_en import check_en_temps
 
@@ -136,13 +132,14 @@ class TestCheckEnTemps:
         """Test that check_en_temps returns False if any template is blacklisted."""
         mocker.patch("src.mk_cats.utils.check_en.skip_encats", [])
         mocker.patch("src.mk_cats.utils.check_en.NO_Templates_lower", ["badtemplate"])
-        mocker.patch("src.mk_cats.utils.check_en.find_LCN", return_value={
-            "Category:Test": {"templates": [
-                "Template:GoodTemplate1",
-                "Template:BadTemplate",
-                "Template:GoodTemplate2"
-            ]}
-        })
+        mocker.patch(
+            "src.mk_cats.utils.check_en.find_LCN",
+            return_value={
+                "Category:Test": {
+                    "templates": ["Template:GoodTemplate1", "Template:BadTemplate", "Template:GoodTemplate2"]
+                }
+            },
+        )
 
         from src.mk_cats.utils.check_en import check_en_temps
 

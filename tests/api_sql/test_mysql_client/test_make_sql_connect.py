@@ -21,10 +21,12 @@ class TestResolveBytes:
 
     def test_resolve_bytes_to_string(self):
         """Test that decode_bytes_in_list converts bytes to string."""
-        input_dict = [{
-            "key1": b"value1",
-            "key2": "value2",
-        }]
+        input_dict = [
+            {
+                "key1": b"value1",
+                "key2": "value2",
+            }
+        ]
 
         result = decode_bytes_in_list(input_dict)
 

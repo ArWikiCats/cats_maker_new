@@ -26,10 +26,7 @@ class TestLogInWikidata:
     def test_calls_login_wrap(self, mocker):
         """Test that LoginWrap is called"""
         mock_login = mocker.MagicMock()
-        mock_login_wrap = mocker.patch(
-            "src.wd_bots.wd_login_wrap.LoginWrap",
-            return_value=(mock_login, {})
-        )
+        mock_login_wrap = mocker.patch("src.wd_bots.wd_login_wrap.LoginWrap", return_value=(mock_login, {}))
 
         log_in_wikidata()
 
@@ -38,10 +35,7 @@ class TestLogInWikidata:
     def test_returns_login_bot(self, mocker):
         """Test that function returns login bot"""
         mock_login = mocker.MagicMock()
-        mocker.patch(
-            "src.wd_bots.wd_login_wrap.LoginWrap",
-            return_value=(mock_login, {})
-        )
+        mocker.patch("src.wd_bots.wd_login_wrap.LoginWrap", return_value=(mock_login, {}))
 
         result = log_in_wikidata()
 
@@ -50,10 +44,7 @@ class TestLogInWikidata:
     def test_uses_www_by_default(self, mocker):
         """Test that www is used by default"""
         mock_login = mocker.MagicMock()
-        mock_login_wrap = mocker.patch(
-            "src.wd_bots.wd_login_wrap.LoginWrap",
-            return_value=(mock_login, {})
-        )
+        mock_login_wrap = mocker.patch("src.wd_bots.wd_login_wrap.LoginWrap", return_value=(mock_login, {}))
 
         log_in_wikidata()
 
@@ -65,10 +56,7 @@ class TestLogInWikidata:
         """Test that logins_cache is updated"""
         mock_login = mocker.MagicMock()
         mock_cache = {"test": "cache"}
-        mocker.patch(
-            "src.wd_bots.wd_login_wrap.LoginWrap",
-            return_value=(mock_login, mock_cache)
-        )
+        mocker.patch("src.wd_bots.wd_login_wrap.LoginWrap", return_value=(mock_login, mock_cache))
 
         log_in_wikidata()
 
