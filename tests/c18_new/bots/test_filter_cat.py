@@ -7,8 +7,8 @@ This module tests category filtering functions.
 import pytest
 
 from src.c18_new.bots.filter_cat import (
-    filter_cats_text,
     Skippe_Cat,
+    filter_cats_text,
     page_false_templates,
 )
 

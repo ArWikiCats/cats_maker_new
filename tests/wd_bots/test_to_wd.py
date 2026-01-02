@@ -7,11 +7,11 @@ This module tests Wikidata write functions.
 import pytest
 
 from src.wd_bots.to_wd import (
-    add_label,
-    makejson,
-    Make_New_item,
     Log_to_wikidata,
+    Make_New_item,
+    add_label,
     get_wd_api_bot,
+    makejson,
     wikimedia_category_descraptions,
 )
 

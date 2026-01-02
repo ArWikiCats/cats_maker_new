@@ -7,9 +7,9 @@ This module tests English category filtering functions.
 import pytest
 
 from src.mk_cats.utils.filter_en import (
-    filter_cat,
     BBlcak,
     blcak_starts,
+    filter_cat,
 )
 
 

@@ -7,13 +7,13 @@ This module tests Wikidata lag handling functions.
 import pytest
 
 from src.wd_bots.utils.lag_bot import (
-    find_lag,
-    make_sleep_def,
-    do_lag,
-    bad_lag,
-    newsleep,
     FFa_lag,
     Find_Lag,
+    bad_lag,
+    do_lag,
+    find_lag,
+    make_sleep_def,
+    newsleep,
 )
 
 

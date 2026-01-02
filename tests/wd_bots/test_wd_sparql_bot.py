@@ -7,9 +7,9 @@ This module tests SPARQL query generator functions for Wikidata.
 import pytest
 
 from src.wd_bots.wd_sparql_bot import (
-    wd_sparql_generator_url,
-    sparql_generator_url,
     sparql_generator_big_results,
+    sparql_generator_url,
+    wd_sparql_generator_url,
 )
 
 

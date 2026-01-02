@@ -12,8 +12,9 @@ This module tests the helper functions for category member processing:
 - collect_category_members() - Main entry point for member collection
 """
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 class TestGatherMembersFromSql:

@@ -3,8 +3,9 @@
 Wikidata functions for cats_maker_new bot
 """
 import functools
-from . import NewHimoAPIBot
+
 from ..helps import logger
+from . import NewHimoAPIBot
 from .wd_desc import wwdesc
 
 wikimedia_category_descraptions = {  # Wikimedia category

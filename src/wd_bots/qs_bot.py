@@ -5,16 +5,16 @@ QS Bot - QuickStatements API wrapper
 This module provides functions for working with the QuickStatements API.
 """
 
-import time
 import functools
+import time
 from datetime import datetime
 from pathlib import Path
 
 import requests
 
+from ..config import settings
 from ..new_api.useraccount import qs_token, qs_tokenbot
 from .utils import logger
-from ..config import settings
 
 Dir = Path(__file__).parent.parent
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")

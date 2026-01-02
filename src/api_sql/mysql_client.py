@@ -3,11 +3,12 @@
 
 """
 import functools
-from typing import Any
-import pymysql
-
 from pathlib import Path
+from typing import Any
+
+import pymysql
 from pymysql.cursors import DictCursor
+
 from ..helps import logger
 
 

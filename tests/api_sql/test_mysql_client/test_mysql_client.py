@@ -7,9 +7,10 @@ This module tests:
 - _sql_connect_pymysql() - Connect and execute SQL queries
 """
 
-import pytest
-import pymysql.cursors
 from unittest.mock import MagicMock
+
+import pymysql.cursors
+import pytest
 
 from src.api_sql.mysql_client import _sql_connect_pymysql
 

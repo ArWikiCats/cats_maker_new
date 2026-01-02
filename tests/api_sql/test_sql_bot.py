@@ -7,10 +7,10 @@ This module tests SQL query functions for Wikipedia databases.
 import pytest
 
 from src.api_sql.sql_bot import (
-    fetch_arcat_titles,
     Make_sql,
-    get_exclusive_category_titles,
+    fetch_arcat_titles,
     find_sql,
+    get_exclusive_category_titles,
 )
 
 

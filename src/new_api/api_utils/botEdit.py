@@ -5,7 +5,9 @@
 #
 import datetime
 from functools import lru_cache
+
 import wikitextparser as wtp
+
 from ...config import settings
 from ...helps import logger
 

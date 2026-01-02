@@ -3,11 +3,12 @@
 
 """
 from pymysql.converters import escape_string
-from ..api_sql import GET_SQL, sql_new_title_ns, sql_new
+
+from ..api_sql import GET_SQL, sql_new, sql_new_title_ns
 from ..c18_new.cats_tools.ar_from_en2 import fetch_ar_titles_based_on_en_category
 from ..config import settings
-from .cat_tools_enlist2 import get_ar_list_from_cat
 from ..helps import logger
+from .cat_tools_enlist2 import get_ar_list_from_cat
 
 
 def get_ar_list(arcat, us_sql=True):

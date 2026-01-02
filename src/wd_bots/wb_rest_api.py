@@ -9,6 +9,7 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 """
 
 import functools
+
 from ..config import settings
 from ..helps import logger
 from . import NewHimoAPIBot

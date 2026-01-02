@@ -10,8 +10,8 @@ import time
 
 import requests
 
-from ...helps import logger
 from ...config import settings
+from ...helps import logger
 
 newsleep = {1: 1}
 # ---

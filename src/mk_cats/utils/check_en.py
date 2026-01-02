@@ -3,9 +3,9 @@
 
 """
 
-from ...wiki_api import find_LCN
 from ...helps import logger
 from ...utils.skip_cats import NO_Templates_lower, skip_encats
+from ...wiki_api import find_LCN
 
 
 def check_en_temps(en_title) -> bool:

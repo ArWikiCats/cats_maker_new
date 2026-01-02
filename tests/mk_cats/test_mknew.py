@@ -13,8 +13,9 @@ This module tests:
 - check_if_artitle_exists() - Check if Arabic title exists
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestCheckIfArtitleExists:

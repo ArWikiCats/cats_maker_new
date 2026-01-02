@@ -2,6 +2,7 @@
 
 """
 from datetime import datetime
+
 from ..config import settings
 from ..helps import logger
 from ..wiki_api import get_query_data

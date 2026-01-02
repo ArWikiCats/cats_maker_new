@@ -7,9 +7,9 @@ This module tests SQL-based category functions.
 import pytest
 
 from src.b18_new.sql_cat import (
+    do_sql,
     get_ar_list,
     get_ar_list_from_en,
-    do_sql,
     make_ar_list_newcat2,
 )
 

@@ -7,11 +7,11 @@ This module tests template query functions for Wikipedia categories.
 import pytest
 
 from src.c18_new.tools_bots.temp_bot import (
-    templatequery,
-    templatequerymulti,
     SKIP_CATEGORIES,
-    templatequery_cache,
     _get_from_cache,
+    templatequery,
+    templatequery_cache,
+    templatequerymulti,
 )
 
 

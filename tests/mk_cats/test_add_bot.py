@@ -7,8 +7,8 @@ This module tests functions for adding categories to pages.
 import pytest
 
 from src.mk_cats.add_bot import (
-    add_to_page,
     add_to_final_list,
+    add_to_page,
 )
 
 

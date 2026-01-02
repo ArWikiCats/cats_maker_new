@@ -7,8 +7,8 @@ This module tests QuickStatements API wrapper functions.
 import pytest
 
 from src.wd_bots.qs_bot import (
-    QS_New_API,
     QS_line,
+    QS_New_API,
     _load_session,
 )
 

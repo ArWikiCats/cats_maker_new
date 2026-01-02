@@ -7,10 +7,10 @@ This module tests Wikidata description functions.
 import pytest
 
 from src.wd_bots.wd_desc import (
+    del_keys,
+    get_wd_api_bot,
     work_api_desc,
     wwdesc,
-    get_wd_api_bot,
-    del_keys,
 )
 
 

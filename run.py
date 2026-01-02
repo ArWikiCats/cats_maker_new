@@ -1,30 +1,26 @@
 """
 """
-import sys
 import json
-import requests
 import logging
-
-from src.config import settings
-
-# Enable ask mode by default - now done via settings
-settings.bot.ask = True
-
-sys.path.append("D:/categories_bot/make2_new")
-
+import sys
+import requests
 try:
+    sys.path.append("D:/categories_bot/make2_new")
     from new_all import work_bot as new_all
 except ImportError:
     new_all = None
-
-from src.helps.log import logger as base_logger
-base_logger.set_level("DEBUG" if settings.debug else "INFO")
-# base_logger.set_level("ERROR")
-
+from src.config import settings
+from src.helps.log import logger
 from src.mk_cats import create_categories_from_list
-new_all_tab = {1: False}
 
-logger = logging.getLogger(__name__)
+# Enable ask mode by default - now done via settings
+settings.bot.ask = True
+settings.debug = True
+
+# base_logger.set_level("ERROR")
+logger.set_level("DEBUG" if settings.debug else "INFO")
+
+new_all_tab = {1: False}
 
 
 def new_all_work_on_title(title, **Kwargs):
@@ -34,9 +30,7 @@ def new_all_work_on_title(title, **Kwargs):
 
 
 def get_url_result(url):
-    headers = {
-        "User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"
-    }
+    headers = {"User-Agent": "Himo bot/1.0 (https://himo.toolforge.org/; tools.himo@toolforge.org)"}
     try:
         response = requests.get(url, timeout=15, headers=headers)
         response.raise_for_status()
@@ -63,6 +57,8 @@ def get_result(num):
 
 
 def get_quarry_result(number, get_rows=None):
+    # ---
+    logger.info(f"Get quarry result from number: {number}")
     # ---
     results = get_result(number)
     # ---

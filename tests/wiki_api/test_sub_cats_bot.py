@@ -7,8 +7,8 @@ This module tests subcategory query functions.
 import pytest
 
 from src.wiki_api.sub_cats_bot import (
-    sub_cats_query,
     API_n_CALLS,
+    sub_cats_query,
 )
 
 

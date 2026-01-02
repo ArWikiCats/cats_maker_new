@@ -4,10 +4,11 @@ from ..bots.english_page_title import get_english_page_title
 """
 
 import re
-from ..log import logger
+
 from ...config import settings
-from ...wiki_api import find_LCN, set_cache_L_C_N, get_cache_L_C_N
 from ...wd_bots import Get_Sitelinks_from_qid, Get_Sitelinks_From_wikidata
+from ...wiki_api import find_LCN, get_cache_L_C_N, set_cache_L_C_N
+from ..log import logger
 
 
 def extract_wikidata_qid(text):

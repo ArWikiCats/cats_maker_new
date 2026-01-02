@@ -7,14 +7,14 @@ This module tests functions for adding text/categories to template pages.
 import pytest
 
 from src.c18_new.bots.text_to_temp_bot import (
-    add_text_to_template,
-    add_to_text_temps,
-    add_to_doc_page,
     add_direct,
+    add_text_to_template,
+    add_to_doc_page,
+    add_to_text_temps,
     find_doc_and_add,
-    tosearch_and_replace,
-    to_search,
     pre_text,
+    to_search,
+    tosearch_and_replace,
 )
 
 

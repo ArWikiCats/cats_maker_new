@@ -7,13 +7,13 @@ This module tests namespace handling and SQL query functions for MediaWiki.
 import pytest
 
 from src.api_sql.wiki_sql import (
-    add_nstext_to_title,
     GET_SQL,
+    add_nstext_to_title,
     make_labsdb_dbs_p,
-    sql_new,
-    sql_new_title_ns,
     ns_text_tab_ar,
     ns_text_tab_en,
+    sql_new,
+    sql_new_title_ns,
 )
 
 

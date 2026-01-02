@@ -6,15 +6,15 @@ making it easier to manage and modify settings across the codebase.
 """
 
 from .settings import (
-    Settings,
-    WikipediaConfig,
-    WikidataConfig,
-    DatabaseConfig,
-    DebugConfig,
     BotConfig,
     CategoryConfig,
+    DatabaseConfig,
+    DebugConfig,
     QueryConfig,
+    Settings,
     SiteConfig,
+    WikidataConfig,
+    WikipediaConfig,
     settings,
 )
 

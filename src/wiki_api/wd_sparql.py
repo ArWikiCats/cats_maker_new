@@ -4,6 +4,7 @@
 import sys
 
 from SPARQLWrapper import JSON, SPARQLWrapper
+
 from ..helps import logger
 
 

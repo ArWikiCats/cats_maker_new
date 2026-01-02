@@ -7,8 +7,8 @@ This module tests functions for finding English page titles from Arabic pages.
 import pytest
 
 from src.c18_new.bots.english_page_title import (
-    extract_wikidata_qid,
     english_page_link,
+    extract_wikidata_qid,
     get_en_link_from_ar_text,
     get_english_page_title,
 )

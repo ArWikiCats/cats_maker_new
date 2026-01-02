@@ -12,8 +12,10 @@ This module tests:
 - nameblcklist - Name blacklist
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from src.b18_new import cat_tools
 
 
@@ -240,7 +242,7 @@ class TestWorkInOneCat:
 
     def test_filters_blacklisted_templates(self, mocker):
         """Test that work_in_one_cat filters blacklisted templates."""
-        from src.b18_new.cat_tools import work_in_one_cat, templateblacklist
+        from src.b18_new.cat_tools import templateblacklist, work_in_one_cat
 
         # Skip if templateblacklist is empty
         if not templateblacklist:

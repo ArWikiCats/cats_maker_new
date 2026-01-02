@@ -7,8 +7,9 @@ These tests verify the complete flow from create_categories_from_list
 through all the processing steps, with mocked external services.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Mark all tests in this module as integration tests
 pytestmark = pytest.mark.integration
@@ -128,7 +129,7 @@ class TestMainFlowIntegration:
 
     def test_one_cat_filters_duplicate_categories(self, mocker):
         """Test that duplicate categories are filtered out."""
-        from src.mk_cats.mknew import one_cat, DONE_D
+        from src.mk_cats.mknew import DONE_D, one_cat
 
         # Clear DONE_D for this test
         DONE_D.clear()
@@ -313,7 +314,7 @@ class TestErrorHandling:
 
     def test_scan_ar_title_handles_repeated_titles(self):
         """Test that scan_ar_title correctly tracks repeated titles."""
-        from src.mk_cats.mknew import scan_ar_title, NewCat_Done
+        from src.mk_cats.mknew import NewCat_Done, scan_ar_title
 
         # Clear state
         NewCat_Done.clear()

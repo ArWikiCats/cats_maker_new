@@ -7,11 +7,11 @@ This module tests Wikidata REST API functions.
 import pytest
 
 from src.wd_bots.wb_rest_api import (
-    get_wd_api_bot,
-    get_rest_result,
-    Get_one_qid_info,
     Get_item_infos,
+    Get_one_qid_info,
     Get_P373,
+    get_rest_result,
+    get_wd_api_bot,
     wd_cach,
 )
 

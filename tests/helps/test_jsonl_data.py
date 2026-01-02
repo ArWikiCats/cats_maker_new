@@ -9,10 +9,11 @@ This module tests:
 - SAVE_ENABLE - Global save enable flag
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
 import json
+from pathlib import Path
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 
 
 class TestSaveFunction:

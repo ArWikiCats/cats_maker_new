@@ -7,10 +7,10 @@ from datetime import datetime
 
 from pymysql.converters import escape_string
 
+from ..c18_new.log import logger
 from . import wiki_sql
 from .mysql_client import make_sql_connect
 from .wiki_sql import ns_text_tab_ar
-from ..c18_new.log import logger
 
 
 def decode_bytes(x):

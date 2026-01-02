@@ -7,8 +7,8 @@ This module tests JSON output handling functions.
 import pytest
 
 from src.wd_bots.utils.out_json import (
-    outbot_json_bot,
     outbot_json,
+    outbot_json_bot,
 )
 
 
