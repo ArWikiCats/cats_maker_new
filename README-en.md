@@ -20,7 +20,7 @@ A Python automation tool for creating Arabic Wikipedia categories from their Eng
 Cats Maker New is a sophisticated Wikipedia bot designed to automate the creation of Arabic Wikipedia categories based on their English counterparts. The tool:
 
 1. Takes a list of English Wikipedia category names
-2. Resolves Arabic translations using Wikidata and ArWikiCats
+2. Resolves Arabic translations using [ArWikiCats](https://github.com/MrIbrahem/ArWikiCats)
 3. Creates the Arabic category pages with proper structure
 4. Adds appropriate templates and portal links
 5. Links the new categories to Wikidata
@@ -31,7 +31,7 @@ The project uses a centralized dataclass-based configuration system and supports
 ## Features
 
 ### Core Functionality
-- **Category Translation**: Automatically resolves Arabic category labels from English categories using Wikidata sitelinks and the ArWikiCats library
+- **Category Translation**: Automatically resolves Arabic category labels from English categories using Wikidata sitelinks and the [ArWikiCats](https://github.com/MrIbrahem/ArWikiCats) library
 - **Category Creation**: Creates new Arabic Wikipedia category pages with proper formatting
 - **Template Generation**: Generates navigation templates for categories (centuries, decades, years, millennia)
 - **Portal Integration**: Automatically adds relevant portal links to categories based on topic detection
@@ -125,7 +125,7 @@ The project follows a layered architecture with centralized configuration:
 ```
 English Category Name
     ↓
-[ar_make_lab] → Arabic Label (from Wikidata/ArWikiCats)
+[ar_make_lab] → Arabic Label (from ArWikiCats)
     ↓
 [get_ar_list_from_en] → List of Arabic article titles
     ↓
@@ -173,7 +173,7 @@ English Category Name
 3. **Install optional dependencies (for full functionality):**
    ```bash
    # For Arabic category label resolution
-   pip install ArWikiCats
+   pip install ArWikiCats==0.1.0b1
    ```
 
 ### Dependencies
@@ -347,8 +347,8 @@ print(settings.category.we_try)  # True
 print(settings.bot.ask)  # False
 
 # Access computed site properties
-print(settings.EEn_site["code"])  # 'en'
-print(settings.AAr_site["family"])  # 'wikipedia'
+print(settings.EEn_site.code)  # 'en'
+print(settings.AAr_site.family)  # 'wikipedia'
 
 # Access global settings
 print(settings.range_limit)  # 5
@@ -634,4 +634,4 @@ This project is open source. See repository for license details.
 
 - Arabic Wikipedia community
 - Wikidata project
-- ArWikiCats project
+- [ArWikiCats](https://github.com/MrIbrahem/ArWikiCats) project
