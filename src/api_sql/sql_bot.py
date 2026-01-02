@@ -123,7 +123,9 @@ def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
     # ---
     delta = time.perf_counter() - start
     # ---
-    logger.info(f'sql_bot.py: get_exclusive_category_titles len(final_cat) = "{len(final_cat)}", in {delta:.2f} seconds')
+    logger.info(
+        f'sql_bot.py: get_exclusive_category_titles len(final_cat) = "{len(final_cat)}", in {delta:.2f} seconds'
+    )
     # ---
     return final_cat
 

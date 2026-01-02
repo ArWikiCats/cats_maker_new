@@ -22,7 +22,7 @@ def load_db_config(db: str, host: str) -> dict[str, Any]:
         "charset": "utf8mb4",
         "use_unicode": True,
         "autocommit": True,
-        "cursorclass": DictCursor
+        "cursorclass": DictCursor,
     }
 
 
@@ -93,7 +93,7 @@ def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return decoded_rows
 
 
-def make_sql_connect(query: str, db: str="", host: str="", values=None):
+def make_sql_connect(query: str, db: str = "", host: str = "", values=None):
     # ---
     if not query:
         logger.debug("query == ''")

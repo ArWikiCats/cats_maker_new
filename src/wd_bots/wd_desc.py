@@ -21,7 +21,6 @@ def get_wd_api_bot() -> NewHimoAPIBot:
 
 
 def del_keys(translation_map) -> dict:
-
     # [[Topic:Xr8nyeau0ysm1zop]]
     langs_to_del = ["en-gb", "en-ca", "de-at", "de-ch", "zh-cn", "zh-sg", "zh-my", "zh-hk", "zh-mo", "zh-tw"]
 

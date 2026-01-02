@@ -9,7 +9,6 @@ from ...utils.skip_cats import NO_Templates_lower, skip_encats
 
 
 def check_en_temps(en_title) -> bool:
-
     if en_title in skip_encats:
         logger.debug(f"<<lightred>> category: {en_title} in skip_encats")
         return False

@@ -98,9 +98,9 @@ def validate_categories_for_new_cat(arcat, encat, wiki="en"):
     # ---
     encat = encat.replace("Category:Category:", "Category:")
     encat = encat.replace("category:", "").replace("Category:", "").replace("Catégorie:", "")
-    encat = encat.replace('_', ' ')
+    encat = encat.replace("_", " ")
     # ---
-    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace('_', ' ')
+    arcat = arcat.replace("تصنيف:تصنيف:", "").replace("تصنيف:", "").replace("_", " ")
     # ---
     en_is_okay = check_category_status(wiki, arcat, encat)
     # ---

@@ -11,7 +11,7 @@ from .categorytext_data import category_mapping, LocalLanguageLinks
 from ..new_api.page import MainPage
 
 
-def get_page_link_data(title: str, sitecode: str, ns: int=100) -> list:
+def get_page_link_data(title: str, sitecode: str, ns: int = 100) -> list:
     # ---
     page = MainPage(title, sitecode)
     # ---

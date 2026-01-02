@@ -153,17 +153,9 @@ def Make_New_item(artitle, entitle, family=""):
         arwiki = f"ar{family}"
 
     data = {
-        "sitelinks": {
-            enwiki: {"site": enwiki, "title": entitle},
-            arwiki: {"site": arwiki, "title": artitle}
-        },
-        "labels": {
-            "ar": {"language": "ar", "value": artitle},
-            "en": {"language": "en", "value": entitle}
-        },
-        "claims": {
-            "P31": [makejson("P31", "Q4167836")]
-        }
+        "sitelinks": {enwiki: {"site": enwiki, "title": entitle}, arwiki: {"site": arwiki, "title": artitle}},
+        "labels": {"ar": {"language": "ar", "value": artitle}, "en": {"language": "en", "value": entitle}},
+        "claims": {"P31": [makejson("P31", "Q4167836")]},
     }
 
     summary = f"Bot: New item from [[w:en:{entitle}|{enwiki}]]/[[w:ar:{artitle}|{arwiki}]]."
@@ -171,9 +163,7 @@ def Make_New_item(artitle, entitle, family=""):
     new_item_id = get_wd_api_bot().New_API(data, summary, returnid=True, nowait=True, tage="newitems")
 
     if new_item_id and new_item_id.startswith("Q"):
-        NewDesc = {
-            lang: {"language": lang, "value": value} for lang, value in wikimedia_category_descraptions.items()
-        }
+        NewDesc = {lang: {"language": lang, "value": value} for lang, value in wikimedia_category_descraptions.items()}
         wwdesc(NewDesc, new_item_id, 1, [], tage="newitems")
 
 

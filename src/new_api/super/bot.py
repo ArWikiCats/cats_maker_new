@@ -52,7 +52,9 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
     def log_error(self, result, action, params=None) -> None:
         if result not in ["success", 200]:
-            logger.error(f"{botname}/page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}")
+            logger.error(
+                f"{botname}/page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}"
+            )
 
     def add_User_tables(self, family, table, lang="") -> None:
         # ---
@@ -184,7 +186,9 @@ class LOGIN_HELPS(PARAMS_HELPS):
             try:
                 r22 = req.json()
             except Exception as e:
-                logger.warning(f"{botname} {self.lang}.{self.family} error parsing login response: {e} - response: {getattr(req, 'text', '')}")
+                logger.warning(
+                    f"{botname} {self.lang}.{self.family} error parsing login response: {e} - response: {getattr(req, 'text', '')}"
+                )
                 logger.debug(req.text)
                 return False
         # ---
@@ -232,7 +236,9 @@ class LOGIN_HELPS(PARAMS_HELPS):
             try:
                 json1 = req.json()
             except Exception as e:
-                logger.warning(f"{botname} {self.lang}.{self.family} error parsing userinfo response: {e} - response: {getattr(req, 'text', '')}")
+                logger.warning(
+                    f"{botname} {self.lang}.{self.family} error parsing userinfo response: {e} - response: {getattr(req, 'text', '')}"
+                )
                 logger.debug(req.text)
                 return False
         # ---
