@@ -107,7 +107,7 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
         if gent_listu.startswith("|"):
             gent_listu = gent_listu[len("|") :]
         # ---
-        gent_sasa = find_LCN(gent_listu, prop="langlinks", first_site_code=settings.EEn_site["code"])
+        gent_sasa = find_LCN(gent_listu, prop="langlinks", first_site_code=settings.EEn_site.code)
         # ---
         if gent_sasa:
             for p_w in gent_sasa:
@@ -123,12 +123,12 @@ def MakeLitApiWay(enpageTitle, Type="cat"):
                     logger.debug(f'find "{p_w}" page_work in gent_sasa arpagetitle: {arpagetitle}')
                     logger.debug(gent_sasa[p_w]["langlinks"]["ar"])
                 else:
-                    tubb22 = (p_w, settings.EEn_site["code"], "ar", "en_links")
+                    tubb22 = (p_w, settings.EEn_site.code, "ar", "en_links")
                     # ---
                     if get_cache_L_C_N(tubb22):
                         logger.debug(
                             '>> 2019:get_cache_L_C_N tubb22: "{}":  = {}:{}'.format(
-                                p_w, settings.EEn_site["code"], get_cache_L_C_N(tubb22)
+                                p_w, settings.EEn_site.code, get_cache_L_C_N(tubb22)
                             )
                         )
                         arpagetitle = get_cache_L_C_N(tubb22)

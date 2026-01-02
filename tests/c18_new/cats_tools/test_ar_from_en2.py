@@ -57,7 +57,7 @@ class TestGetArListTitleFromEnList:
 
         get_ar_list_title_from_en_list(["Test"], wiki="en")
 
-        # Should use EEn_site["code"] which is "en"
+        # Should use EEn_site.code which is "en"
         call_kwargs = mock_find_lcn.call_args[1]
         assert call_kwargs["first_site_code"] == "en"
 

@@ -22,7 +22,7 @@ def sub_cats_query(enlink, sitecode, ctype=""):
     if get_cache_L_C_N(tup):
         return get_cache_L_C_N(tup)
     # ---
-    langcode = settings.EEn_site["code"]  # 'en'
+    langcode = settings.EEn_site.code  # 'en'
     if sitecode == "en":
         langcode = "ar"
     # ---

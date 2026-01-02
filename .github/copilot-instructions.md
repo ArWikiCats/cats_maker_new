@@ -134,7 +134,7 @@ Utilities (helps/, utils/, temp/)
 
 ### Configuration
 - Command-line arguments handled via `sys.argv`
-- Runtime configuration in dictionaries (e.g., `Range = {1: 5}`)
+- Runtime configuration in settings  (e.g., `settings.range_limit = 5`)
 - Debug mode enabled with `DEBUG` argument
 
 ## Build and Run

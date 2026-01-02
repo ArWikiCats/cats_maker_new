@@ -14,7 +14,6 @@ class PARAMS_HELPS:
         self.lang = getattr(self, "lang", "")
         self.family = getattr(self, "family", "")
         self.username = getattr(self, "username", "")
-        self.Bot_or_himo = getattr(self, "Bot_or_himo", "")
         self.url_o_print = getattr(self, "url_o_print", "")
         # pass
 
@@ -24,16 +23,13 @@ class PARAMS_HELPS:
             and self.lang == "ar"
             and params.get("summary")
             and self.username.find("bot") == -1
-            and not settings.bot.ibrahem_summary
         ):
             params["summary"] = ""
 
-        self.Bot_or_himo = 1 if "bot" in self.username else 0
-
-        params["bot"] = self.Bot_or_himo
+        params["bot"] = 1
 
         if "minor" in params and params["minor"] == "":
-            params["minor"] = self.Bot_or_himo
+            params["minor"] = 1
 
         if self.family != "toolforge":
             if (

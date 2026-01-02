@@ -377,21 +377,21 @@ class TestWikiSiteInfo:
         from src.config.settings import WikiSiteInfo
 
         info = WikiSiteInfo(family="wikiquote", code="en")
-        assert info["family"] == "wikiquote"
+        assert info.family == "wikiquote"
 
     def test_getitem_code(self):
         """Test dictionary-like access for code."""
         from src.config.settings import WikiSiteInfo
 
         info = WikiSiteInfo(family="wikipedia", code="fr")
-        assert info["code"] == "fr"
+        assert info.code == "fr"
 
     def test_getitem_use(self):
         """Test dictionary-like access for use."""
         from src.config.settings import WikiSiteInfo
 
         info = WikiSiteInfo(use=True)
-        assert info["use"] is True
+        assert info.use is True
 
     def test_getitem_key_1(self):
         """Test dictionary-like access for key 1 (alias for use)."""
@@ -452,8 +452,8 @@ class TestEEnSiteProperty:
         from src.config.settings import Settings
 
         s = Settings()
-        assert s.EEn_site["family"] == "wikipedia"
-        assert s.EEn_site["code"] == "en"
+        assert s.EEn_site.family == "wikipedia"
+        assert s.EEn_site.code == "en"
 
     def test_commons_site(self):
         """Test EEn_site when use_commons is True."""
@@ -461,8 +461,8 @@ class TestEEnSiteProperty:
 
         s = Settings()
         s.site.use_commons = True
-        assert s.EEn_site["family"] == "commons"
-        assert s.EEn_site["code"] == "commons"
+        assert s.EEn_site.family == "commons"
+        assert s.EEn_site.code == "commons"
 
     def test_custom_family(self):
         """Test EEn_site with custom_family."""
@@ -470,8 +470,8 @@ class TestEEnSiteProperty:
 
         s = Settings()
         s.site.custom_family = "wikiquote"
-        assert s.EEn_site["family"] == "wikiquote"
-        assert s.EEn_site["code"] == "en"
+        assert s.EEn_site.family == "wikiquote"
+        assert s.EEn_site.code == "en"
 
     def test_custom_lang(self):
         """Test EEn_site with custom_lang."""
@@ -479,8 +479,8 @@ class TestEEnSiteProperty:
 
         s = Settings()
         s.site.custom_lang = "de"
-        assert s.EEn_site["family"] == "wikipedia"
-        assert s.EEn_site["code"] == "de"
+        assert s.EEn_site.family == "wikipedia"
+        assert s.EEn_site.code == "de"
 
 
 class TestAArSiteProperty:
@@ -491,8 +491,8 @@ class TestAArSiteProperty:
         from src.config.settings import Settings
 
         s = Settings()
-        assert s.AAr_site["family"] == "wikipedia"
-        assert s.AAr_site["code"] == "ar"
+        assert s.AAr_site.family == "wikipedia"
+        assert s.AAr_site.code == "ar"
 
     def test_custom_family(self):
         """Test AAr_site with custom_family."""
@@ -500,8 +500,8 @@ class TestAArSiteProperty:
 
         s = Settings()
         s.site.custom_family = "wikiquote"
-        assert s.AAr_site["family"] == "wikiquote"
-        assert s.AAr_site["code"] == "ar"
+        assert s.AAr_site.family == "wikiquote"
+        assert s.AAr_site.code == "ar"
 
 
 class TestFRSiteProperty:
@@ -512,8 +512,8 @@ class TestFRSiteProperty:
         from src.config.settings import Settings
 
         s = Settings()
-        assert s.FR_site["code"] == "fr"
-        assert s.FR_site["use"] is False
+        assert s.FR_site.code == "fr"
+        assert s.FR_site.use is False
 
     def test_secondary_site(self):
         """Test FR_site with secondary language."""
@@ -523,9 +523,9 @@ class TestFRSiteProperty:
         s.site.use_secondary = True
         s.site.secondary_lang = "es"
         s.site.secondary_family = "wikipedia"
-        assert s.FR_site["code"] == "es"
-        assert s.FR_site["family"] == "wikipedia"
-        assert s.FR_site["use"] is True
+        assert s.FR_site.code == "es"
+        assert s.FR_site.family == "wikipedia"
+        assert s.FR_site.use is True
 
 
 class TestCategoryConfig:

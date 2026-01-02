@@ -87,23 +87,11 @@ class DebugConfig:
 
     Attributes:
         print_url: Print API URLs for debugging
-        print_bot_url: Print bot API URLs for debugging
-        print_data: Print data for debugging
-        print_text: Print text for debugging
-        print_disc: Print disc for debugging
-        print_result: Print result for debugging
-        print_pop: Print pop for debugging
         raise_errors: Raise exceptions instead of handling them
         do_post: Force POST requests for debugging
     """
 
     print_url: bool = False
-    print_bot_url: bool = False
-    print_data: bool = False
-    print_text: bool = False
-    print_disc: bool = False
-    print_result: bool = False
-    print_pop: bool = False
     raise_errors: bool = False
     do_post: bool = False
 
@@ -116,10 +104,9 @@ class BotConfig:
         ask: Ask for confirmation before making changes
         no_diff: Don't show diff when asking for confirmation
         show_diff: Force show diff when asking for confirmation
-        no_fa: Disable false edit detection
+        no_fa: Dont check if the edit is false edit
         force_edit: Force bot edit (bypass nobots check)
         no_login: Disable login assertion
-        ibrahem_summary: Enable Ibrahem summary mode
         no_cookies: Disable cookie storage
     """
 
@@ -129,7 +116,6 @@ class BotConfig:
     no_fa: bool = False
     force_edit: bool = False
     no_login: bool = False
-    ibrahem_summary: bool = False
     no_cookies: bool = False
 
 
@@ -390,18 +376,6 @@ class Settings:
             # Debug config
             if arg_name == "printurl":
                 self.debug_config.print_url = True
-            if arg_name == "printboturl":
-                self.debug_config.print_bot_url = True
-            if arg_name == "printdata":
-                self.debug_config.print_data = True
-            if arg_name == "printtext":
-                self.debug_config.print_text = True
-            if arg_name == "printdisc":
-                self.debug_config.print_disc = True
-            if arg_name == "printresult":
-                self.debug_config.print_result = True
-            if arg_name == "printpop":
-                self.debug_config.print_pop = True
             if arg_name == "raise":
                 self.debug_config.raise_errors = True
             if arg_name == "dopost":
@@ -420,8 +394,6 @@ class Settings:
                 self.bot.force_edit = True
             if arg_name == "nologin":
                 self.bot.no_login = True
-            if arg_name == "ibrahemsummary":
-                self.bot.ibrahem_summary = True
             if arg_name == "nocookies":
                 self.bot.no_cookies = True
 
@@ -450,6 +422,7 @@ class Settings:
                 self.category.work_fr = True
             if arg_name == "descqs":
                 self.category.descqs = True
+
             if arg_name in ("-minmembers", "-min-members") and value:
                 self.category.min_members = _safe_int(value, self.category.min_members)
 
@@ -460,6 +433,7 @@ class Settings:
                 self.query.depth = _safe_int(value, self.query.depth)
             if arg_name in ("to", "-to") and value:
                 self.query.to_limit = _safe_int(value, self.query.to_limit)
+
             if arg_name == "nons10":
                 self.query.ns_no_10 = True
             if arg_name == "ns:14":
@@ -472,9 +446,11 @@ class Settings:
                 if value in ("wikiquote", "wikisource"):
                     self.site.custom_family = value
                     self.category.use_labels = True
+
             if arg_name in ("-uselang", "uselang") and value:
                 self.site.custom_lang = value
                 self.category.make_new_cat = False
+
             if arg_name in ("-slang", "slang") and value:
                 self.site.secondary_lang = value
                 self.site.secondary_family = "wikipedia"

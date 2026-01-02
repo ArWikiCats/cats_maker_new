@@ -79,9 +79,6 @@ def QS_line(line, user="Mr. Ibrahem"):
     # ---
     # https://quickstatements.toolforge.org/api.php?format=v1&action=import&compress=1&submit=1&batchname=df&username=Mr.Ibrahembot&token=$2&data=Q24173161|Dar|"جين في متفطرة خراجية"
     # ---
-    # if "qs" not in sys.argv:
-    # return ''
-    # ---
     tokens = {
         "Mr. Ibrahem": qs_token,
         "Mr.Ibrahembot": qs_tokenbot,

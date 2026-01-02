@@ -2,6 +2,7 @@
 python3 core8/pwb.py mk_cats/mknew
 """
 
+import functools
 from ..b18_new import (
     add_SubSub,
     get_ar_list_from_en,
@@ -32,9 +33,6 @@ except ImportError:
 DONE_D = []
 NewCat_Done = {}
 Already_Created = []
-
-Range = {1: settings.range_limit}  # TODO: remove it
-We_Try = {1: settings.category.we_try}  # TODO: remove it
 
 # TODO: move it to the settings file!
 wiki_site_ar = {"family": "wikipedia", "code": "ar"}

@@ -208,9 +208,6 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
                 params["maxlag"] = ar_lag[1]
                 # ---
                 return self.post_params(params, Type=Type, addtoken=addtoken, max_retry=max_retry + 1)
-        # ---
-        if settings.debug_config.print_data:
-            logger.debug(data)
 
         return data
 

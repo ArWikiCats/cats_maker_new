@@ -26,7 +26,7 @@ def Categorized_Page_Generator(enpageTitle, typee):
     NN_cat_member = []
     # ---
     cat_member = CatDepth(
-        enpageTitle, sitecode=settings.EEn_site["code"], family="wikipedia", depth=0, ns=nss, with_lang="ar"
+        enpageTitle, sitecode=settings.EEn_site.code, family="wikipedia", depth=0, ns=nss, with_lang="ar"
     )
     # ---
     for title in cat_member:

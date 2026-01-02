@@ -696,9 +696,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
             logger.warning(f"<<lightgreen>> ** true .. [[{self.lang}:{self.family}:{self.title}]] ")
             # logger.debug('Done True...')
             # ---
-            if settings.debug_config.print_pop:
-                print(pop)
-            # ---
             self.revisions_data.pageid = edit.get("pageid") or self.revisions_data.pageid
             self.revisions_data.revid = edit.get("newrevid") or self.revisions_data.revid
             self.revisions_data.newrevid = edit.get("newrevid") or self.revisions_data.newrevid
