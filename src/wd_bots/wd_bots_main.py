@@ -12,6 +12,7 @@ from .utils import lag_bot
 from .utils.out_json import outbot_json, outbot_json_bot
 from .wd_login_wrap import log_in_wikidata
 from .wd_newapi_bot import WD_API
+
 logger = logging.getLogger(__name__)
 
 Main_User = {1: ""}
