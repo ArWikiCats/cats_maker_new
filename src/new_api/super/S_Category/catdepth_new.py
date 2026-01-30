@@ -1,13 +1,13 @@
-"""
+""" """
 
-"""
+import logging
 import time
 from functools import lru_cache
 
 from ....config import settings
-from ....helps import getLogger
-logger = getLogger(__name__)
 from .bot import CategoryDepth
+
+logger = logging.getLogger(__name__)
 
 SITECODE = "en"
 FAMILY = "wikipedia"

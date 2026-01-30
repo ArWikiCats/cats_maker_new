@@ -5,14 +5,15 @@ This module provides functions for handling lag in Wikidata API requests.
 """
 
 import functools
+import logging
 import re
 import time
 
 import requests
 
 from ...config import settings
-from ...helps import getLogger
-logger = getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 newsleep = {1: 1}
 # ---

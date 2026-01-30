@@ -2,13 +2,15 @@
 Usage:
 from ..bots.filter_cat import filter_cats_text
 """
+
+import logging
 import re
 
 from ...config import settings
 from ...wiki_api import get_deleted_pages
-from ..log import getLogger
-logger = getLogger(__name__)
 from ..tools_bots.temp_bot import templatequery, templatequerymulti
+
+logger = logging.getLogger(__name__)
 
 # ---
 Skippe_Cat = [

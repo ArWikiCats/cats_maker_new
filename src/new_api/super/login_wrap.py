@@ -1,9 +1,10 @@
-"""
+""" """
 
-"""
-from ...helps import getLogger
-logger = getLogger(__name__)
+import logging
+
 from .super_login import Login
+
+logger = logging.getLogger(__name__)
 
 hases = {}
 

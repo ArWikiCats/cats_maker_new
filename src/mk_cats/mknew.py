@@ -2,8 +2,8 @@
 python3 core8/pwb.py mk_cats/mknew
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 from ..b18_new import (
@@ -14,7 +14,6 @@ from ..b18_new import (
     validate_categories_for_new_cat,
 )
 from ..config import settings
-from ..helps import getLogger
 from ..new_api.page import MainPage
 from ..wd_bots import to_wd
 from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
@@ -44,14 +43,14 @@ Already_Created = []
 wiki_site_ar = {"family": "wikipedia", "code": "ar"}
 wiki_site_en = {"family": "wikipedia", "code": "en"}
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def ar_make_lab(title, **Kwargs):
     okay = filter_en.filter_cat(title)
 
     if not okay:
-        logger.debug(f'<<lightred>> {title} is not okay.')
+        logger.debug(f"<<lightred>> {title} is not okay.")
         return ""
 
     if resolve_arabic_category_label:

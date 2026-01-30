@@ -5,11 +5,11 @@ Output JSON handling
 This module provides functions for handling JSON output from API calls.
 """
 
+import logging
 import os
 import time
 
-from ...helps import getLogger
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 file_name = os.path.basename(__file__)
 

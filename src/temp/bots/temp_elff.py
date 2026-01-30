@@ -4,11 +4,12 @@
 from .temp_elff import Make_Elff_temp
 
 """
+import logging
 import re
 
-from ...helps import getLogger
-logger = getLogger(__name__)
 from .load_data import cacaca
+
+logger = logging.getLogger(__name__)
 
 
 def Make_Elff_temp(title):

@@ -1,6 +1,6 @@
 import difflib
 import logging
-from typing import Optional, Union
+from typing import Union
 
 from .printe_helper import make_str
 

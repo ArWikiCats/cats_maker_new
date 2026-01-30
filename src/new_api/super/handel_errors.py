@@ -2,9 +2,12 @@
 from .super.handel_errors import HANDEL_ERRORS
 
 """
+
+import logging
+
 from ...config import settings
-from ...helps import getLogger
-logger = getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 
 class HANDEL_ERRORS:

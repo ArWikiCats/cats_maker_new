@@ -4,11 +4,12 @@
 from .temp_decades import MakedecadesTemp
 
 """
+import logging
 import re
 
-from ...helps import getLogger
-logger = getLogger(__name__)
 from .load_data import Baco_decades, cacaca
+
+logger = logging.getLogger(__name__)
 
 
 def MakedecadesTemp(title):

@@ -5,10 +5,12 @@
 # Categorized_Page_Generator(enpageTitle, Type)
 
 """
+import logging
+
 from ..config import settings
 from ..new_api.page import CatDepth
-from .log import getLogger
-logger = getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 tatone_ns = [0, 14, 10, 100]
 

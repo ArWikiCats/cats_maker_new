@@ -1,12 +1,12 @@
-"""
+""" """
 
-"""
+import logging
 from datetime import datetime
 
 from ..config import settings
-from ..helps import getLogger
-logger = getLogger(__name__)
 from ..wiki_api import get_query_data
+
+logger = logging.getLogger(__name__)
 
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
 

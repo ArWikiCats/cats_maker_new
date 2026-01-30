@@ -3,11 +3,13 @@
 from .super.params_help import PARAMS_HELPS
 
 """
+
 import json
+import logging
 
 from ...config import settings
-from ...helps import getLogger
-logger = getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 
 class PARAMS_HELPS:

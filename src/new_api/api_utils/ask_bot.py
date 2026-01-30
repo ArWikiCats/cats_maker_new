@@ -3,9 +3,12 @@
 from ...api_utils.ask_bot import ASK_BOT
 
 """
+
+import logging
+
 from ...config import settings
-from ...helps import getLogger
-logger = getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 yes_answer = ["y", "a", "", "Y", "A", "all", "aaa"]
 

@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-"""
-"""
+""" """
 import functools
+import logging
 
-from ..helps import getLogger
-logger = getLogger(__name__)
 from .api_requests import submitAPI
+
+logger = logging.getLogger(__name__)
 
 
 @functools.lru_cache(maxsize=1000)

@@ -3,11 +3,12 @@
 Wikidata functions for cats_maker_new bot
 """
 import functools
+import logging
 
-from ..helps import getLogger
-logger = getLogger(__name__)
 from . import NewHimoAPIBot
 from .wd_desc import wwdesc
+
+logger = logging.getLogger(__name__)
 
 wikimedia_category_descraptions = {  # Wikimedia category
     "ace": "kawan Wikimèdia",
