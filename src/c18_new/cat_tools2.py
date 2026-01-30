@@ -7,7 +7,8 @@
 """
 from ..config import settings
 from ..new_api.page import CatDepth
-from .log import logger
+from .log import getLogger
+logger = getLogger(__name__)
 
 tatone_ns = [0, 14, 10, 100]
 

@@ -7,7 +7,8 @@ import copy
 
 from tqdm import tqdm
 
-from ....helps import logger
+from ....helps import getLogger
+logger = getLogger(__name__)
 
 ns_list = {
     "0": "",

@@ -3,7 +3,8 @@
 """
 import functools
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from .api_requests import submitAPI
 
 

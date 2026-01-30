@@ -6,7 +6,8 @@ from ...b18_new import get_ar_list_from_cat
 from ...config import settings
 from ...wiki_api import find_LCN, get_arpage_inside_encat
 from ..cat_tools2 import Categorized_Page_Generator
-from ..log import logger
+from ..log import getLogger
+logger = getLogger(__name__)
 
 
 def retrieve_ar_list_from_category(encat, enpageTitle):

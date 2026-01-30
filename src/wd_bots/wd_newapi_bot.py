@@ -5,7 +5,8 @@
 import time
 
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from .bot_wd import WD_Functions
 from .utils import lag_bot
 from .utils.handle_wd_errors import WD_ERRORS_HANDLER

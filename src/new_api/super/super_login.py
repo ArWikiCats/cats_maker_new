@@ -18,7 +18,8 @@ import time
 import urllib.parse
 
 from ...config import settings
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from ..api_utils.user_agent import default_user_agent
 from .bot import LOGIN_HELPS
 from .handel_errors import HANDEL_ERRORS

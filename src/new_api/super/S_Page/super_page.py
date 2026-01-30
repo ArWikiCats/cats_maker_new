@@ -4,7 +4,8 @@
 import wikitextparser as wtp
 
 from ....config import settings
-from ....helps import logger
+from ....helps import getLogger
+logger = getLogger(__name__)
 from ...api_utils import botEdit
 from ...api_utils.ask_bot import ASK_BOT
 from ...api_utils.lang_codes import change_codes

@@ -4,7 +4,8 @@
 from datetime import datetime
 
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from ..wiki_api import get_query_data
 
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")

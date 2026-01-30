@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from .jsonl_data import dump_data
-from .log import logger
+from .log import getLogger
 
 __all__ = [
-    "logger",
+    "getLogger",
     "dump_data",
 ]

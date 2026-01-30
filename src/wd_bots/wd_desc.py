@@ -9,7 +9,8 @@ import time
 from datetime import datetime
 
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from . import NewHimoAPIBot
 
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")

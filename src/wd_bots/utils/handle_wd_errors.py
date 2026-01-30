@@ -2,7 +2,8 @@
 
 """
 from ...config import settings
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 
 class WD_ERRORS_HANDLER:

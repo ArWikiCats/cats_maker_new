@@ -9,7 +9,8 @@ from functools import lru_cache
 import wikitextparser as wtp
 
 from ...config import settings
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 # ---
 edit_username = {1: "Mr.Ibrahembot"}

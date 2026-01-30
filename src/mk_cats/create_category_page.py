@@ -6,7 +6,8 @@
 """
 import functools
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from ..new_api.page import MainPage, SuperMainPage
 from ..temp import main_make_temp_no_title
 from ..utils.skip_cats import skip_encats

@@ -7,7 +7,8 @@ import os
 import sys
 import time
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from . import mysql_client
 
 ns_text_tab_ar = {

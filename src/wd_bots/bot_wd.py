@@ -5,7 +5,8 @@ This module provides Wikidata-specific functionality.
 
 """
 
-from .utils import logger
+from .utils import getLogger
+logger = getLogger(__name__)
 
 
 class WD_Functions:

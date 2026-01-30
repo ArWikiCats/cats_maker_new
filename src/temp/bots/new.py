@@ -1,7 +1,8 @@
 # maketemps.py
 import re
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 
 class TemplatesMaker:

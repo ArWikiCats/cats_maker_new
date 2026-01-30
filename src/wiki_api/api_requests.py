@@ -7,7 +7,8 @@ from urllib.parse import urlencode
 import requests
 
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 
 
 @functools.lru_cache(maxsize=1)

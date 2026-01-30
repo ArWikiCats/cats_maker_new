@@ -6,7 +6,8 @@ from .temp_elff import Make_Elff_temp
 """
 import re
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from .load_data import cacaca
 
 

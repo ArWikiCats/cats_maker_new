@@ -10,7 +10,8 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 """
 from functools import lru_cache
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from ..wiki_api import submitAPI
 
 

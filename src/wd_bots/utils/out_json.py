@@ -8,7 +8,8 @@ This module provides functions for handling JSON output from API calls.
 import os
 import time
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 file_name = os.path.basename(__file__)
 

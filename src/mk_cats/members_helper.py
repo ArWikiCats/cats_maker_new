@@ -13,7 +13,8 @@ Responsibilities:
 
 from ..b18_new import MakeLitApiWay, get_listenpageTitle, get_SubSub_value
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from ..wiki_api.check_redirects import remove_redirect_pages
 
 

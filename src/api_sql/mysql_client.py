@@ -9,7 +9,8 @@ from typing import Any
 import pymysql
 from pymysql.cursors import DictCursor
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 
 
 @functools.lru_cache(maxsize=1)

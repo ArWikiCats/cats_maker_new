@@ -11,7 +11,8 @@ from pathlib import Path
 
 from ..api_sql import GET_SQL, sql_new_title_ns
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 
 Dir = Path(__file__).parent.parent.parent
 filename_json = Dir / "textfiles/Dont_add_to_pages.json"

@@ -4,7 +4,8 @@ Refactored module for handling MediaWiki API calls for categories, langlinks, et
 """
 from typing import Any, Dict, List, Optional, Tuple
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from . import submitAPI
 
 page_is_redirect = {}  # self.page_is_redirect

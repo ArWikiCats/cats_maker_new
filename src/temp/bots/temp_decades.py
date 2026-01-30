@@ -6,7 +6,8 @@ from .temp_decades import MakedecadesTemp
 """
 import re
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from .load_data import Baco_decades, cacaca
 
 

@@ -6,7 +6,8 @@ from .temp_cent import Make_Cent_temp
 """
 import re
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from .load_data import Baco_centries, cacaca
 
 

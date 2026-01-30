@@ -12,8 +12,10 @@ try:
 except ImportError:
     new_all = None
 from src.config import settings
-from src.helps.log import logger
+from src.helps.log import getLogger
 from src.mk_cats import create_categories_from_list
+
+logger = getLogger(__name__)
 
 # Enable ask mode by default - now done via settings
 settings.bot.ask = True

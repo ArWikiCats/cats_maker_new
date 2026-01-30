@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """ """
 
-from ..c18_new.log import logger
+from ..c18_new.log import getLogger
+logger = getLogger(__name__)
 from ..config import settings
 from ..wiki_api import get_cache_L_C_N, set_cache_L_C_N
 from . import submitAPI

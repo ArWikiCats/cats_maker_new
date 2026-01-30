@@ -6,7 +6,8 @@ import re
 
 from ...config import settings
 from ...wiki_api import get_deleted_pages
-from ..log import logger
+from ..log import getLogger
+logger = getLogger(__name__)
 from ..tools_bots.temp_bot import templatequery, templatequerymulti
 
 # ---

@@ -14,7 +14,8 @@ import requests
 
 from ..config import settings
 from ..new_api.useraccount import qs_token, qs_tokenbot
-from .utils import logger
+from .utils import getLogger
+logger = getLogger(__name__)
 
 Dir = Path(__file__).parent.parent
 menet = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")

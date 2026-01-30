@@ -3,7 +3,8 @@ from .super.handel_errors import HANDEL_ERRORS
 
 """
 from ...config import settings
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 
 class HANDEL_ERRORS:

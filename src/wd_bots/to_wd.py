@@ -4,7 +4,8 @@ Wikidata functions for cats_maker_new bot
 """
 import functools
 
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from . import NewHimoAPIBot
 from .wd_desc import wwdesc
 

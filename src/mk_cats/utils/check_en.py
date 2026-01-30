@@ -3,7 +3,8 @@
 
 """
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from ...utils.skip_cats import NO_Templates_lower, skip_encats
 from ...wiki_api import find_LCN
 

@@ -1,7 +1,8 @@
 """
 
 """
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 from .super_login import Login
 
 hases = {}

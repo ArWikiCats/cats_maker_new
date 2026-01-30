@@ -1,4 +1,5 @@
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from ..new_api.page import NEW_API, SuperNEW_API
 
 

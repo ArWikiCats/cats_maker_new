@@ -4,7 +4,8 @@
 import re
 from functools import lru_cache
 
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 BBlcak = [
     "Disambiguation",

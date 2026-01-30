@@ -11,7 +11,8 @@ from functools import lru_cache
 from pathlib import Path
 
 from ...config import settings
-from ...helps import logger
+from ...helps import getLogger
+logger = getLogger(__name__)
 
 statgroup = stat.S_IRWXU | stat.S_IRWXG
 tool = os.getenv("HOME")

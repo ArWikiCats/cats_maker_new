@@ -5,7 +5,8 @@ import time
 from functools import lru_cache
 
 from ....config import settings
-from ....helps import logger
+from ....helps import getLogger
+logger = getLogger(__name__)
 from .bot import CategoryDepth
 
 SITECODE = "en"

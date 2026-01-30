@@ -426,7 +426,6 @@ from .utils.check_en import check_en_temps  # Dependency 13
 ```python
 # src/mk_cats/mknew.py:28-38
 try:
-    from ArWikiCats import logger as cat_logger
     from ArWikiCats import resolve_arabic_category_label
 except ImportError:
     resolve_arabic_category_label = None

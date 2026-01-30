@@ -11,7 +11,8 @@ https://doc.wikimedia.org/Wikibase/master/js/rest-api/#/items/getItem
 import functools
 
 from ..config import settings
-from ..helps import logger
+from ..helps import getLogger
+logger = getLogger(__name__)
 from . import NewHimoAPIBot
 
 wd_cach = {}

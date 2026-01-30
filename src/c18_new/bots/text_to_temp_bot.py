@@ -15,7 +15,8 @@ import re
 import wikitextparser as wtp
 
 from ...new_api.page import MainPage
-from ..log import logger
+from ..log import getLogger
+logger = getLogger(__name__)
 
 tosearch_and_replace = [
     "{{توثيق شريط}}",

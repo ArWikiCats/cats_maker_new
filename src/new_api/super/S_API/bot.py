@@ -5,7 +5,8 @@ from .super.S_API.bot import BOTS_APIS
 """
 import sys
 
-from ....helps import logger
+from ....helps import getLogger
+logger = getLogger(__name__)
 from ...api_utils.ask_bot import ASK_BOT
 from ..handel_errors import HANDEL_ERRORS
 

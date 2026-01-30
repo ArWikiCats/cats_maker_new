@@ -3,7 +3,8 @@
 from ...config import settings
 from ...new_api.page import CatDepth
 from ...wiki_api import find_LCN
-from ..log import logger
+from ..log import getLogger
+logger = getLogger(__name__)
 
 
 def get_ar_list_title_from_en_list(enlist, wiki="en"):
