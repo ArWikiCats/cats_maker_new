@@ -177,33 +177,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
         # ---
         return False
 
-    def import_page(self, family="wikipedia"):
-        """
-        Imports the page from another wiki family using the MediaWiki API.
-
-        Args:
-            family: The source wiki family from which to import the page (default is "wikipedia").
-
-        Returns:
-            The API response data from the import operation.
-        """
-        params = {
-            "action": "import",
-            "format": "json",
-            "interwikisource": family,
-            "interwikipage": self.title,
-            "fullhistory": 1,
-            "assignknownusers": 1,
-        }
-        # ---
-        data = self.post_params(params)
-        # ---
-        done = data.get("import", [{}])[0].get("revisions", 0)
-        # ---
-        logger.warning(f"<<lightgreen>> imported {done} revisions")
-        # ---
-        return data
-
     def find_create_data(self):
         """
         Retrieves and stores the creation metadata of the page's first revision.
@@ -406,22 +379,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
         # ---
         self.meta.info["done"] = True
 
-    def get_text_html(self):
-        params = {
-            "action": "parse",
-            "page": self.title,
-            "formatversion": "2",
-            "prop": "text",
-        }
-        # ---
-        data = self.post_params(params)
-        # ---
-        # _data_ = { 'warnings': { 'main': { 'warnings': 'Unrecognized parameter: bot.' } }, 'parse': { 'title': 'ويكيبيديا:ملعب', 'pageid': 361534, 'text': '' } }
-        # ---
-        self.content.text_html = data.get("parse", {}).get("text", "")
-        # ---
-        return self.content.text_html
-
     def get_redirect_target(self):
         # ---
         params = {
@@ -445,30 +402,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
             logger.debug(f"<<lightyellow>>Page:({self.title}) redirect to ({to})")
         # ---
         return to
-
-    def get_words(self):
-        srlimit = "30"
-        params = {
-            "action": "query",
-            "list": "search",
-            "srsearch": self.title,
-            "srlimit": srlimit,
-        }
-        data = self.post_params(params, addtoken=True)
-        # ---
-        if not data:
-            return 0
-        # ---
-        search = data.get("query", {}).get("search", [])
-        # ---
-        for pag in search:
-            tit = pag["title"]
-            if tit == self.title:
-                count = pag["wordcount"]
-                self.content.words = count
-                break
-        # ---
-        return self.content.words
 
     def get_extlinks(self):
         params = {
