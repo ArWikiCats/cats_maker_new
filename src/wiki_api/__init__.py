@@ -9,7 +9,6 @@ from .LCN_new import (
     set_cache_L_C_N,
 )
 from .sub_cats_bot import sub_cats_query
-from .wd_sparql import get_query_data, get_query_result
 
 __all__ = [
     "submitAPI",
@@ -19,8 +18,6 @@ __all__ = [
     "set_cache_L_C_N",
     "get_cache_L_C_N",
     "sub_cats_query",
-    "get_query_result",
-    "get_query_data",
     "get_deleted_pages",
     "himoBOT2",
 ]

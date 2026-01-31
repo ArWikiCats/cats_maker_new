@@ -133,8 +133,6 @@ class CategoryConfig:
     Attributes:
         stubs: Process stub categories
         make_new_cat: Create new categories
-        use_labels: Use Wikidata labels for category names
-        no_keep: Disable keeping categories in SPARQL results
         keep: Keep categories despite template restrictions
         we_try: Enable we_try mode for category processing
         no_dontadd: Disable don't-add list fetching
@@ -147,8 +145,6 @@ class CategoryConfig:
 
     stubs: bool = False
     make_new_cat: bool = True
-    use_labels: bool = False
-    no_keep: bool = False
     keep: bool = False
     we_try: bool = True
     no_dontadd: bool = False
@@ -183,7 +179,6 @@ class SiteConfig:
     """Configuration for alternative site settings.
 
     Attributes:
-        use_commons: Use Commons instead of Wikipedia
         custom_family: Custom wiki family (e.g., wikiquote, wikisource)
         custom_lang: Custom language code for en site
         secondary_lang: Secondary language to use (e.g., fr)
@@ -191,7 +186,6 @@ class SiteConfig:
         use_secondary: Whether to use secondary language site
     """
 
-    use_commons: bool = False
     custom_family: str = ""
     custom_lang: str = ""
     secondary_lang: str = ""
@@ -271,8 +265,6 @@ class Settings:
 
         Returns computed site info based on commons, custom_family, and custom_lang settings.
         """
-        if self.site.use_commons:
-            return WikiSiteInfo(family="commons", code="commons", use=True)
         if self.site.custom_family:
             return WikiSiteInfo(family=self.site.custom_family, code="en", use=True)
         if self.site.custom_lang:
@@ -409,10 +401,6 @@ class Settings:
                 self.category.stubs = True
             if arg_name in ("-dontMakeNewCat", "-dontmakenewcat"):
                 self.category.make_new_cat = False
-            if arg_name == "-uselabels":
-                self.category.use_labels = True
-            if arg_name == "nokeep":
-                self.category.no_keep = True
             if arg_name == "keep":
                 self.category.keep = True
             if arg_name == "-We_Try":
@@ -447,12 +435,9 @@ class Settings:
                 self.query.ns_only_14 = True
 
             # Site config
-            if arg_name in ("-commons", "commons"):
-                self.site.use_commons = True
             if arg_name in ("-family", "family") and value:
                 if value in ("wikiquote", "wikisource"):
                     self.site.custom_family = value
-                    self.category.use_labels = True
 
             if arg_name in ("-uselang", "uselang") and value:
                 self.site.custom_lang = value

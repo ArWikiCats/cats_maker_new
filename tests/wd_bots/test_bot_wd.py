@@ -56,29 +56,3 @@ class TestWDFunctions:
 
         call_args = mock_post_continue.call_args[0][0]
         assert call_args["pwppropname"] == "custom_prop"
-
-    def test_get_item_descriptions_or_labels(self, mocker):
-        """Test Get_item_descriptions_or_labels method"""
-        wd = WD_Functions()
-
-        mock_post_continue = mocker.MagicMock(
-            return_value={
-                "success": 1,
-                "entities": {"Q123": {"descriptions": {"en": {"language": "en", "value": "A description"}}}},
-            }
-        )
-
-        result = wd.Get_item_descriptions_or_labels(mock_post_continue, "Q123", ty="descriptions")
-
-        assert "en" in result
-        assert result["en"] == "A description"
-
-    def test_get_item_descriptions_or_labels_no_response(self, mocker):
-        """Test Get_item_descriptions_or_labels with no response"""
-        wd = WD_Functions()
-
-        mock_post_continue = mocker.MagicMock(return_value=None)
-
-        result = wd.Get_item_descriptions_or_labels(mock_post_continue, "Q123")
-
-        assert result == {}

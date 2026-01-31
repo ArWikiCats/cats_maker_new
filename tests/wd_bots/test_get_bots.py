@@ -8,9 +8,6 @@ import pytest
 
 from src.wd_bots.get_bots import (
     Get_infos_wikidata,
-    Get_Item_API_From_Qid,
-    Get_item_descriptions_or_labels,
-    Get_Items_API_From_Qids,
     Get_P373_API,
     Get_Sitelinks_from_qid,
     Get_Sitelinks_From_wikidata,
@@ -165,81 +162,6 @@ class TestGetSitelinksFromQid:
         result = Get_Sitelinks_from_qid(ssite="ar", ids="Q123")
 
         mock_fn.assert_called_once_with("", "", ssite="ar", ids="Q123")
-
-
-class TestGetItemDescriptionsOrLabels:
-    """Tests for Get_item_descriptions_or_labels function"""
-
-    def test_returns_empty_dict_on_no_response(self, mocker):
-        """Test that function returns empty dict when API returns None"""
-        mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        result = Get_item_descriptions_or_labels("Q12345", ty="labels")
-
-        assert result == {}
-
-    def test_defaults_to_descriptions(self, mocker):
-        """Test that function defaults to descriptions when ty is ambiguous"""
-        mock_submit = mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        Get_item_descriptions_or_labels("Q12345", ty="descriptions or labels")
-
-        call_args = mock_submit.call_args[0][0]
-        assert call_args["props"] == "descriptions"
-
-
-class TestGetItemAPIFromQid:
-    """Tests for Get_Item_API_From_Qid function"""
-
-    def test_returns_default_table_on_no_response(self, mocker):
-        """Test that function returns default table when API returns None"""
-        mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        result = Get_Item_API_From_Qid("Q12345")
-
-        assert "sitelinks" in result
-        assert "labels" in result
-        assert "descriptions" in result
-        assert "claims" in result
-        assert result["q"] == ""
-
-    def test_returns_default_table_for_missing_entity(self, mocker):
-        """Test that function returns default table for -1 entity"""
-        mocker.patch("src.wd_bots.get_bots.submitAPI", return_value={"success": 1, "entities": {"-1": {}}})
-
-        result = Get_Item_API_From_Qid("Q999999999")
-
-        assert result["q"] == ""
-
-    def test_strips_wiki_suffix_from_sites(self, mocker):
-        """Test that 'wiki' suffix is handled in sites parameter"""
-        mock_submit = mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        Get_Item_API_From_Qid("", sites="arwiki", titles="Test")
-
-        call_args = mock_submit.call_args[0][0]
-        assert call_args["sites"] == "arwiki"
-
-
-class TestGetItemsAPIFromQids:
-    """Tests for Get_Items_API_From_Qids function"""
-
-    def test_returns_empty_dict_on_no_response(self, mocker):
-        """Test that function returns empty dict when API returns None"""
-        mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        result = Get_Items_API_From_Qids(["Q123", "Q456"])
-
-        assert result == {}
-
-    def test_joins_qids_with_pipe(self, mocker):
-        """Test that QIDs are joined with pipe character"""
-        mock_submit = mocker.patch("src.wd_bots.get_bots.submitAPI", return_value=None)
-
-        Get_Items_API_From_Qids(["Q123", "Q456", "Q789"])
-
-        call_args = mock_submit.call_args[0][0]
-        assert call_args["ids"] == "Q123|Q456|Q789"
 
 
 class TestGetP373API:
