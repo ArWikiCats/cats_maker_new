@@ -14,7 +14,7 @@ from http.cookiejar import MozillaCookieJar
 import requests
 
 from ...config import settings
-from ..api_utils.user_agent import default_user_agent
+from ..api_utils import default_user_agent
 from .cookies_bot import del_cookies_file, get_file_name
 from .params_help import PARAMS_HELPS
 
@@ -310,9 +310,6 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # ---
         if not self.user_table_done:
             logger.debug("<<green>> user_table_done == False!")
-            # do error
-            if settings.debug_config.raise_errors:
-                raise Exception("user_table_done == False!")
         # ---
         if self.family == "mdwiki":
             timeout = 60

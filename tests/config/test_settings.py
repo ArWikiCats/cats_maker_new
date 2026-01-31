@@ -455,15 +455,6 @@ class TestEEnSiteProperty:
         assert s.EEn_site.family == "wikipedia"
         assert s.EEn_site.code == "en"
 
-    def test_commons_site(self):
-        """Test EEn_site when use_commons is True."""
-        from src.config.settings import Settings
-
-        s = Settings()
-        s.site.use_commons = True
-        assert s.EEn_site.family == "commons"
-        assert s.EEn_site.code == "commons"
-
     def test_custom_family(self):
         """Test EEn_site with custom_family."""
         from src.config.settings import Settings

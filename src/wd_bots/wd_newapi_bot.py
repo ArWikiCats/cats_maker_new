@@ -22,9 +22,6 @@ class WD_API(WD_Functions, WD_ERRORS_HANDLER):
         self.family = "wikidata"
         # ---
         self.usernamex = self.login_bot.user_login
-        # ---
-        # super().__init__(self.post_continue)
-        # ---
         WD_Functions.__init__(self)
         WD_ERRORS_HANDLER.__init__(self)
         # ---
@@ -65,7 +62,7 @@ class WD_API(WD_Functions, WD_ERRORS_HANDLER):
         if error_code == "maxlag" and max_retry < 4:
             self.lag_work(error)
             # ---
-            logger.debug(f"<<purple>>: <<red>> lag_work: {max_retry=}")
+            logger.debug(f"<<purple>>: <<red>> lag work: {max_retry=}")
             # ---
             return self.post_to_newapi(params=params, tage=tage, editgroups=editgroups, max_retry=max_retry + 1)
         # ---
@@ -126,7 +123,3 @@ class WD_API(WD_Functions, WD_ERRORS_HANDLER):
         lag_bot.find_lag(err)
         # ---
         return "reagain"
-
-    def pages_with_prop(self, pwppropname="unlinkedwikibase_id", pwplimit=None, Max=None):
-        # ---
-        return self._pages_with_prop(self.post_continue, pwppropname=pwppropname, pwplimit=pwplimit, Max=Max)

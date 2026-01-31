@@ -102,14 +102,3 @@ class TestWDAPI:
         api.lag_work({"lag": 10})
 
         mock_find_lag.assert_called_with({"lag": 10})
-
-    def test_pages_with_prop(self, mocker):
-        """Test pages_with_prop method"""
-        mock_login = mocker.MagicMock()
-        mock_login.user_login = "testuser"
-        mock_login.post_continue.return_value = [{"title": "Page1"}]
-
-        api = WD_API(mock_login)
-        result = api.pages_with_prop()
-
-        mock_login.post_continue.assert_called()

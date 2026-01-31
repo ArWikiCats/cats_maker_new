@@ -17,3 +17,4 @@ __pycache__/
 *.env
 /BOTS_LOGS
 scan.py
+coverage.xml
