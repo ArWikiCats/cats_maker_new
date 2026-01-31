@@ -3,18 +3,51 @@ import pytest
 from src.new_api.pagenew import load_main_api
 
 
-@pytest.mark.network
+@pytest.fixture
+def fake_api():
+    class FakeMainPage:
+        def __init__(self, title):
+            self.title = title
+
+        def exists(self):
+            return self.title != "NonExistentPage12345"
+
+        def can_edit(self):
+            return True
+
+        def get_text(self):
+            if self.title == "NonExistentPage12345":
+                return ""
+            return "Sample page text."
+
+    class FakeAPI:
+        def MainPage(self, title) -> FakeMainPage:
+            return FakeMainPage(title)
+
+    return FakeAPI()
+
+
+@pytest.fixture
+def api_en(monkeypatch, fake_api):
+    monkeypatch.setattr("src.new_api.pagenew.load_main_api", lambda lang="en": fake_api)
+    return fake_api
+
+
+@pytest.fixture
+def api_ar(monkeypatch, fake_api):
+    monkeypatch.setattr("src.new_api.pagenew.load_main_api", lambda lang="ar": fake_api)
+    return fake_api
+
+
 class TestMainPage:
     @pytest.fixture
-    def test_page(self):
-        api = load_main_api("en")
-        page = api.MainPage("User:Mr. Ibrahem/sandbox")
+    def test_page(self, api_en):
+        page = api_en.MainPage("User:Mr. Ibrahem/sandbox")
         return page
 
     @pytest.fixture
-    def arabic_page(self):
-        api = load_main_api("ar")
-        return api.MainPage("وب:ملعب")
+    def arabic_page(self, api_ar):
+        return api_ar.MainPage("وب:ملعب")
 
     def test_page_exists(self, test_page):
         """Test page existence check"""
@@ -33,9 +66,8 @@ class TestMainPage:
         # assert isinstance(text, str)
         assert len(text) >= 0, "Text should be retrievable"
 
-    def test_nonexistent_page(self):
+    def test_nonexistent_page(self, api_en):
         """Test behavior with non-existent page"""
-        api = load_main_api("en")
-        page = api.MainPage("NonExistentPage12345")
+        page = api_en.MainPage("NonExistentPage12345")
         assert page.exists() is False
         assert isinstance(page.get_text(), str)  # Should handle gracefully
