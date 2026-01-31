@@ -1,13 +1,19 @@
 """ """
 
 # ---
+import functools
 from ..config import settings
-from ..new_api import LoginWrap, User_tables_bot
+from ..new_api import LoginWrap
+from ..new_api.pagenew import username, password
 
-logins_cache = {}
+User_tables_bot = {
+    "username": username,
+    "password": password,
+}
 
 
-def log_in_wikidata(Mr_or_bot="bot", www="www"):
+@functools.lru_cache(maxsize=1)
+def log_in_wikidata(www="www"):
     # ---
     users_data = User_tables_bot
     # ---
@@ -16,10 +22,6 @@ def log_in_wikidata(Mr_or_bot="bot", www="www"):
     if www != "www":
         www2 = www
     # ---
-    login_bot, logins_cache2 = LoginWrap(www2, "wikidata", logins_cache, users_data)
-    # ---
-    logins_cache.update(logins_cache2)
-    # ---
-    print(logins_cache)
+    login_bot, _ = LoginWrap(www2, "wikidata", {}, users_data)
     # ---
     return login_bot

@@ -34,7 +34,7 @@ def ask_put(s):
 class NewHimoAPIBot:
     def __init__(self, Mr_or_bot="bot", www="www"):
         # ---
-        self.login_bot = log_in_wikidata(Mr_or_bot=Mr_or_bot, www=www)
+        self.login_bot = log_in_wikidata(www=www)
         # ---
         self.wdapi_new = WD_API(self.login_bot, Mr_or_bot=Mr_or_bot)
         # ---

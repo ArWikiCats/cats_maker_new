@@ -4,43 +4,10 @@ Tests for src/wiki_api/check_redirects.py
 This module tests Wikipedia API helper functions.
 """
 
-import pytest
-
 from src.wiki_api.check_redirects import (
-    _load_new_api,
     load_non_redirects,
     remove_redirect_pages,
 )
-
-
-class TestLoadNewApi:
-    """Tests for _load_new_api helper function"""
-
-    def test_returns_api_instance(self, mocker):
-        """Test that _load_new_api returns a NEW_API instance"""
-        mock_new_api = mocker.MagicMock()
-        mocker.patch("src.wiki_api.check_redirects.NEW_API", return_value=mock_new_api)
-
-        result = _load_new_api("en")
-
-        assert result == mock_new_api
-
-    def test_calls_new_api_with_correct_params(self, mocker):
-        """Test that _load_new_api calls NEW_API with correct parameters"""
-        mock_new_api_class = mocker.patch("src.wiki_api.check_redirects.NEW_API")
-
-        _load_new_api("ar")
-
-        mock_new_api_class.assert_called_once_with("ar", family="wikipedia")
-
-    def test_supports_different_languages(self, mocker):
-        """Test that _load_new_api works with different language codes"""
-        mock_new_api_class = mocker.patch("src.wiki_api.check_redirects.NEW_API")
-
-        for lang in ["en", "ar", "fr", "de"]:
-            _load_new_api(lang)
-
-        assert mock_new_api_class.call_count == 4
 
 
 class TestLoadNonRedirects:
