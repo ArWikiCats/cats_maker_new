@@ -77,7 +77,7 @@ class TestLoadNonRedirects:
         result = load_non_redirects("en", [])
 
         assert result == []
-        mock_api.NEW_API.Find_pages_exists_or_not.assert_called_once_with([], get_redirect=True)
+        mock_new_api_instance.Find_pages_exists_or_not.assert_called_once_with([], get_redirect=True)
 
     def test_handles_all_redirects(self, mocker):
         """Test that load_non_redirects returns empty list when all pages are redirects"""
