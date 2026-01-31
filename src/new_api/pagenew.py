@@ -1,10 +1,9 @@
 # ---
-"""
-"""
+""" """
 # ---
 import configparser
-import os
 import functools
+import os
 
 from .pages_bots.all_apis import ALL_APIS
 
@@ -39,9 +38,9 @@ MainPage = main_api.MainPage
 CatDepth = main_api.CatDepth
 
 __all__ = [
-    'MainPage',
-    'NEW_API',
-    'CatDepth',
-    'qs_token',
-    'qs_tokenbot',
+    "MainPage",
+    "NEW_API",
+    "CatDepth",
+    "qs_token",
+    "qs_tokenbot",
 ]

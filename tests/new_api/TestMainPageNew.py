@@ -6,7 +6,7 @@ from src.new_api.pagenew import load_main_api
 @pytest.mark.network
 class TestMainPage:
     @pytest.fixture
-    def test_page(self) :
+    def test_page(self):
         api = load_main_api("en")
         page = api.MainPage("User:Mr. Ibrahem/sandbox")
         return page

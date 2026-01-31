@@ -4,10 +4,11 @@ Logging configuration with colored output.
 
 import functools
 import logging
-import re
 import os
+import re
 import sys
 from pathlib import Path
+
 import colorlog
 
 

@@ -8,9 +8,11 @@ page = main_api.MainPage('Main Page Title')
 cat_members = main_api.CatDepth('Category Title')
 new_api = main_api.NEW_API()
 """
+
 # ---
 import functools
 import logging
+
 from ..super.S_API import bot_api
 from ..super.S_Category import catdepth_new
 from ..super.S_Page import super_page
@@ -57,8 +59,8 @@ class ALL_APIS:
         # ---
         user_tables = {
             self.family: {
-                'username': self.username,
-                'password': self.password,
+                "username": self.username,
+                "password": self.password,
             }
         }
         # ---
@@ -68,5 +70,5 @@ class ALL_APIS:
 
 
 __all__ = [
-    'ALL_APIS',
+    "ALL_APIS",
 ]

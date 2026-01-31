@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ """
 import logging
+
 from ..new_api.pagenew import load_main_api
 from ..temp import main_make_temp_no_title
 from ..utils.skip_cats import skip_encats
