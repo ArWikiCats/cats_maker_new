@@ -7,7 +7,7 @@ import logging
 import re
 import os
 import sys
-
+from pathlib import Path
 import colorlog
 
 
@@ -123,6 +123,16 @@ def wrap_color_messages(format_message):
     return wrapper
 
 
+def prepare_log_file(log_file, project_logger):
+    log_file = Path(log_file).expanduser().as_posix()
+    try:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        project_logger.error(f"Failed to create log directory: {e}")
+        log_file = None
+    return log_file
+
+
 def setup_logging(
     level: str = "INFO",
     name: str = "cats_maker_new",
@@ -164,6 +174,8 @@ def setup_logging(
     # Optional file handler (no colors)
     if not log_file:
         log_file = os.getenv("CATS_MAKER_LOG_FILE", None)
+        if log_file:
+            log_file = prepare_log_file(log_file, project_logger)
 
     if log_file:
         file_formatter = logging.Formatter(
