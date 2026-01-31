@@ -14,7 +14,7 @@ from pathlib import Path
 import requests
 
 from ..config import settings
-from ..new_api.useraccount import qs_token, qs_tokenbot
+from ..new_api.pagenew import qs_token, qs_tokenbot
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ def QS_New_API(data2):
     if not r2:
         return False
     # ---
-    logger.debug(f"QS_New_API: {str(r2.text)}")
+    logger.debug(f": {str(r2.text)}")
 
 
 def QS_line(line, user="Mr. Ibrahem"):

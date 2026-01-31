@@ -3,7 +3,7 @@
 import logging
 
 from ...config import settings
-from ...new_api.page import CatDepth
+from ...new_api.pagenew import load_main_api
 from ...wiki_api import find_LCN
 
 logger = logging.getLogger(__name__)
@@ -39,20 +39,19 @@ def get_ar_list_title_from_en_list(enlist, wiki="en"):
                         new_ar_list.append(arpagetitle)
                         en_done.append(arpagetitle.replace("_", " "))
     # ---
-    logger.info(f"<<lightyellow>> get_ar_list_title_from_en_list, <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
+    logger.info(f"<<lightyellow>> , <<lightblue>>lenth of new_ar_list:{len(new_ar_list)}")
     # ---
     return new_ar_list
 
 
 def en_category_members(enpageTitle, wiki="en"):
     # ---
-    logger.info(f"<<lightyellow>> en_category_members from category: {enpageTitle} <<default>>")
+    logger.info(f"<<lightyellow>> from category: {enpageTitle} <<default>>")
     # ---
     namespace_ids = [0, 14, 100]
     # ---
-    cat_members = CatDepth(
-        enpageTitle, sitecode=wiki, family="wikipedia", depth=0, ns="all", without_lang="", with_lang="ar", tempyes=[]
-    )
+    api = load_main_api(wiki)
+    cat_members = api.CatDepth(enpageTitle, depth=0, ns="all", without_lang="", with_lang="ar", tempyes=[])
     # ---
     en_titles = []
     # ---

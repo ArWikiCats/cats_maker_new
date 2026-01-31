@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """ """
-from . import page
 from .api_utils import botEdit
+from .pagenew import load_main_api
 from .super.login_wrap import LoginWrap
-from .useraccount import User_tables_bot
 
 __all__ = [
-    "User_tables_bot",
     "botEdit",
-    "page",
     "LoginWrap",
+    "load_main_api",
 ]
