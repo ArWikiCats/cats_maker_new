@@ -15,7 +15,7 @@ import re
 
 import wikitextparser as wtp
 
-from ...new_api.page import MainPage
+from ...new_api.page1 import MainPage
 
 logger = logging.getLogger(__name__)
 

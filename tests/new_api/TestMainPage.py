@@ -1,6 +1,6 @@
 import pytest
 
-from src.new_api.page import MainPage
+from src.new_api.page1 import MainPage
 
 
 @pytest.mark.network

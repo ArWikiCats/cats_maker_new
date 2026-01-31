@@ -3,7 +3,7 @@
 import functools
 import logging
 
-from ..new_api.page import MainPage, SuperMainPage
+from ..new_api.page1 import MainPage, SuperMainPage
 from ..temp import main_make_temp_no_title
 from ..utils.skip_cats import skip_encats
 from . import categorytext

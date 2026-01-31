@@ -3,7 +3,7 @@
 import logging
 
 from ...config import settings
-from ...new_api.page import CatDepth
+from ...new_api.page1 import CatDepth
 from ...wiki_api import find_LCN
 
 logger = logging.getLogger(__name__)

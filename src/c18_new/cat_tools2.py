@@ -8,7 +8,7 @@
 import logging
 
 from ..config import settings
-from ..new_api.page import CatDepth
+from ..new_api.page1 import CatDepth
 
 logger = logging.getLogger(__name__)
 

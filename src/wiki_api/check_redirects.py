@@ -1,6 +1,6 @@
 import logging
 
-from ..new_api.page import NEW_API, SuperNEW_API
+from ..new_api.page1 import NEW_API, SuperNEW_API
 
 logger = logging.getLogger(__name__)
 
