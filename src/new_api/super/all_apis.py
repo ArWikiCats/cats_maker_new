@@ -48,7 +48,7 @@ class ALL_APIS:
 
     def NEW_API(self, *args, **kwargs) -> bot_api.NEW_API:
         # ---
-        return bot_api.NEW_API(self.login_bot, lang=self.lang, family=self.family)
+        return bot_api.NEW_API(self.login_bot, lang=self.lang)
 
     @functools.lru_cache(maxsize=1)
     def _login(self) -> Login:
