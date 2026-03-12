@@ -54,6 +54,10 @@ wiki_site_en = {"family": "wikipedia", "code": "en"}
 
 logger = logging.getLogger(__name__)
 
+bad_words = [
+    "ذكور",
+]
+
 
 def ar_make_lab(title, **Kwargs):
     okay = filter_en.filter_cat(title)
@@ -73,9 +77,10 @@ def ar_make_lab(title, **Kwargs):
         logger.debug(f'<<lightred>> No label found for "{title}".')
         return ""
 
-    if "ذكور" in label:
-        logger.error(f'<<lightred>> label "{label}" has "ذكور".')
-        return ""
+    for word in bad_words:
+        if word in label:
+            logger.error(f'<<lightred>> label "{label}" has "{word}".')
+            return ""
 
     return label
 
