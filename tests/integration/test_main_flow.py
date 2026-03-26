@@ -129,10 +129,10 @@ class TestMainFlowIntegration:
 
     def test_one_cat_filters_duplicate_categories(self, mocker):
         """Test that duplicate categories are filtered out."""
-        from src.mk_cats.mknew import DONE_D, one_cat
+        from src.mk_cats.mknew import _done_d, clear_processing_state, one_cat
 
-        # Clear DONE_D for this test
-        DONE_D.clear()
+        # Clear processing state for this test
+        clear_processing_state()
 
         # Mock ar_make_lab to return a label
         mocker.patch("src.mk_cats.mknew.ar_make_lab", return_value="")
@@ -314,10 +314,10 @@ class TestErrorHandling:
 
     def test_scan_ar_title_handles_repeated_titles(self):
         """Test that scan_ar_title correctly tracks repeated titles."""
-        from src.mk_cats.mknew import NewCat_Done, scan_ar_title
+        from src.mk_cats.mknew import _new_cat_done, clear_processing_state, scan_ar_title
 
         # Clear state
-        NewCat_Done.clear()
+        clear_processing_state()
 
         # First call should return True
         result1 = scan_ar_title("تصنيف:اختبار")

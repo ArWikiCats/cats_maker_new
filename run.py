@@ -9,7 +9,7 @@ import requests
 
 # Optional external integration - configure via environment variable
 new_all = None
-external_path = os.getenv("CATS_MAKER_EXTERNAL_PATH")
+external_path = os.getenv("CATS_MAKER_EXTERNAL_PATH", "")
 if external_path:
     try:
         sys.path.append(external_path)

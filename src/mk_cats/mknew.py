@@ -26,7 +26,7 @@ from .utils import filter_en
 from .utils.check_en import check_en_temps
 
 # Optional ArWikiCats integration - configure via environment variable
-arwikicats_path = os.getenv("ARWIKICATS_PATH")
+arwikicats_path = os.getenv("ARWIKICATS_PATH", "")
 if arwikicats_path:
     arwikicats_path = Path(arwikicats_path)
     if arwikicats_path.exists():
@@ -193,8 +193,8 @@ def _extract_parent_categories(en_page_title: str):
     cates = find_Page_Cat_without_hidden(
         en_page_title,
         prop="langlinks",
-        site_code=wiki_site_en["code"],
-        family=wiki_site_en["family"],
+        site_code=WIKI_SITE_EN["code"],
+        family=WIKI_SITE_EN["family"],
     )
 
     en_cats_of_new_cat = []
