@@ -129,7 +129,8 @@ class TestMainFlowIntegration:
 
     def test_one_cat_filters_duplicate_categories(self, mocker):
         """Test that duplicate categories are filtered out."""
-        from src.mk_cats.mknew import _done_d, clear_processing_state, one_cat
+        from src.mk_cats import mknew
+        from src.mk_cats.mknew import clear_processing_state, one_cat
 
         # Clear processing state for this test
         clear_processing_state()
@@ -147,7 +148,7 @@ class TestMainFlowIntegration:
         assert result2 is False
 
         # Clean up
-        DONE_D.clear()
+        mknew._done_d.clear()
 
     def test_process_catagories_calls_make_ar(self, mocker, mock_all_external_services):
         """Test that process_catagories calls make_ar with correct parameters."""
