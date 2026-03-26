@@ -315,7 +315,8 @@ class TestErrorHandling:
 
     def test_scan_ar_title_handles_repeated_titles(self):
         """Test that scan_ar_title correctly tracks repeated titles."""
-        from src.mk_cats.mknew import _new_cat_done, clear_processing_state, scan_ar_title
+        from src.mk_cats import mknew
+        from src.mk_cats.mknew import clear_processing_state, scan_ar_title
 
         # Clear state
         clear_processing_state()
@@ -329,7 +330,7 @@ class TestErrorHandling:
         assert result2 is False
 
         # Clean up
-        NewCat_Done.clear()
+        mknew._new_cat_done.clear()
 
 
 class TestDataFlowIntegration:
