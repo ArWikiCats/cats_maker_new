@@ -60,21 +60,14 @@ ns_text_tab_en = {
 
 @functools.lru_cache(maxsize=1)
 def GET_SQL() -> bool:
-    """Check if running in a production environment with SQL access.
+    """Check if running in production environment with SQL access.
     
     Returns:
-        bool: True if running on Toolforge/production, False otherwise.
+        bool: True if APP_ENV is set to "production", False otherwise.
     """
-    dir1 = "/mnt/nfs/labstore-secondary-tools-project/"
-    dir2 = "/data/project/"
-
-    # Check if running in production environment
-    is_production = os.path.isdir(dir1) or os.path.isdir(dir2)
+    app_env = os.getenv("APP_ENV", "")
     
-    # Check if running in development (I:/core/bots path indicates local dev)
-    is_development = os.path.isdir("I:/core/bots")
-    
-    return is_production and not is_development
+    return app_env == "production"
 
 
 def add_nstext_to_title(title, ns, lang="ar"):

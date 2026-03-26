@@ -30,7 +30,7 @@
    - [ ] Create a `.env.example` file with placeholder values:
      ```
      WIKIPEDIA_BOT_USERNAME=your_bot_username
-     BOT_PASSWORD=your_bot_password
+     WIKIPEDIA_BOT_PASSWORD=your_bot_password
      PROJECT_PATH=/data/project/himo
      ```
    - [ ] Add `.env` to `.gitignore` (verify it's not already tracked)
@@ -47,7 +47,7 @@
 
      load_dotenv()
      username = os.getenv("WIKIPEDIA_BOT_USERNAME", "")
-     password = os.getenv("BOT_PASSWORD", "")
+     password = os.getenv("WIKIPEDIA_BOT_PASSWORD", "")
      ```
 
 3. **Scan for other hardcoded paths**
