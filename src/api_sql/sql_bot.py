@@ -41,7 +41,7 @@ def fetch_arcat_titles(arcatTitle):
         AND lt_namespace = 14
         AND cl_from = page_id
         AND page_id = ll_from
-        AND ll_lang = "ar"
+        AND ll_lang = "en"
         GROUP BY page_title
         """
     # ---
