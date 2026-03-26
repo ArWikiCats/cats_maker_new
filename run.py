@@ -6,6 +6,8 @@ import os
 import sys
 
 import requests
+from src.config import settings
+from src.mk_cats import create_categories_from_list
 
 try:
     sys.path.append("D:/categories_bot/make2_new")
@@ -13,8 +15,6 @@ try:
 except ImportError:
     new_all = None
 
-from src.config import settings
-from src.mk_cats import create_categories_from_list
 
 logger = logging.getLogger(__name__)
 
