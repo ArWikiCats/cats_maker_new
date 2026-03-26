@@ -298,7 +298,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     en_cats_of_new_cat, cats_of_new_cat = _extract_parent_categories(en_page_title)
 
     # Mark as already created
-    Already_Created.append(en_page_title)
+    _already_created.append(en_page_title)
 
     # Collect category members using the helper module
     members = collect_category_members(ar_title, en_page_title)
@@ -317,7 +317,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     _log_members_info(members)
 
     # Create the category
-    created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=wiki_site_ar["family"])
+    created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=WIKI_SITE_AR["family"])
 
     if not created_category.success:
         to_wd.add_label(qid, ar_title)
