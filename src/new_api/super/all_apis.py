@@ -20,6 +20,7 @@ from .super_login import Login
 
 logger = logging.getLogger(__name__)
 
+
 @functools.lru_cache(maxsize=1024)
 def _login(lang, family, username) -> Login:
     # ---
@@ -28,7 +29,8 @@ def _login(lang, family, username) -> Login:
     logger.info(f"### <<purple>> _login make new bot for ({lang}.{family}.org|{username})")
     # ---
     return login_bot
-    
+
+
 class ALL_APIS:
     """
     A class that provides access to various API functionalities.
@@ -59,7 +61,7 @@ class ALL_APIS:
         return bot_api.NEW_API(self.login_bot, lang=self.lang)
 
     def _login(self) -> Login:
-        bot = _login(self.lang, self.family, self.username, self.password)
+        bot = _login(self.lang, self.family, self.username)
         user_tables = {
             self.family: {
                 "username": self.username,
@@ -70,6 +72,7 @@ class ALL_APIS:
         bot.add_users(user_tables, lang=self.lang)
         # ---
         return bot
+
 
 __all__ = [
     "ALL_APIS",
