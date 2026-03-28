@@ -116,7 +116,13 @@ def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return decoded_rows
 
 
-def make_sql_connect(query: str, db: str = "", host: str = "", values=None, silent: bool = True):
+def make_sql_connect(
+    query: str,
+    db: str = "",
+    host: str = "",
+    values=None,
+    silent: bool = True,
+):
     """Execute a SQL query and return decoded results.
 
     Args:
