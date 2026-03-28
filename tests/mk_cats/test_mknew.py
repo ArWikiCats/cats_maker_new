@@ -68,7 +68,7 @@ class TestScanArTitle:
         """Test that scan_ar_title returns False for already created titles."""
         from src.mk_cats import mknew
 
-        # Add title to Already_Created
+        # Add title to _already_created
         mknew._already_created.clear()
         mknew._already_created.append("تصنيف:علوم")
 
@@ -268,7 +268,7 @@ class TestOneCat:
         """Test that one_cat returns False for duplicate title."""
         from src.mk_cats import mknew
 
-        # Clear and add to DONE_D
+        # Clear and add to _done_d
         mknew._done_d.clear()
         mknew._done_d.append("Category:Duplicate")
 
