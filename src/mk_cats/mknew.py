@@ -419,8 +419,3 @@ def create_categories_from_list(liste, uselabs=False, callback=None):
 
     for num, en_title in enumerate(liste, 1):
         one_cat(en_title, num, lenth, uselabs=uselabs, callback=callback)
-
-
-# Legacy name
-ToMakeNewCat2222 = create_categories_from_list
-no_work = process_catagories

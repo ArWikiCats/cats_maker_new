@@ -405,22 +405,6 @@ class TestCreateCategoriesFromList:
         assert call_kwargs["callback"] == callback
 
 
-class TestLegacyNames:
-    """Tests for legacy function names."""
-
-    def test_tomakenwcat2222_is_alias(self):
-        """Test that ToMakeNewCat2222 is an alias for create_categories_from_list."""
-        from src.mk_cats.mknew import ToMakeNewCat2222, create_categories_from_list
-
-        assert ToMakeNewCat2222 is create_categories_from_list
-
-    def test_no_work_is_alias(self):
-        """Test that no_work is an alias for process_catagories."""
-        from src.mk_cats.mknew import no_work, process_catagories
-
-        assert no_work is process_catagories
-
-
 class TestMakeArMinMembers:
     """Tests for minimum members check in make_ar function."""
 
