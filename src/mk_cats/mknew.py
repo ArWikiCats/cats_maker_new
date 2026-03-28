@@ -3,6 +3,7 @@ python3 core8/pwb.py mk_cats/mknew
 """
 
 import logging
+import os
 import sys
 from pathlib import Path
 
