@@ -8,7 +8,12 @@ from typing import Any
 import pymysql
 from pymysql.cursors import DictCursor
 
-from ..exceptions import DatabaseConnectionError, DatabaseFetchError, QueryExecutionError
+from ..exceptions import (
+    DatabaseError,
+    DatabaseConnectionError,
+    DatabaseFetchError,
+    QueryExecutionError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,16 +35,16 @@ def load_db_config(db: str, host: str) -> dict[str, Any]:
 
 def _sql_connect_pymysql(query: str, db: str = "", host: str = "", values: tuple = None) -> list:
     """Execute a SQL query and return results.
-    
+
     Args:
         query: SQL query to execute
         db: Database name
         host: Database host
         values: Parameters for parameterized queries
-        
+
     Returns:
         List of result rows
-        
+
     Raises:
         DatabaseConnectionError: If connection to database fails
         QueryExecutionError: If query execution fails
@@ -113,7 +118,7 @@ def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def make_sql_connect(query: str, db: str = "", host: str = "", values=None, silent: bool = True):
     """Execute a SQL query and return decoded results.
-    
+
     Args:
         query: SQL query to execute
         db: Database name
@@ -121,7 +126,7 @@ def make_sql_connect(query: str, db: str = "", host: str = "", values=None, sile
         values: Parameters for parameterized queries
         silent: If True, catch database errors and return empty list (legacy behavior).
                If False, raise exceptions on error.
-        
+
     Returns:
         List of decoded result rows, or empty list on error if silent=True
     """
