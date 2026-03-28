@@ -415,6 +415,7 @@ def one_cat(en_title, num, lenth, sugust="", uselabs=False, callback=None):
 
 
 def create_categories_from_list(liste, uselabs=False, callback=None) -> None:
+    # clear_processing_state()
     lenth = len(liste)
 
     for num, en_title in enumerate(liste, 1):
