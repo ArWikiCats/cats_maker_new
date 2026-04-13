@@ -74,37 +74,6 @@ def fetch_arcat_titles(arcatTitle):
 
 
 @function_timer
-def Make_sql(queries, wiki="", values=None) -> list:
-    encats = []
-    # ---
-    if not wiki_sql.GET_SQL():
-        return []
-    # ---
-    if not wiki:
-        wiki = "enwiki"
-    # ---
-    host, dbs_p = wiki_sql.make_labsdb_dbs_p(wiki)
-    # ---
-    logger.info(queries)
-    # ---
-    start_time = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
-    logger.debug(f'<<yellow>> db:"{dbs_p}". {start_time}')
-    # ---
-    en_results = make_sql_connect(queries, host=host, db=dbs_p, values=values) or []
-    # ---
-    for raw in en_results:
-        tit = decode_bytes(raw[0])
-        tit = re.sub(r" ", "_", tit)
-        encats.append(tit)
-    # ---
-    logger.debug(f'len(encats) = "{len(encats)}"')
-    # ---
-    encats.sort()
-    # ---
-    return encats
-
-
-@function_timer
 def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
     # ---
     logger.debug(f"<<yellow>> sql . MySQLdb_finder {encatTitle}: ")
@@ -125,6 +94,7 @@ def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
     return final_cat
 
 
+@function_timer
 def fetch_encat_titles(encatTitle: str) -> list:
     item = str(encatTitle).replace("category:", "").replace("Category:", "").replace(" ", "_")
     item = item.replace("[[en:", "").replace("]]", "")
@@ -143,8 +113,28 @@ def fetch_encat_titles(encatTitle: str) -> list:
         AND ll_lang = "ar"
         GROUP BY ll_title"""
     # ---
-    # Pass category as parameter to prevent SQL injection
-    encats = Make_sql(queries, values=(item,))
+    encats = []
+    # ---
+    if not wiki_sql.GET_SQL():
+        return []
+    # ---
+    host, dbs_p = wiki_sql.make_labsdb_dbs_p("enwiki")
+    # ---
+    logger.info(queries)
+    # ---
+    start_time = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
+    logger.debug(f'<<yellow>> db:"{dbs_p}". {start_time}')
+    # ---
+    en_results = make_sql_connect(queries, host=host, db=dbs_p, values=(item,)) or []
+    # ---
+    for raw in en_results:
+        tit = decode_bytes(raw[0])
+        tit = re.sub(r" ", "_", tit)
+        encats.append(tit)
+    # ---
+    logger.debug(f'len(encats) = "{len(encats)}"')
+    # ---
+    encats.sort()
     # ---
     return encats
 
