@@ -71,7 +71,7 @@ def fetch_arcat_titles(arcatTitle):
     # ---
     return arcats
 
-
+@function_timer("Make_sql")
 def Make_sql(queries, wiki="", values=None) -> list:
     encats = []
     # ---
@@ -88,7 +88,7 @@ def Make_sql(queries, wiki="", values=None) -> list:
     logger.info(queries)
     # ---
     start_time = datetime.now().strftime("%Y-%b-%d  %H:%M:%S")
-    logger.debug(f'<<yellow>> API/sql_py 1 db:"{dbs_p}". {start_time}')
+    logger.debug(f'<<yellow>> db:"{dbs_p}". {start_time}')
     # ---
     en_results = make_sql_connect(queries, host=host, db=dbs_p, values=values) or []
     # ---
@@ -99,7 +99,8 @@ def Make_sql(queries, wiki="", values=None) -> list:
     # ---
     delta = time.perf_counter() - start
     # ---
-    logger.debug(f'API/sql_py len(encats) = "{len(encats)}", in {delta} seconds')
+    logger.debug(f'len(encats) = "{len(encats)}"')
+    logger.debug(f'Make_sql done in {delta} seconds')
     # ---
     encats.sort()
     # ---
