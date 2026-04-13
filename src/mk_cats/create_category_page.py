@@ -201,7 +201,7 @@ def new_category(enca, title, categories, qid, family="") -> CategoryResult:
     result = make_category(categories, enca, title, qid, family=family)
 
     if not result.success:
-        logger.debug(f"new_category failed: {result.error_message}")
+        logger.debug(f" failed: {result.error_message}")
         return result
 
     return result
