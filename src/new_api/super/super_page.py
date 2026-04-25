@@ -133,12 +133,6 @@ class MainPage(PAGE_APIS, ASK_BOT):
 
         super().__init__(login_bot)
 
-    def post_params(self, params, Type="get", addtoken=False, GET_CSRF=True, files=None, do_error=False, max_retry=0):
-
-        return self.login_bot.post_params(
-            params, Type=Type, addtoken=addtoken, GET_CSRF=GET_CSRF, files=files, do_error=do_error, max_retry=max_retry
-        )
-
     def false_edit(self):
         # self.newtext
         # self.text
@@ -189,7 +183,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
             "rvdir": "newer",
         }
 
-        data = self.post_params(params)
+        data = self.login_bot.post_params(params)
 
         pages = data.get("query", {}).get("pages", {})
 
@@ -231,9 +225,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
 
         if redirects:
             params["redirects"] = 1
-        data = self.post_params(params)
-
-        # _dat_ = { "batchcomplete": "", "query": { "normalized": [{ "from": "وب:ملعب", "to": "ويكيبيديا:ملعب" }], "pages": { "361534": { "pageid": 361534, "ns": 4, "title": "ويكيبيديا:ملعب", "revisions": [{ "revid": 61421668, "parentid": 61421528, "user": "Al-shazali Sabeel", "timestamp": "2023-03-07T13:50:29Z", "slots": { "main": { "contentmodel": "wikitext", "contentformat": "text/x-wiki", "*": "{{عنوان الملعب}}" } } }], "pageprops": { "wikibase_item": "Q3938" } } } }, }
+        data = self.login_bot.post_params(params)
 
         pages = data.get("query", {}).get("pages", {})
 
@@ -315,7 +307,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
 
         # _data_ = { "continue": {}, "query": { "pages": { "9124097": { "pageid": 9124097, "ns": 0, "title": "طواف العالم للدراجات 2023", "categories": [], "langlinks": [], "templates": [{ "ns": 10, "title": "قالب:-" }], "linkshere": [{ "pageid": 189150, "ns": 0, "title": "طواف فرنسا" }], "iwlinks": [{ "prefix": "commons", "*": "Category:2023_UCI_World_Tour" }], "contentmodel": "wikitext", "pagelanguage": "ar", "pagelanguagehtmlcode": "ar", "pagelanguagedir": "rtl", "touched": "2023-03-07T11:53:53Z", "lastrevid": 61366100, "length": 985, } } }, }
 
-        data = self.post_params(params)
+        data = self.login_bot.post_params(params)
 
         # xs = { 'batchcomplete': True, 'query': { 'pages': [{ 'pageid': 151314, 'ns': 10, 'title': 'قالب:أوب', 'categories': [{ 'ns': 14, 'title': 'تصنيف:قوالب تستخدم أنماط القوالب', 'sortkey': '', 'sortkeyprefix': '', 'hidden': False }, { 'ns': 14, 'title': 'تصنيف:cc', 'sortkey': 'v', 'sortkeyprefix': 'أوب', 'hidden': True }], 'langlinks': [{ 'lang': 'bh', 'title': 'टेम्पलेट:AWB' }], 'templates': [{ 'ns': 10, 'title': 'قالب:No redirect' }], 'linkshere': [{ 'pageid': 308641, 'ns': 10, 'title': 'قالب:AWB', 'redirect': True }], 'iwlinks': [{ 'prefix': 'd', 'title': 'Q4063270' }], 'contentmodel': 'wikitext', 'pagelanguage': 'ar', 'pagelanguagehtmlcode': 'ar', 'pagelanguagedir': 'rtl', 'touched': '2023-03-05T22:10:23Z', 'lastrevid': 61388266, 'length': 3477, }] }, }
 
@@ -379,7 +371,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
             "redirects": 1,
         }
 
-        data = self.post_params(params)
+        data = self.login_bot.post_params(params)
 
         # _pages_ = { 'batchcomplete': '', 'query': { 'redirects': [{ 'from': 'Yemen', 'to': 'اليمن' }], 'pages': {}, 'normalized': [{ 'from': 'yemen', 'to': 'Yemen' }] } }
 
@@ -419,7 +411,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
                 # params = {**params, **continue_params}
                 params.update(continue_params)
 
-            json1 = self.post_params(params)
+            json1 = self.login_bot.post_params(params)
 
             continue_params = json1.get("continue", {})
 
@@ -446,7 +438,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
                 "ususers": self.user,
             }
 
-            data = self.post_params(params)
+            data = self.login_bot.post_params(params)
 
             # _userinfo_ = { "id": 229481, "name": "Mr. Ibrahem", "groups": ["editor", "reviewer", "rollbacker", "*", "user", "autoconfirmed"] }
 
@@ -609,7 +601,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
 
         # params['basetimestamp'] = self.revisions_data.timestamp
 
-        pop = self.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params, addtoken=True)
 
         if not pop:
             return False
@@ -680,7 +672,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
             "createonly": 1,
         }
 
-        pop = self.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params, addtoken=True)
 
         if not pop:
             return False
@@ -721,7 +713,7 @@ class MainPage(PAGE_APIS, ASK_BOT):
             "formatversion": "2",
             "page": self.title,
         }
-        # data = self.post_params(params)
+        # data = self.login_bot.post_params(params)
         # data = data.get('parse', {}).get('links', [])
 
         data = self.login_bot.post_continue(params, "parse", _p_="links", p_empty=[])

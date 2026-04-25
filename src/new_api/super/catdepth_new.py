@@ -70,12 +70,6 @@ class CategoryDepth:
 
         self.prase_params(**kwargs)
 
-    def post_params(self, params, Type="get", addtoken=False, GET_CSRF=True, files=None, do_error=False, max_retry=0):
-
-        return self.login_bot.post_params(
-            params, Type=Type, addtoken=addtoken, GET_CSRF=GET_CSRF, files=files, do_error=do_error, max_retry=max_retry
-        )
-
     def get_revids(self):
         return self.revids
 
@@ -284,7 +278,7 @@ class CategoryDepth:
                 # params = {**params, **continue_params}
                 params.update(continue_params)
 
-            api_data = self.post_params(params)
+            api_data = self.login_bot.post_params(params)
 
             if not api_data:
                 print(f"api is False for {cac}")

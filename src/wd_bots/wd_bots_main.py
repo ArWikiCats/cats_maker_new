@@ -117,28 +117,6 @@ class WD_API:
         params["data"] = {}
         logger.debug(f"<<lightred>>{function} ERROR: <<defaut>>info: {err_info}, {params=}")
 
-    def post_continue(
-        self,
-        params,
-        action,
-        _p_="pages",
-        p_empty=None,
-        Max=500000,
-        first=False,
-        _p_2="",
-        _p_2_empty=None,
-    ):
-        return self.login_bot.post_continue(
-            params,
-            action,
-            _p_=_p_,
-            p_empty=p_empty,
-            Max=Max,
-            first=first,
-            _p_2=_p_2,
-            _p_2_empty=_p_2_empty,
-        )
-
     def post_to_newapi(
         self,
         params={},
