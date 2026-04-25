@@ -4,8 +4,8 @@ import logging
 import re
 
 from ..helps import function_timer
-from .wiki_sql import GET_SQL, make_labsdb_dbs_p, ns_text_tab_ar
 from .mysql_client import make_sql_connect_silent
+from .wiki_sql import GET_SQL, make_labsdb_dbs_p, ns_text_tab_ar
 
 logger = logging.getLogger(__name__)
 
