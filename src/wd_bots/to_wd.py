@@ -26,7 +26,6 @@ def add_labels(
     ret=True,
     number=0,
     nowait=False,
-    tagstags="",
     remove=False,
 ):
 
@@ -47,14 +46,13 @@ def add_labels(
         out = f'{number} {qid} label:"{lang}"@{label}.'
 
     wd_api = get_session_post()
-    r4 = wd_api.session_post(
+    r4 = wd_api.post_to_newapi(
         params={
             "action": "wbsetlabel",
             "id": qid,
             "language": lang,
             "value": label,
         },
-        tage=tagstags,
     )
 
     if not r4:
@@ -119,7 +117,7 @@ def add_sitelinks_to_wikidata(
         paramse["site"] = ensite
 
     wd_api = get_session_post()
-    r4 = wd_api.post_to_newapi(params=paramse, tage="setsitelink")
+    r4 = wd_api.post_to_newapi(params=paramse)
 
     if not r4:
         return False
@@ -150,7 +148,6 @@ def create_new_item(
     RRE=0,
     returnid=False,
     nowait=False,
-    tage="",
 ):
     """
     Create a new item in the API with the provided data and summary.
@@ -162,14 +159,13 @@ def create_new_item(
     data = json.JSONEncoder().encode(data2)
 
     wd_api = get_session_post()
-    r4 = wd_api.session_post(
+    r4 = wd_api.post_to_newapi(
         params={
             "action": "wbeditentity",
             "new": "item",
             "summary": summary,
             "data": data,
         },
-        tage=tage,
     )
 
     if not r4:
@@ -177,7 +173,13 @@ def create_new_item(
 
     cf = outbot_json(r4, fi=summary, NoWait=nowait)
     if cf == "reagain" and RRE == 0:
-        return create_new_item(data2, summary, RRE=1, returnid=returnid, nowait=nowait, tage=tage)
+        return create_new_item(
+            data2,
+            summary,
+            RRE=1,
+            returnid=returnid,
+            nowait=nowait,
+        )
 
     if cf == "warn":
         logger.warning(str(r4))
@@ -235,7 +237,7 @@ def Make_New_item(artitle, entitle, family=""):
 
     summary = f"Bot: New item from [[w:en:{entitle}|{enwiki}]]/[[w:ar:{artitle}|{arwiki}]]."
 
-    new_item_id = create_new_item(data, summary, returnid=True, nowait=True, tage="newitems")
+    new_item_id = create_new_item(data, summary, returnid=True, nowait=True)
 
     if new_item_id and new_item_id.startswith("Q"):
         return True

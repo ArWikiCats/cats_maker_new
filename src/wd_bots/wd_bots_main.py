@@ -129,15 +129,20 @@ class WD_API:
         _p_2_empty=None,
     ):
         return self.login_bot.post_continue(
-            params, action, _p_=_p_, p_empty=p_empty, Max=Max, first=first, _p_2=_p_2, _p_2_empty=_p_2_empty,
+            params,
+            action,
+            _p_=_p_,
+            p_empty=p_empty,
+            Max=Max,
+            first=first,
+            _p_2=_p_2,
+            _p_2_empty=_p_2_empty,
         )
 
     def post_to_newapi(
         self,
         params={},
         data={},
-        tage="",
-        editgroups="",
         max_retry=0,
         **kwargs,
     ):
@@ -160,7 +165,7 @@ class WD_API:
 
             logger.debug(f"<<purple>>: <<red>> lag work: {max_retry=}")
 
-            return self.post_to_newapi(params=params, tage=tage, editgroups=editgroups, max_retry=max_retry + 1)
+            return self.post_to_newapi(params=params, max_retry=max_retry + 1)
 
         if error:
 
