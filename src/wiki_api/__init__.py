@@ -1,4 +1,5 @@
 from .api_requests import submitAPI
+from .check_redirects import remove_redirect_pages
 from .himoBOT2 import get_page_info_from_wikipedia
 from .LCN_new import (
     find_LCN,
@@ -20,4 +21,5 @@ __all__ = [
     "sub_cats_query",
     "get_deleted_pages",
     "get_page_info_from_wikipedia",
+    "remove_redirect_pages",
 ]

@@ -160,8 +160,6 @@ def bad_lag(nowait):
     if settings.wikidata.test_mode:
         return False
 
-    # if lag_bot.bad_lag(nowait): return ""
-
     if nowait and FFa_lag[1] > 5:
         return True
 

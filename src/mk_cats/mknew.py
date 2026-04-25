@@ -16,7 +16,7 @@ from ..b18_new import (
 )
 from ..config import settings
 from ..new_api import load_main_api
-from ..wd_bots import Get_Sitelinks_From_wikidata, Log_to_wikidata, add_label
+from ..wd_bots import Get_Sitelinks_From_wikidata, Log_to_wikidata, add_labels
 from ..wiki_api import find_Page_Cat_without_hidden
 from .add_bot import add_to_final_list
 from .create_category_page import new_category
@@ -324,7 +324,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=WIKI_SITE_AR["family"])
 
     if not created_category.success:
-        add_label(qid, ar_title)
+        add_labels(qid, ar_title, "ar", True, nowait=True)
         return en_cats_of_new_cat
 
     # Finalize: add members, update SubSub, log to Wikidata
