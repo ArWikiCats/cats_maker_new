@@ -16,8 +16,7 @@ from ..b18_new import (
 )
 from ..config import settings
 from ..new_api.pagenew import load_main_api
-from ..wd_bots import to_wd
-from ..wd_bots.wd_api_bot import Get_Sitelinks_From_wikidata
+from ..wd_bots import Get_Sitelinks_From_wikidata, to_wd
 from ..wiki_api import find_Page_Cat_without_hidden
 from .add_bot import add_to_final_list
 from .create_category_page import new_category
@@ -226,7 +225,13 @@ def _log_members_info(members: list) -> None:
 
 
 def _finalize_category_creation(
-    created_category, ar_title: str, en_page_title: str, qid: str, members: list, en_cats_of_new_cat: list, callback
+    created_category,
+    ar_title: str,
+    en_page_title: str,
+    qid: str,
+    members: list,
+    en_cats_of_new_cat: list,
+    callback,
 ) -> list:
     """
     Finalize category creation: add members, update SubSub, and log to Wikidata.

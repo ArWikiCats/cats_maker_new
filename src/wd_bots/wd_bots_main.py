@@ -5,14 +5,14 @@
 import functools
 import json
 import logging
-import time
 import re
+import time
 
+from ..config import settings
 from ..new_api.pagenew import password, username
 from ..new_api.super.super_login import Login
 from .utils import lag_bot
 from .utils.out_json import outbot_json
-from ..config import settings
 
 logger = logging.getLogger(__name__)
 
