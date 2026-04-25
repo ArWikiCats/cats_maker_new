@@ -19,7 +19,6 @@ import time
 import urllib.parse
 
 from ...config import settings
-from ..api_utils import default_user_agent
 from .bot import LOGIN_HELPS
 from .handel_errors import HANDEL_ERRORS
 
@@ -43,8 +42,7 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
         self.family = family
         self.r3_token = ""
         self.url_o_print = ""
-        self.user_agent = default_user_agent()
-        # self.headers = {"User-Agent": self.user_agent}
+        self.user_agent = settings.wikipedia.user_agent
         # ---
         self.endpoint = f"https://{self.lang}.{self.family}.org/w/api.php"
         # ---

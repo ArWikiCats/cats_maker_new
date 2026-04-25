@@ -3,8 +3,6 @@
 import logging
 from dataclasses import dataclass, field
 
-import wikitextparser as wtp
-
 from ...config import settings
 from ..api_utils import ASK_BOT, bot_May_Edit, change_codes
 from .handel_errors import HANDEL_ERRORS

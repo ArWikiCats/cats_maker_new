@@ -1,5 +1,6 @@
 """ """
 
+import functools
 import logging
 import os
 from http.cookiejar import MozillaCookieJar
@@ -7,7 +8,6 @@ from http.cookiejar import MozillaCookieJar
 import requests
 
 from ...config import settings
-from ..api_utils import default_user_agent
 from .cookies_bot import del_cookies_file, get_file_name
 from .params_help import PARAMS_HELPS
 
@@ -16,6 +16,13 @@ logger = logging.getLogger(__name__)
 seasons_by_lang = {}
 users_by_lang = {}
 logins_count = {1: 0}
+
+
+@functools.lru_cache(maxsize=1)
+def _load_session() -> requests.Session:
+    Session = requests.Session()
+    Session.headers.update({"User-Agent": settings.wikipedia.user_agent})
+    return Session
 
 
 class LOGIN_HELPS(PARAMS_HELPS):
@@ -35,7 +42,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         self.username_in = ""
         self.cookies_file = ""
         self.user_table_done = False
-        self.user_agent = default_user_agent()
+        self.user_agent = settings.wikipedia.user_agent
         self.headers = {"User-Agent": self.user_agent}
         self.sea_key = f"{self.lang}-{self.family}-{self.username}"
         # ---
