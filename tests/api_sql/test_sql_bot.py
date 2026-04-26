@@ -6,7 +6,6 @@ This module tests SQL query functions for Wikipedia databases.
 
 from src.core.api_sql.sql_bot import (
     fetch_arcat_titles,
-    find_sql,
     get_exclusive_category_titles,
 )
 
@@ -85,43 +84,3 @@ class TestGetExclusiveCategoryTitles:
 
         # Page3 should be in result (in en but not in ar)
         # This depends on internal implementation
-
-
-class TestFindSql:
-    """Tests for find_sql function"""
-
-    def test_returns_empty_list_when_sql_disabled(self, mocker):
-        """Test that empty list is returned when SQL is disabled"""
-        mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=False)
-
-        result = find_sql("Science")
-        assert result == []
-
-    def test_returns_empty_list_for_no_results(self, mocker):
-        """Test that empty list is returned when no results"""
-        mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=True)
-        mocker.patch("src.core.api_sql.sql_bot.get_exclusive_category_titles", return_value=[])
-
-        result = find_sql("EmptyCategory")
-        assert result == []
-
-    def test_replaces_underscores_with_spaces(self, mocker):
-        """Test that underscores are replaced with spaces in results"""
-        mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=True)
-        mocker.patch("src.core.api_sql.sql_bot.get_exclusive_category_titles", return_value=["Page_With_Underscores"])
-
-        result = find_sql("Category")
-
-        assert "Page With Underscores" in result
-
-    def test_filters_empty_pages(self, mocker):
-        """Test that empty page names are filtered"""
-        mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=True)
-        mocker.patch(
-            "src.core.api_sql.sql_bot.get_exclusive_category_titles", return_value=["Page1", "", "  ", "Page2"]
-        )
-
-        result = find_sql("Category")
-
-        assert "" not in result
-        assert "  " not in result

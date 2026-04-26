@@ -9,7 +9,7 @@ from typing import Any
 import pymysql
 from pymysql.cursors import DictCursor
 
-from ...exceptions import (
+from .exceptions import (
     DatabaseConnectionError,
     DatabaseError,
     DatabaseFetchError,

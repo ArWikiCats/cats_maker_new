@@ -125,29 +125,3 @@ def fetch_encat_titles(encatTitle: str) -> list:
 
     return encats
 
-
-def find_sql(enpageTitle):
-    logger.info(f", enpageTitle:'{enpageTitle}'")
-
-    if not GET_SQL():
-        return []
-
-    fapages = get_exclusive_category_titles(enpageTitle, "")
-
-    if not fapages:
-        return []
-
-    listenpageTitle = []
-
-    for numbrr, pages in enumerate(fapages, 1):
-        if not pages.strip():
-            continue
-
-        pages = pages.replace("_", " ")
-
-        listenpageTitle.append(pages)
-
-        if numbrr < 30:
-            logger.info(f"<<lightgreen>> Adding {pages} to fa lists from en category.")
-
-    return listenpageTitle
