@@ -4,10 +4,10 @@ Tests for src/core/api_sql/service.py
 This module tests namespace handling and SQL query functions for MediaWiki.
 """
 
-from src.core.api_sql_new.config import ConfigLoader
-from src.core.api_sql_new.constants import NS_TEXT_AR, NS_TEXT_EN
-from src.core.api_sql_new.db_pool import db_manager
-from src.core.api_sql_new.utils import add_namespace_prefix
+from src.core.api_sql.config import ConfigLoader
+from src.core.api_sql.constants import NS_TEXT_AR, NS_TEXT_EN
+from src.core.api_sql.db_pool import db_manager
+from src.core.api_sql.utils import add_namespace_prefix
 
 
 class TestAddNamespacePrefix:
@@ -159,8 +159,8 @@ class TestDatabaseManager:
 
     def test_execute_query_returns_empty_when_not_prod(self, mocker):
         """Test that DatabaseManager raises error when not in production."""
-        mocker.patch("src.core.api_sql_new.config.ConfigLoader.is_production", return_value=False)
-        from src.core.api_sql_new.exceptions import DatabaseConnectionError
+        mocker.patch("src.core.api_sql.config.ConfigLoader.is_production", return_value=False)
+        from src.core.api_sql.exceptions import DatabaseConnectionError
         import pytest
 
         with pytest.raises(DatabaseConnectionError):

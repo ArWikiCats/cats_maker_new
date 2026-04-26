@@ -7,11 +7,8 @@ from .constants import NS_TEXT_AR, NS_TEXT_EN
 logger = logging.getLogger(__name__)
 
 
-def add_namespace_prefix(title: str, ns: str | int, lang: str = "ar") -> str:
-    """Prepend the namespace label to *title*.
-
-    Returns *title* unchanged when namespace is 0 or the label is unknown.
-    """
+def add_namespace_prefix(title: str, ns: int | str, lang: str = "ar") -> str:
+    """Helper to prepend namespace labels."""
     ns_key = str(ns)
     if not title or ns_key == "0":
         return title
