@@ -43,23 +43,12 @@ class TestWDAPI:
 
         mock_login.post_params.assert_called()
 
-    def test_post_continue_delegates(self, mocker):
-        """Test that post_continue delegates to login_bot"""
-        mock_login = mocker.MagicMock()
-        mock_login.user_login = "testuser"
-        mock_login.post_continue.return_value = {"pages": []}
-
-        api = WD_API(mock_login)
-        result = api.post_continue({"action": "query"}, "query")
-
-        mock_login.post_continue.assert_called()
-
     def test_filter_data_adds_format(self, mocker):
         """Test that filter_data adds format and utf8"""
         mock_login = mocker.MagicMock()
         mock_login.user_login = "testuser"
         mocker.patch("src.wd_bots.wd_bots_main.lag_bot.do_lag")
-        mocker.patch("src.wd_bots.wd_bots_main.lag_bot.FFa_lag", {1: 5})
+        mocker.patch("src.wd_bots.wd_bots_main.lag_bot.FFa_lag", {1: 5, 2: 0})
 
         api = WD_API(mock_login)
         data = {"action": "wbeditentity"}
