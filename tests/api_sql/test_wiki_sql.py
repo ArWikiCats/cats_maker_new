@@ -4,15 +4,13 @@ Tests for src/core/api_sql/service.py
 This module tests namespace handling and SQL query functions for MediaWiki.
 """
 
-from src.core.api_sql.constants import NS_TEXT_AR, NS_TEXT_EN
-from src.core.api_sql.service import (
-    add_namespace_prefix,
-    make_labsdb_dbs_p,
-    sql_new,
-)
+from src.core.api_sql_new.config import ConfigLoader
+from src.core.api_sql_new.constants import NS_TEXT_AR, NS_TEXT_EN
+from src.core.api_sql_new.db_pool import db_manager
+from src.core.api_sql_new.utils import add_namespace_prefix
 
 
-class TestAddNsTextToTitle:
+class TestAddNamespacePrefix:
     """Tests for add_namespace_prefix function"""
 
     def test_with_namespace_0_returns_original_title(self):
@@ -88,7 +86,7 @@ class TestAddNsTextToTitle:
     def test_with_invalid_namespace(self):
         """Test with an invalid namespace number"""
         result = add_namespace_prefix("Test", "999", "ar")
-        # When namespace is not found, ns_text is None, so it returns "None:Test"
+        # When namespace is not found, it returns title
         assert result == "Test"
 
     def test_with_empty_title(self):
@@ -131,87 +129,45 @@ class TestNsTextTables:
         assert NS_TEXT_EN["0"] == ""
 
 
-class TestMakeLabsdbDbsP:
-    """Tests for make_labsdb_dbs_p function"""
+class TestConfigLoader:
+    """Tests for ConfigLoader class"""
 
-    def test_with_ar_wiki(self):
-        """Test generating host and db for Arabic Wikipedia"""
-        host, db_p = make_labsdb_dbs_p("ar")
-        assert host == "arwiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "arwiki_p"
+    def test_get_db_config_ar(self, mocker):
+        """Test resolving DB config for Arabic Wikipedia"""
+        mocker.patch("pathlib.Path.exists", return_value=True)
+        config = ConfigLoader.get_db_config("ar")
+        assert config.host == "arwiki.analytics.db.svc.wikimedia.cloud"
+        assert config.database == "arwiki_p"
 
-    def test_with_en_wiki(self):
-        """Test generating host and db for English Wikipedia"""
-        host, db_p = make_labsdb_dbs_p("en")
-        assert host == "enwiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "enwiki_p"
+    def test_get_db_config_enwiki(self, mocker):
+        """Test resolving DB config for English Wikipedia"""
+        mocker.patch("pathlib.Path.exists", return_value=True)
+        config = ConfigLoader.get_db_config("enwiki")
+        assert config.host == "enwiki.analytics.db.svc.wikimedia.cloud"
+        assert config.database == "enwiki_p"
 
-    def test_with_wiki_suffix(self):
-        """Test handling wiki suffix"""
-        host, db_p = make_labsdb_dbs_p("arwiki")
-        assert host == "arwiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "arwiki_p"
-
-    def test_with_wikidata(self):
-        """Test special handling for Wikidata"""
-        host, db_p = make_labsdb_dbs_p("wikidata")
-        assert host == "wikidatawiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "wikidatawiki_p"
-
-    def test_with_be_tarask(self):
-        """Test special handling for Belarusian (Taraškievica)"""
-        host, db_p = make_labsdb_dbs_p("be-tarask")
-        assert host == "be_x_oldwiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "be_x_oldwiki_p"
-
-    def test_with_be_x_old(self):
-        """Test special handling for be-x-old"""
-        host, db_p = make_labsdb_dbs_p("be-x-old")
-        assert host == "be_x_oldwiki.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "be_x_oldwiki_p"
-
-    def test_with_hyphenated_wiki(self):
-        """Test handling hyphenated wiki names"""
-        host, db_p = make_labsdb_dbs_p("zh-yue")
-        assert "_" in host  # hyphen should be converted to underscore
-        assert "wiki" in db_p
-
-    def test_with_wiktionary(self):
-        """Test handling wiktionary"""
-        host, db_p = make_labsdb_dbs_p("arwiktionary")
-        assert host == "arwiktionary.analytics.db.svc.wikimedia.cloud"
-        assert db_p == "arwiktionary_p"
-
-    def test_with_commons(self):
-        """Test handling commons wiki"""
-        host, db_p = make_labsdb_dbs_p("commons")
-        assert "commonswiki" in host
-        assert "commonswiki_p" == db_p
+    def test_get_db_config_wikidata(self, mocker):
+        """Test resolving DB config for Wikidata"""
+        mocker.patch("pathlib.Path.exists", return_value=True)
+        config = ConfigLoader.get_db_config("wikidata")
+        assert config.host == "wikidatawiki.analytics.db.svc.wikimedia.cloud"
+        assert config.database == "wikidatawiki_p"
 
 
-class TestSqlNew:
-    """Tests for sql_new function."""
+class TestDatabaseManager:
+    """Tests for DatabaseManager class."""
 
-    def test_returns_empty_list_when_sql_disabled(self, mocker):
-        """Test that sql_new returns [] when GET_SQL is False."""
-        mocker.patch("src.core.api_sql.service.GET_SQL", return_value=False)
-        result = sql_new("SELECT 1", wiki="ar")
-        assert result == []
+    def test_execute_query_returns_empty_when_not_prod(self, mocker):
+        """Test that DatabaseManager raises error when not in production."""
+        mocker.patch("src.core.api_sql_new.config.ConfigLoader.is_production", return_value=False)
+        from src.core.api_sql_new.exceptions import DatabaseConnectionError
+        import pytest
 
-    def test_routes_to_make_sql_connect_silent(self, mocker):
-        """Test that sql_new routes through make_sql_connect_silent."""
-        mocker.patch("src.core.api_sql.service.GET_SQL", return_value=True)
-        mock_connect = mocker.patch(
-            "src.core.api_sql.service.make_sql_connect_silent",
-            return_value=[{"col": "val"}],
-        )
+        with pytest.raises(DatabaseConnectionError):
+            db_manager.execute_query(wiki="ar", query="SELECT 1")
 
-        result = sql_new("SELECT * FROM page", wiki="en", values=("title",))
-
-        assert result == [{"col": "val"}]
-        mock_connect.assert_called_once_with(
-            "SELECT * FROM page",
-            host="enwiki.analytics.db.svc.wikimedia.cloud",
-            db="enwiki_p",
-            values=("title",),
-        )
+    def test_execute_query_rejects_non_select(self):
+        """Test that only SELECT queries are allowed."""
+        import pytest
+        with pytest.raises(ValueError, match="Only SELECT queries are allowed"):
+            db_manager.execute_query(wiki="ar", query="DELETE FROM page")

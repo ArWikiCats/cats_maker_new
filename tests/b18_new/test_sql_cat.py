@@ -19,23 +19,33 @@ class TestGetArList:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=False)
+        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[])
 
         result = get_ar_list("تصنيف:علوم")
 
         assert isinstance(result, list)
 
+    def test_uses_sql_when_enabled(self, mocker):
+        """Test that SQL is used when enabled"""
+        mock_sql = mocker.patch(
+            "src.core.b18_new.sql_cat.db_manager.execute_query",
+            return_value=[{"page_title": "صفحة1", "page_namespace": 0}],
+        )
+
+        result = get_ar_list("تصنيف:علوم", us_sql=True)
+
+        mock_sql.assert_called_once()
+
     def test_replaces_spaces_with_underscores(self, mocker):
         """Test that spaces are replaced with underscores in parameter"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=True)
-        mock_sql = mocker.patch("src.core.b18_new.sql_cat.sql_new", return_value=[])
+        mock_sql = mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[])
 
         get_ar_list("تصنيف:علوم الحاسوب", us_sql=True)
 
         # Check that the parameter is passed correctly (with underscores)
         call_kwargs = mock_sql.call_args[1]
-        assert "values" in call_kwargs
-        assert "علوم_الحاسوب" in call_kwargs["values"][0]
+        assert "params" in call_kwargs
+        assert "علوم_الحاسوب" in call_kwargs["params"][0]
 
 
 class TestGetArListFromEn:
@@ -43,7 +53,7 @@ class TestGetArListFromEn:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=False)
+        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", side_effect=Exception("SQL Error"))
         mocker.patch("src.core.b18_new.sql_cat.fetch_ar_titles_based_on_en_category", return_value=[])
 
         result = get_ar_list_from_en("Science")
@@ -52,9 +62,9 @@ class TestGetArListFromEn:
 
     def test_uses_sql_when_enabled(self, mocker):
         """Test that SQL is used when enabled"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=True)
         mock_sql = mocker.patch(
-            "src.core.b18_new.sql_cat.sql_new", return_value=[{"ll_title": "صفحة1"}, {"ll_title": "صفحة2"}]
+            "src.core.b18_new.sql_cat.db_manager.execute_query",
+            return_value=[{"ll_title": "صفحة1"}, {"ll_title": "صفحة2"}],
         )
 
         result = get_ar_list_from_en("Science", us_sql=True)
@@ -63,17 +73,18 @@ class TestGetArListFromEn:
 
     def test_falls_back_to_api_when_sql_disabled(self, mocker):
         """Test fallback to API when SQL is disabled"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=False)
+        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", side_effect=Exception("SQL Error"))
         mock_api = mocker.patch("src.core.b18_new.sql_cat.fetch_ar_titles_based_on_en_category", return_value=["صفحة1"])
 
-        result = get_ar_list_from_en("Science")
+        result = get_ar_list_from_en("Science", us_sql=True)
 
         mock_api.assert_called_once()
 
     def test_replaces_underscores_in_results(self, mocker):
         """Test that underscores are replaced with spaces in results"""
-        mocker.patch("src.core.b18_new.sql_cat.GET_SQL", return_value=True)
-        mocker.patch("src.core.b18_new.sql_cat.sql_new", return_value=[{"ll_title": "صفحة_اختبار"}])
+        mocker.patch(
+            "src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"ll_title": "صفحة_اختبار"}]
+        )
 
         result = get_ar_list_from_en("Science", us_sql=True)
 
