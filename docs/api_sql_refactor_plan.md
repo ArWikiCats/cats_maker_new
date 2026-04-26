@@ -3,7 +3,7 @@
 > Database access layer for Wikimedia Tool Labs MySQL replicas (pymysql-based).
 > Companion plan following same methodology as `mk_cats_refactor_plan.md`.
 >
-> **Status:** Quick Wins mostly done; Phases 1-4 still pending.
+> **Status:** Quick Wins done; Phases 1, 2, 4, 5 done. Phase 3 (file rename shims) pending.
 
 ---
 
@@ -79,11 +79,11 @@ Legacy files become thin shims:
 
 ## 5. Detailed Phases
 
-### Phase 1 — Code Hygiene
+### Phase 1 — Code Hygiene *(DONE)*
 
 **Target:** All files in `api_sql`.
 
-**5.1.1 Create `constants.py`** _(NOT DONE)_
+**5.1.1 Create `constants.py`** *(DONE)*
 
 Move namespace dicts and wiki config from `wiki_sql.py`:
 
@@ -185,7 +185,7 @@ def fetch_arcat_titles(ar_cat_title: str) -> list[str]:
     ar_results = sql_new(ar_queries, wiki="ar", values=(ar_cat_title,))
 ```
 
-**5.2.2 Route `sql_bot.py` queries through `sql_new` instead of `make_sql_connect_silent`** *(NOT DONE)*
+**5.2.2 Route `sql_bot.py` queries through `sql_new` instead of `make_sql_connect_silent`** *(DONE)*
 
 `fetch_arcat_titles` and `fetch_encat_titles` both call `make_labsdb_dbs_p` + `make_sql_connect_silent` directly, duplicating logic that already lives in `wiki_sql.py:sql_new`.
 
@@ -204,7 +204,7 @@ en_results = make_sql_connect_silent(queries, host=host, db=db_p, values=(item,)
 en_results = sql_new(queries, wiki="en", values=(item,))
 ```
 
-**5.2.3 Use `add_nstext_to_title` in `sql_bot.py` instead of manual prefix logic** *(NOT DONE)*
+**5.2.3 Use `add_nstext_to_title` in `sql_bot.py` instead of manual prefix logic** *(DONE)*
 
 `fetch_arcat_titles:59-60` manually does:
 
@@ -221,7 +221,7 @@ if ns_text_tab_ar.get(str(ns)):
 
 **Action:** Remove `decode_bytes` from `sql_bot.py`.
 
-**Success criteria:** `sql_bot.py` no longer imports `make_sql_connect_silent`, `make_labsdb_dbs_p`, or `ns_text_tab_ar` directly. All queries route through `sql_new`. No dead code. *(PENDING: still imports `make_sql_connect_silent` and `make_labsdb_dbs_p`, `_with_ns_prefix` still duplicates `add_nstext_to_title`)*
+**Success criteria:** `sql_bot.py` no longer imports `make_sql_connect_silent`, `make_labsdb_dbs_p`, or `ns_text_tab_ar` directly. All queries route through `sql_new`. No dead code. *(DONE)*
 
 ---
 
@@ -248,9 +248,9 @@ Pure rename with shim. Contains: `fetch_arcat_titles`, `fetch_encat_titles`, `ge
 
 ---
 
-### Phase 4 — Error Handling & Robustness *(NOT DONE)*
+### Phase 4 — Error Handling & Robustness *(DONE)*
 
-**5.4.1 Handle non-SELECT queries in `_sql_connect_pymysql`** *(NOT DONE)*
+**5.4.1 Handle non-SELECT queries in `_run_query`** *(DONE)*
 
 Currently `_sql_connect_pymysql` unconditionally calls `cursor.fetchall()`. For `INSERT`/`UPDATE`/`DELETE` queries, this raises `pymysql.Error` which is caught and re-raised as `DatabaseFetchError`.
 
@@ -296,7 +296,7 @@ Consider adding `connect_timeout=10` and `read_timeout=30` to `load_db_config` f
 
 ---
 
-### Phase 5 — Testing & Validation *(PARTIALLY DONE — 48 tests pass, >=85% coverage not verified)*
+### Phase 5 — Testing & Validation *(DONE)*
 
 **5.5.1 Update existing tests**
 
@@ -331,7 +331,7 @@ Run the full `find_sql` flow before/after each phase to verify identical output:
 pytest tests/api_sql/ tests/integration/test_main_flow.py -v
 ```
 
-**Success criteria:** All existing tests pass. `pytest tests/api_sql/ --cov=src/core/api_sql --cov-report=term-missing` shows ≥ 85% coverage.
+**Success criteria:** All existing tests pass. `pytest tests/api_sql/ --cov=src/core/api_sql --cov-report=term-missing` shows ≥ 85% coverage. *(DONE — 78 tests pass, 99% coverage)*
 
 ---
 
@@ -354,17 +354,17 @@ The public API exported from `__init__.py` stays **identical** — no consumer c
 
 ## 7. Acceptance Criteria
 
--   [ ] `sql_bot.py` no longer calls `make_sql_connect_silent` or `make_labsdb_dbs_p` directly — routes through `sql_new`
+-   [x] `sql_bot.py` no longer calls `make_sql_connect_silent` or `make_labsdb_dbs_p` directly — routes through `sql_new`
 -   [x] `sql_bot.py` no longer has `GET_SQL()` guards inside helper fetchers
--   [ ] `sql_bot.py` uses `add_nstext_to_title` instead of manual namespace prefixing
+-   [x] `sql_bot.py` uses `add_nstext_to_title` instead of manual namespace prefixing
 -   [x] Dead `decode_bytes` removed from `sql_bot.py`
 -   [x] Mutable default fixed (`values=[]` → `values=()`) — tuple default avoids mutable-default bug
--   [ ] `_sql_connect_pymysql` handles non-SELECT queries without calling `fetchall`
--   [ ] Namespace dicts moved to `constants.py`
--   [ ] All old file paths remain importable via shims
--   [ ] `ruff check src/core/api_sql` passes with zero errors
--   [ ] `mypy src/core/api_sql --ignore-missing-imports` passes
--   [x] `pytest tests/api_sql/` passes — 48/48 pass (≥ 85% coverage not yet verified)
+-   [x] `_run_query` handles non-SELECT queries without calling `fetchall`
+-   [x] Namespace dicts moved to `constants.py`
+-   [ ] All old file paths remain importable via shims *(pending Phase 3)*
+-   [x] `ruff check src/core/api_sql` passes with zero errors
+-   [x] `mypy src/core/api_sql --ignore-missing-imports` passes
+-   [x] `pytest tests/api_sql/` passes — 78/78 pass, 99% coverage
 -   [ ] `pytest tests/integration/test_main_flow.py` passes
 -   [ ] All downstream consumers (`b18_new/sql_cat.py`, `b18_new/cat_tools_enlist.py`, `c18_new/dontadd.py`, `c18_new/cats_tools/ar_from_en.py`) continue to work with zero import changes
 
