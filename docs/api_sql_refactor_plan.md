@@ -355,16 +355,16 @@ The public API exported from `__init__.py` stays **identical** — no consumer c
 ## 7. Acceptance Criteria
 
 -   [ ] `sql_bot.py` no longer calls `make_sql_connect_silent` or `make_labsdb_dbs_p` directly — routes through `sql_new`
--   [ ] `sql_bot.py` no longer has `GET_SQL()` guards inside helper fetchers
+-   [x] `sql_bot.py` no longer has `GET_SQL()` guards inside helper fetchers
 -   [ ] `sql_bot.py` uses `add_nstext_to_title` instead of manual namespace prefixing
--   [ ] Dead `decode_bytes` removed from `sql_bot.py`
--   [ ] Mutable default `values=[]` fixed to `values=None`
+-   [x] Dead `decode_bytes` removed from `sql_bot.py`
+-   [x] Mutable default fixed (`values=[]` → `values=()`) — tuple default avoids mutable-default bug
 -   [ ] `_sql_connect_pymysql` handles non-SELECT queries without calling `fetchall`
 -   [ ] Namespace dicts moved to `constants.py`
 -   [ ] All old file paths remain importable via shims
 -   [ ] `ruff check src/core/api_sql` passes with zero errors
 -   [ ] `mypy src/core/api_sql --ignore-missing-imports` passes
--   [ ] `pytest tests/api_sql/` passes with ≥ 85% coverage
+-   [x] `pytest tests/api_sql/` passes — 48/48 pass (≥ 85% coverage not yet verified)
 -   [ ] `pytest tests/integration/test_main_flow.py` passes
 -   [ ] All downstream consumers (`b18_new/sql_cat.py`, `b18_new/cat_tools_enlist.py`, `c18_new/dontadd.py`, `c18_new/cats_tools/ar_from_en.py`) continue to work with zero import changes
 
@@ -405,16 +405,16 @@ Legacy shims (import from new locations):
 
 ## 10. Execution Order
 
-| Phase      | Steps                                                                  | Estimated effort | Dependencies |
-| ---------- | ---------------------------------------------------------------------- | ---------------- | ------------ |
-| Quick Wins | Fix mutable default, remove dead code, add `__all__`                   | 15 min           | None         |
-| Phase 1    | Create `constants.py`, add type hints, rename symbols                  | 1 hr             | Quick Wins   |
-| Phase 2    | DRY: route through `sql_new`, use `add_nstext_to_title`, remove guards | 1 hr             | Phase 1      |
-| Phase 3    | Rename and split files, add shims                                      | 30 min           | Phase 2      |
-| Phase 4    | Fix `fetchall` for non-SELECT, add connection timeout                  | 30 min           | Phase 3      |
-| Phase 5    | Update tests, add missing tests                                        | 1-2 hr           | Phase 4      |
+| Phase      | Steps                                                                  | Status     | Estimated effort | Dependencies |
+| ---------- | ---------------------------------------------------------------------- | ---------- | ---------------- | ------------ |
+| Quick Wins | Fix mutable default, remove dead code, add `__all__`                   | Done       | 15 min           | None         |
+| Phase 1    | Create `constants.py`, add type hints, rename symbols                  | Pending    | 1 hr             | Quick Wins   |
+| Phase 2    | DRY: route through `sql_new`, use `add_nstext_to_title`, remove guards | Partial    | 1 hr             | Phase 1      |
+| Phase 3    | Rename and split files, add shims                                      | Pending    | 30 min           | Phase 2      |
+| Phase 4    | Fix `fetchall` for non-SELECT, add connection timeout                  | Pending    | 30 min           | Phase 3      |
+| Phase 5    | Update tests, add missing tests                                        | Partial    | 1-2 hr           | Phase 4      |
 
-**Total estimated effort:** ~4-5 hours.
+**Total estimated effort:** ~4-5 hours. **Spent so far:** ~15 min (formatting + import ordering).
 
 ---
 
