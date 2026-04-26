@@ -1,4 +1,10 @@
+"""
+NOTE: ar_make_lab, create_categories_from_list, process_catagories
+    is used by external scripts and should not be changed.
+
+"""
 from pathlib import Path
+
 
 from .logging_config import setup_logging
 from .mk_cats import (
