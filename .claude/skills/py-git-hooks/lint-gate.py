@@ -44,9 +44,7 @@ def get_modified_python_files(cwd: Path) -> list[str]:
     modified: set[str] = set()
     for cmd in commands:
         try:
-            result = subprocess.run(
-                cmd, capture_output=True, text=True, cwd=cwd, timeout=10
-            )
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd, timeout=10)
             for f in result.stdout.strip().splitlines():
                 if f and (cwd / f).is_file():
                     modified.add(f)
@@ -64,9 +62,7 @@ def find_venv_activate(cwd: Path) -> str:
     return ""
 
 
-def run_linter(
-    tool: str, args: list[str], files: list[str], cwd: Path, venv_prefix: str
-) -> str | None:
+def run_linter(tool: str, args: list[str], files: list[str], cwd: Path, venv_prefix: str) -> str | None:
     """Run a linter on files. Return error output, or None if clean/unavailable."""
     file_args = " ".join(f"'{f}'" for f in files)
     cmd = f"{venv_prefix}{tool} {' '.join(args)} {file_args}"
@@ -96,9 +92,7 @@ def run_linter(
 
     lines = output.splitlines()
     if len(lines) > MAX_LINES_PER_TOOL:
-        output = "\n".join(lines[:MAX_LINES_PER_TOOL]) + (
-            f"\n... ({len(lines) - MAX_LINES_PER_TOOL} more lines)"
-        )
+        output = "\n".join(lines[:MAX_LINES_PER_TOOL]) + (f"\n... ({len(lines) - MAX_LINES_PER_TOOL} more lines)")
     return output
 
 
@@ -131,10 +125,7 @@ def main() -> None:
             errors.append(f"=== {tool} ===\n{output}")
 
     if errors:
-        reason = (
-            "Fix these errors in modified files before returning:\n\n"
-            + "\n\n".join(errors)
-        )
+        reason = "Fix these errors in modified files before returning:\n\n" + "\n\n".join(errors)
         json.dump({"decision": "block", "reason": reason}, sys.stdout)
     else:
         json.dump({"decision": "approve"}, sys.stdout)

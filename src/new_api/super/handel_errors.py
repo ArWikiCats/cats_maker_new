@@ -46,18 +46,17 @@ class HANDEL_ERRORS:
                 exception with the error details.
         """
 
-        # ---
         # {'error': {'code': 'articleexists', 'info': 'The article you tried to create has been created already.', '*': 'See https://ar.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.'}, 'servedby': 'mw1425'}
-        # ---
+
         err_code = error.get("code", "")
         err_info = error.get("info", "")
-        # ---
+
         _tt = f"<<lightred>>{function} ERROR: <<defaut>>code:{err_code}."
         # ---["protectedpage", 'تأخير البوتات 3 ساعات', False]
         if err_code == "abusefilter-disallowed":
-            # ---
+
             # oioioi = {'error': {'code': 'abusefilter-disallowed', 'info': 'This', 'abusefilter': {'id': '169', 'description': 'تأخير البوتات 3 ساعات', 'actions': ['disallow']}, '*': 'See https'}, 'servedby': 'mw1374'}
-            # ---
+
             abusefilter = error.get("abusefilter", "")
             description = abusefilter.get("description", "")
             logger.debug(f"<<lightred>> ** abusefilter-disallowed: {description} ")
@@ -69,24 +68,24 @@ class HANDEL_ERRORS:
             ]:
                 return False
             return description
-        # ---
+
         if err_code == "no-such-entity":
             logger.debug("<<lightred>> ** no-such-entity. ")
             return False
-        # ---
+
         if err_code == "protectedpage":
             logger.debug("<<lightred>> ** protectedpage. ")
             # return "protectedpage"
             return False
-        # ---
+
         if err_code == "articleexists":
             logger.debug("<<lightred>> ** article already created. ")
             return "articleexists"
-        # ---
+
         if err_code == "maxlag":
             logger.debug("<<lightred>> ** maxlag. ")
             return False
-        # ---
+
         if do_error:
             params["data"] = {}
             params["text"] = {}
