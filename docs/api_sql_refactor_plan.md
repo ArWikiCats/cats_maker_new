@@ -158,13 +158,15 @@ DATABASE_SUFFIX = "_p"
 
 ---
 
-### Phase 2 — Eliminate Duplication (DRY)
+### Phase 2 — Eliminate Duplication (DRY) *(PARTIALLY DONE)*
 
-**5.2.1 Remove redundant `GET_SQL()` guards in `sql_bot.py`**
+**5.2.1 Remove redundant `GET_SQL()` guards in `sql_bot.py`** *(DONE)*
 
 `sql_bot.py` calls `GET_SQL()` at three entry points (`fetch_arcat_titles:24`, `get_exclusive_category_titles:74`, `fetch_encat_titles:111`). Since `wiki_sql.py:sql_new` already guards with `GET_SQL()` and returns `[]` when disabled, the guards in `fetch_arcat_titles` and `fetch_encat_titles` are redundant if they route through `sql_new`.
 
 **Action:** Remove `GET_SQL()` guards from `fetch_arcat_titles` and `fetch_encat_titles`. Keep guard only at the top-level entry point (`get_exclusive_category_titles`).
+
+**Current state:** `_fetch_ar_titles` and `_fetch_en_titles` have no `GET_SQL()` guard. Only `get_exclusive_category_titles` guards.
 
 **Before:**
 
@@ -183,7 +185,7 @@ def fetch_arcat_titles(ar_cat_title: str) -> list[str]:
     ar_results = sql_new(ar_queries, wiki="ar", values=(ar_cat_title,))
 ```
 
-**5.2.2 Route `sql_bot.py` queries through `sql_new` instead of `make_sql_connect_silent`**
+**5.2.2 Route `sql_bot.py` queries through `sql_new` instead of `make_sql_connect_silent`** *(NOT DONE)*
 
 `fetch_arcat_titles` and `fetch_encat_titles` both call `make_labsdb_dbs_p` + `make_sql_connect_silent` directly, duplicating logic that already lives in `wiki_sql.py:sql_new`.
 
@@ -202,7 +204,7 @@ en_results = make_sql_connect_silent(queries, host=host, db=db_p, values=(item,)
 en_results = sql_new(queries, wiki="en", values=(item,))
 ```
 
-**5.2.3 Use `add_nstext_to_title` in `sql_bot.py` instead of manual prefix logic**
+**5.2.3 Use `add_nstext_to_title` in `sql_bot.py` instead of manual prefix logic** *(NOT DONE)*
 
 `fetch_arcat_titles:59-60` manually does:
 
@@ -213,17 +215,17 @@ if ns_text_tab_ar.get(str(ns)):
 
 **Action:** Replace with `add_nstext_to_title(title, ns, lang="ar")` from `wiki_sql.py`.
 
-**5.2.4 Remove duplicate `decode_bytes` in `sql_bot.py`**
+**5.2.4 Remove duplicate `decode_bytes` in `sql_bot.py`** *(DONE — already removed in prior commit)*
 
 `sql_bot.py:13-16` defines `decode_bytes` which duplicates `mysql_client.py:decode_value`. The function is never called in `sql_bot.py` — it is dead code.
 
 **Action:** Remove `decode_bytes` from `sql_bot.py`.
 
-**Success criteria:** `sql_bot.py` no longer imports `make_sql_connect_silent`, `make_labsdb_dbs_p`, or `ns_text_tab_ar` directly. All queries route through `sql_new`. No dead code.
+**Success criteria:** `sql_bot.py` no longer imports `make_sql_connect_silent`, `make_labsdb_dbs_p`, or `ns_text_tab_ar` directly. All queries route through `sql_new`. No dead code. *(PENDING: still imports `make_sql_connect_silent` and `make_labsdb_dbs_p`, `_with_ns_prefix` still duplicates `add_nstext_to_title`)*
 
 ---
 
-### Phase 3 — Structural Split
+### Phase 3 — Structural Split *(NOT DONE)*
 
 **Target:** Decompose files into clear layers.
 
@@ -246,9 +248,9 @@ Pure rename with shim. Contains: `fetch_arcat_titles`, `fetch_encat_titles`, `ge
 
 ---
 
-### Phase 4 — Error Handling & Robustness
+### Phase 4 — Error Handling & Robustness *(NOT DONE)*
 
-**5.4.1 Handle non-SELECT queries in `_sql_connect_pymysql`**
+**5.4.1 Handle non-SELECT queries in `_sql_connect_pymysql`** *(NOT DONE)*
 
 Currently `_sql_connect_pymysql` unconditionally calls `cursor.fetchall()`. For `INSERT`/`UPDATE`/`DELETE` queries, this raises `pymysql.Error` which is caught and re-raised as `DatabaseFetchError`.
 
