@@ -29,7 +29,7 @@ class TestArMakeLab:
 
     def test_returns_empty_when_filter_fails(self, mocker):
         """Test that ar_make_lab returns empty string when filter_cat fails."""
-        mocker.patch("src.mk_cats.mknew.filter_cat", return_value=False)
+        mocker.patch("src.core.mk_cats.mknew.filter_cat", return_value=False)
 
         from src.core.mk_cats.mknew import ar_make_lab
 
@@ -39,8 +39,8 @@ class TestArMakeLab:
 
     def test_returns_empty_when_no_resolver(self, mocker):
         """Test that ar_make_lab returns empty when resolve_arabic_category_label is None."""
-        mocker.patch("src.mk_cats.mknew.filter_cat", return_value=True)
-        mocker.patch("src.mk_cats.mknew.resolve_arabic_category_label", None)
+        mocker.patch("src.core.mk_cats.mknew.filter_cat", return_value=True)
+        mocker.patch("src.core.mk_cats.mknew.resolve_arabic_category_label", None)
 
         from src.core.mk_cats.mknew import ar_make_lab
 
@@ -50,9 +50,9 @@ class TestArMakeLab:
 
     def test_returns_label_when_resolver_exists(self, mocker):
         """Test that ar_make_lab returns label when resolver exists."""
-        mocker.patch("src.mk_cats.mknew.filter_cat", return_value=True)
+        mocker.patch("src.core.mk_cats.mknew.filter_cat", return_value=True)
         mock_resolver = MagicMock(return_value="علوم")
-        mocker.patch("src.mk_cats.mknew.resolve_arabic_category_label", mock_resolver)
+        mocker.patch("src.core.mk_cats.mknew.resolve_arabic_category_label", mock_resolver)
 
         from src.core.mk_cats.mknew import ar_make_lab
 
@@ -160,7 +160,7 @@ class TestMakeAr:
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
         mocker.patch(
-            "src.mk_cats.mknew.Get_Sitelinks_From_wikidata",
+            "src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata",
             return_value={"sitelinks": {"arwiki": "علوم"}, "q": "Q12345"},
         )
 
@@ -178,7 +178,7 @@ class TestProcessCatagories:
 
     def test_calls_make_ar_with_correct_params(self, mocker):
         """Test that process_catagories calls make_ar with correct parameters."""
-        mock_make_ar = mocker.patch("src.mk_cats.mknew.make_ar", return_value=[])
+        mock_make_ar = mocker.patch("src.core.mk_cats.mknew.make_ar", return_value=[])
 
         from src.core.mk_cats.mknew import process_catagories
 
@@ -191,7 +191,7 @@ class TestProcessCatagories:
 
     def test_handles_empty_make_ar_result(self, mocker):
         """Test that process_catagories handles empty make_ar result."""
-        mocker.patch("src.mk_cats.mknew.make_ar", return_value=[])
+        mocker.patch("src.core.mk_cats.mknew.make_ar", return_value=[])
 
         from src.core.mk_cats.mknew import process_catagories
 
@@ -207,7 +207,7 @@ class TestProcessCatagories:
         # First call returns subcategories, second call returns empty
         mock_make_ar = mocker.patch.object(mknew, "make_ar", side_effect=[["SubCat1"], []])
         mocker.patch.object(mknew, "ar_make_lab", return_value="")
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=[])
+        mocker.patch("src.core.mk_cats.mknew.get_ar_list_from_en", return_value=[])
 
         mknew.process_catagories("Category:Science", "علوم", 1, 10)
 
@@ -215,7 +215,7 @@ class TestProcessCatagories:
 
     def test_passes_callback(self, mocker):
         """Test that process_catagories passes callback to make_ar."""
-        mock_make_ar = mocker.patch("src.mk_cats.mknew.make_ar", return_value=[])
+        mock_make_ar = mocker.patch("src.core.mk_cats.mknew.make_ar", return_value=[])
 
         from src.core.mk_cats.mknew import process_catagories
 
@@ -284,7 +284,7 @@ class TestOneCat:
         mknew._done_d.clear()
 
         mocker.patch.object(mknew, "ar_make_lab", return_value="علوم")
-        mocker.patch("src.mk_cats.mknew.check_en_temps", return_value=False)
+        mocker.patch("src.core.mk_cats.mknew.check_en_temps", return_value=False)
 
         result = mknew.one_cat("Category:Science", 1, 1)
 
@@ -301,8 +301,8 @@ class TestOneCat:
         mknew._done_d.clear()
 
         mocker.patch.object(mknew, "ar_make_lab", return_value="علوم")
-        mocker.patch("src.mk_cats.mknew.check_en_temps", return_value=True)
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=[])
+        mocker.patch("src.core.mk_cats.mknew.check_en_temps", return_value=True)
+        mocker.patch("src.core.mk_cats.mknew.get_ar_list_from_en", return_value=[])
 
         result = mknew.one_cat("Category:Science", 1, 1)
 
@@ -319,8 +319,8 @@ class TestOneCat:
         mknew._done_d.clear()
 
         mocker.patch.object(mknew, "ar_make_lab", return_value="")
-        mocker.patch("src.mk_cats.mknew.check_en_temps", return_value=True)
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=["Article1"])
+        mocker.patch("src.core.mk_cats.mknew.check_en_temps", return_value=True)
+        mocker.patch("src.core.mk_cats.mknew.get_ar_list_from_en", return_value=["Article1"])
         mock_process = mocker.patch.object(mknew, "process_catagories")
 
         mknew.one_cat("Category:Science", 1, 1, sugust="علوم مقترحة")
@@ -345,7 +345,7 @@ class TestCreateCategoriesFromList:
 
     def test_calls_one_cat_for_each_item(self, mocker):
         """Test that create_categories_from_list calls one_cat for each item."""
-        mock_one_cat = mocker.patch("src.mk_cats.mknew.one_cat")
+        mock_one_cat = mocker.patch("src.core.mk_cats.mknew.one_cat")
 
         from src.core.mk_cats.mknew import create_categories_from_list
 
@@ -356,7 +356,7 @@ class TestCreateCategoriesFromList:
 
     def test_passes_correct_num_and_lenth(self, mocker):
         """Test that create_categories_from_list passes correct num and lenth."""
-        mock_one_cat = mocker.patch("src.mk_cats.mknew.one_cat")
+        mock_one_cat = mocker.patch("src.core.mk_cats.mknew.one_cat")
 
         from src.core.mk_cats.mknew import create_categories_from_list
 
@@ -375,7 +375,7 @@ class TestCreateCategoriesFromList:
 
     def test_passes_callback_to_one_cat(self, mocker):
         """Test that create_categories_from_list passes callback to one_cat."""
-        mock_one_cat = mocker.patch("src.mk_cats.mknew.one_cat")
+        mock_one_cat = mocker.patch("src.core.mk_cats.mknew.one_cat")
 
         from src.core.mk_cats.mknew import create_categories_from_list
 
@@ -399,11 +399,11 @@ class TestMakeArMinMembers:
 
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
-        mocker.patch("src.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
-        mocker.patch("src.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
+        mocker.patch("src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
+        mocker.patch("src.core.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
         # Return only 3 members (below default min_members of 5)
-        mocker.patch("src.mk_cats.mknew.collect_category_members", return_value=["Article1", "Article2", "Article3"])
-        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mocker.patch("src.core.mk_cats.mknew.collect_category_members", return_value=["Article1", "Article2", "Article3"])
+        mock_settings = mocker.patch("src.core.mk_cats.mknew.settings")
         mock_settings.category.min_members = 5
 
         result = mknew.make_ar("Category:Science", "علوم")
@@ -424,24 +424,24 @@ class TestMakeArMinMembers:
 
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
-        mocker.patch("src.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
-        mocker.patch("src.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
+        mocker.patch("src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
+        mocker.patch("src.core.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
         # Return exactly 5 members (equals default min_members)
         mocker.patch(
-            "src.mk_cats.mknew.collect_category_members",
+            "src.core.mk_cats.mknew.collect_category_members",
             return_value=["Article1", "Article2", "Article3", "Article4", "Article5"],
         )
-        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.mknew.settings")
         mock_settings.category.min_members = 5
         mock_settings.range_limit = 5
         from src.core.mk_cats.create_category_page import CategoryResult
 
         mock_new_category = mocker.patch(
-            "src.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
+            "src.core.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
         )
-        mocker.patch("src.mk_cats.mknew.add_to_final_list")
-        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
-        mocker.patch("src.mk_cats.mknew.log_to_wikidata")
+        mocker.patch("src.core.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.core.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.core.mk_cats.mknew.log_to_wikidata")
 
         result = mknew.make_ar("Category:Science", "علوم")
 
@@ -462,24 +462,24 @@ class TestMakeArMinMembers:
 
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
-        mocker.patch("src.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
-        mocker.patch("src.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
+        mocker.patch("src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
+        mocker.patch("src.core.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
         # Return 10 members (above default min_members of 5)
         mocker.patch(
-            "src.mk_cats.mknew.collect_category_members",
+            "src.core.mk_cats.mknew.collect_category_members",
             return_value=["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"],
         )
-        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.mknew.settings")
         mock_settings.category.min_members = 5
         mock_settings.range_limit = 5
         from src.core.mk_cats.create_category_page import CategoryResult
 
         mock_new_category = mocker.patch(
-            "src.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
+            "src.core.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
         )
-        mocker.patch("src.mk_cats.mknew.add_to_final_list")
-        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
-        mocker.patch("src.mk_cats.mknew.log_to_wikidata")
+        mocker.patch("src.core.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.core.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.core.mk_cats.mknew.log_to_wikidata")
 
         result = mknew.make_ar("Category:Science", "علوم")
 
@@ -500,13 +500,13 @@ class TestMakeArMinMembers:
 
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
-        mocker.patch("src.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
-        mocker.patch("src.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
+        mocker.patch("src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
+        mocker.patch("src.core.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
         # Return 7 members
         mocker.patch(
-            "src.mk_cats.mknew.collect_category_members", return_value=["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
+            "src.core.mk_cats.mknew.collect_category_members", return_value=["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
         )
-        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.mknew.settings")
         mock_settings.category.min_members = 10  # Custom value higher than 7
         mock_settings.range_limit = 5
 
@@ -529,21 +529,21 @@ class TestMakeArMinMembers:
 
         mocker.patch.object(mknew, "scan_ar_title", return_value=True)
         mocker.patch.object(mknew, "check_if_artitle_exists", return_value=True)
-        mocker.patch("src.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
-        mocker.patch("src.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
+        mocker.patch("src.core.mk_cats.mknew.Get_Sitelinks_From_wikidata", return_value={"q": "Q12345"})
+        mocker.patch("src.core.mk_cats.mknew.find_Page_Cat_without_hidden", return_value={})
         # Return only 1 member
-        mocker.patch("src.mk_cats.mknew.collect_category_members", return_value=["Article1"])
-        mock_settings = mocker.patch("src.mk_cats.mknew.settings")
+        mocker.patch("src.core.mk_cats.mknew.collect_category_members", return_value=["Article1"])
+        mock_settings = mocker.patch("src.core.mk_cats.mknew.settings")
         mock_settings.category.min_members = 0  # Allow any
         mock_settings.range_limit = 5
         from src.core.mk_cats.create_category_page import CategoryResult
 
         mock_new_category = mocker.patch(
-            "src.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
+            "src.core.mk_cats.mknew.new_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
         )
-        mocker.patch("src.mk_cats.mknew.add_to_final_list")
-        mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
-        mocker.patch("src.mk_cats.mknew.log_to_wikidata")
+        mocker.patch("src.core.mk_cats.mknew.add_to_final_list")
+        mocker.patch("src.core.mk_cats.mknew.validate_categories_for_new_cat", return_value=False)
+        mocker.patch("src.core.mk_cats.mknew.log_to_wikidata")
 
         result = mknew.make_ar("Category:Science", "علوم")
 

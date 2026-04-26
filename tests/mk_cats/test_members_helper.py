@@ -24,7 +24,7 @@ class TestGatherMembersFromSql:
     def test_calls_get_listenpageTitle(self, mocker):
         """Test that gather_members_from_sql calls get_listenpageTitle."""
         mock_get_listen = mocker.patch(
-            "src.mk_cats.members_helper.get_listenpageTitle", return_value=["Article1", "Article2"]
+            "src.core.mk_cats.members_helper.get_listenpageTitle", return_value=["Article1", "Article2"]
         )
 
         result = gather_members_from_sql("تصنيف:علوم", "Category:Science")
@@ -34,7 +34,7 @@ class TestGatherMembersFromSql:
 
     def test_returns_empty_list_when_no_members(self, mocker):
         """Test that gather_members_from_sql returns empty list when no members found."""
-        mocker.patch("src.mk_cats.members_helper.get_listenpageTitle", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.get_listenpageTitle", return_value=[])
 
         result = gather_members_from_sql("تصنيف:علوم", "Category:Science")
 
@@ -46,7 +46,7 @@ class TestGatherMembersFromApi:
 
     def test_calls_makelitapiway(self, mocker):
         """Test that gather_members_from_api calls MakeLitApiWay."""
-        mock_api = mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=["Article1", "Article2"])
+        mock_api = mocker.patch("src.core.mk_cats.members_helper.MakeLitApiWay", return_value=["Article1", "Article2"])
 
         result = gather_members_from_api("Category:Science")
 
@@ -55,8 +55,8 @@ class TestGatherMembersFromApi:
 
     def test_returns_empty_list_when_api_returns_none(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns None."""
-        mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=None)
-        mocker.patch("src.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
+        mocker.patch("src.core.mk_cats.members_helper.MakeLitApiWay", return_value=None)
+        mocker.patch("src.core.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
 
         result = gather_members_from_api("Category:Science")
 
@@ -64,8 +64,8 @@ class TestGatherMembersFromApi:
 
     def test_returns_empty_list_when_api_returns_false(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns False."""
-        mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=False)
-        mocker.patch("src.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
+        mocker.patch("src.core.mk_cats.members_helper.MakeLitApiWay", return_value=False)
+        mocker.patch("src.core.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
 
         result = gather_members_from_api("Category:Science")
 
@@ -179,7 +179,7 @@ class TestRemoveRedirects:
 
     def test_calls_remove_redirect_pages(self, mocker):
         """Test that remove_redirects calls remove_redirect_pages."""
-        mock_remove = mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", return_value=["A", "B"])
+        mock_remove = mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", return_value=["A", "B"])
 
         from src.core.mk_cats.members_helper import remove_redirects
 
@@ -194,10 +194,10 @@ class TestCollectCategoryMembers:
 
     def test_collects_from_all_sources(self, mocker):
         """Test that collect_category_members collects from all sources."""
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle"])
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
-        mocker.patch("src.mk_cats.members_helper.settings")
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle"])
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
+        mocker.patch("src.core.mk_cats.members_helper.settings")
 
         from src.core.mk_cats.members_helper import collect_category_members
 
@@ -208,13 +208,13 @@ class TestCollectCategoryMembers:
     def test_skips_api_when_sql_has_results(self, mocker):
         """Test that collect_category_members skips API when SQL has results."""
         mock_sql = mocker.patch(
-            "src.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle1", "SqlArticle2"]
+            "src.core.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle1", "SqlArticle2"]
         )
-        mock_api = mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
+        mock_api = mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
 
         # Mock settings to enable SQL
-        mock_settings = mocker.patch("src.mk_cats.members_helper.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.members_helper.settings")
         mock_settings.database.use_sql = True
 
         from src.core.mk_cats.members_helper import collect_category_members
@@ -228,12 +228,12 @@ class TestCollectCategoryMembers:
 
     def test_uses_api_when_sql_disabled(self, mocker):
         """Test that collect_category_members uses API when SQL is disabled."""
-        mock_sql = mocker.patch("src.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle"])
-        mock_api = mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
+        mock_sql = mocker.patch("src.core.mk_cats.members_helper.gather_members_from_sql", return_value=["SqlArticle"])
+        mock_api = mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=["ApiArticle"])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
 
         # Mock settings to disable SQL
-        mock_settings = mocker.patch("src.mk_cats.members_helper.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.members_helper.settings")
         mock_settings.database.use_sql = False
 
         from src.core.mk_cats.members_helper import collect_category_members
@@ -245,12 +245,12 @@ class TestCollectCategoryMembers:
 
     def test_returns_empty_list_when_no_members(self, mocker):
         """Test that collect_category_members returns empty list when no members."""
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_sql", return_value=[])
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=[])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_sql", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", return_value=[])
 
         # Mock settings to disable SQL
-        mock_settings = mocker.patch("src.mk_cats.members_helper.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.members_helper.settings")
         mock_settings.database.use_sql = False
 
         from src.core.mk_cats.members_helper import collect_category_members
@@ -261,12 +261,12 @@ class TestCollectCategoryMembers:
 
     def test_removes_invalid_entries(self, mocker):
         """Test that collect_category_members removes invalid entries."""
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_sql", return_value=["Valid", "", None, 123])
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=[])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_sql", return_value=["Valid", "", None, 123])
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
 
         # Mock settings to enable SQL
-        mock_settings = mocker.patch("src.mk_cats.members_helper.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.members_helper.settings")
         mock_settings.database.use_sql = True
 
         from src.core.mk_cats.members_helper import collect_category_members
@@ -277,12 +277,12 @@ class TestCollectCategoryMembers:
 
     def test_removes_duplicates(self, mocker):
         """Test that collect_category_members removes duplicates."""
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_sql", return_value=["Article", "Article"])
-        mocker.patch("src.mk_cats.members_helper.gather_members_from_api", return_value=[])
-        mocker.patch("src.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_sql", return_value=["Article", "Article"])
+        mocker.patch("src.core.mk_cats.members_helper.gather_members_from_api", return_value=[])
+        mocker.patch("src.core.mk_cats.members_helper.remove_redirect_pages", side_effect=lambda lang, members: members)
 
         # Mock settings to enable SQL
-        mock_settings = mocker.patch("src.mk_cats.members_helper.settings")
+        mock_settings = mocker.patch("src.core.mk_cats.members_helper.settings")
         mock_settings.database.use_sql = True
 
         from src.core.mk_cats.members_helper import collect_category_members

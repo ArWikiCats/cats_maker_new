@@ -69,7 +69,7 @@ class TestGetInfosWikidata:
 
     def test_returns_default_table_on_no_response(self, mocker):
         """Test that function returns default table when API returns None"""
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value=None)
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value=None)
 
         params = {"action": "wbgetentities", "ids": "Q12345", "props": "sitelinks|labels"}
         result = Get_infos_wikidata(params)
@@ -78,7 +78,7 @@ class TestGetInfosWikidata:
 
     def test_returns_default_table_on_failed_success(self, mocker):
         """Test that function returns default table when success is not 1"""
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value={"success": 0})
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value={"success": 0})
 
         params = {"action": "wbgetentities", "ids": "Q12345", "props": "sitelinks"}
         result = Get_infos_wikidata(params)
@@ -87,7 +87,7 @@ class TestGetInfosWikidata:
 
     def test_returns_default_table_for_missing_entity(self, mocker):
         """Test that function returns default table for -1 entity"""
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value={"success": 1, "entities": {"-1": {}}})
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value={"success": 1, "entities": {"-1": {}}})
 
         params = {"action": "wbgetentities", "ids": "Q999999999", "props": "sitelinks"}
         result = Get_infos_wikidata(params)
@@ -105,7 +105,7 @@ class TestGetInfosWikidata:
                 }
             },
         }
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
 
         params = {"action": "wbgetentities", "ids": "Q12345", "props": "sitelinks|labels"}
         result = Get_infos_wikidata(params)
@@ -120,7 +120,7 @@ class TestGetSitelinksFromWikidata:
 
     def test_adds_wiki_suffix_if_missing(self, mocker):
         """Test that 'wiki' suffix is added to site code"""
-        mock_info = mocker.patch("src.wd_bots.wd_api_bot.Get_infos_wikidata", return_value={"sitelinks": {}, "q": ""})
+        mock_info = mocker.patch("src.core.wd_bots.wd_api_bot.Get_infos_wikidata", return_value={"sitelinks": {}, "q": ""})
         Get_Sitelinks_From_wikidata.cache_clear()
 
         Get_Sitelinks_From_wikidata("en", "Test")
@@ -131,7 +131,7 @@ class TestGetSitelinksFromWikidata:
     def test_returns_specific_sitelink_when_ssite_provided(self, mocker):
         """Test that specific sitelink is returned when ssite is provided"""
         mocker.patch(
-            "src.wd_bots.wd_api_bot.Get_infos_wikidata",
+            "src.core.wd_bots.wd_api_bot.Get_infos_wikidata",
             return_value={"sitelinks": {"arwiki": "علوم"}, "q": "Q123"},
         )
         Get_Sitelinks_From_wikidata.cache_clear()
@@ -143,7 +143,7 @@ class TestGetSitelinksFromWikidata:
     def test_returns_table_when_no_ssite(self, mocker):
         """Test that full table is returned when ssite is not provided"""
         mock_table = {"sitelinks": {"enwiki": "Science"}, "q": "Q123"}
-        mocker.patch("src.wd_bots.wd_api_bot.Get_infos_wikidata", return_value=mock_table)
+        mocker.patch("src.core.wd_bots.wd_api_bot.Get_infos_wikidata", return_value=mock_table)
         Get_Sitelinks_From_wikidata.cache_clear()
 
         result = Get_Sitelinks_From_wikidata("en", "Science")
@@ -157,7 +157,7 @@ class TestGetP373API:
 
     def test_returns_empty_string_on_no_response(self, mocker):
         """Test that function returns empty string when API returns None"""
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value=None)
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value=None)
 
         result = Get_P373_API("Q12345")
 
@@ -168,7 +168,7 @@ class TestGetP373API:
         mock_response = {
             "entities": {"Q123": {"sitelinks": {"commonswiki": {"title": "Category:Science"}}, "claims": {}}}
         }
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
 
         result = Get_P373_API("Q123")
 
@@ -184,7 +184,7 @@ class TestGetP373API:
                 }
             }
         }
-        mocker.patch("src.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
+        mocker.patch("src.core.wd_bots.wd_api_bot.submitAPI", return_value=mock_response)
 
         result = Get_P373_API("Q123")
 

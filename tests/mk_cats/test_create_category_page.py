@@ -20,7 +20,7 @@ class TestMakeCategory:
     def test_returns_false_for_skip_encats(self, mocker):
         """Test that make_category returns failed result for categories in skip_encats"""
         # Mock the create_Page to not actually create pages
-        mocker.patch("src.mk_cats.create_category_page.create_Page", return_value=False)
+        mocker.patch("src.core.mk_cats.create_category_page.create_Page", return_value=False)
 
         # Use a category that's in skip_encats
         if skip_encats:
@@ -30,7 +30,7 @@ class TestMakeCategory:
 
     def test_returns_false_for_non_arabic_category_title(self, mocker):
         """Test that make_category returns failed result for titles not starting with تصنيف:"""
-        mocker.patch("src.mk_cats.create_category_page.create_Page", return_value=False)
+        mocker.patch("src.core.mk_cats.create_category_page.create_Page", return_value=False)
 
         result = make_category([], "Category:Test", "Test Category", "Q123")
         assert result.success is False
@@ -38,7 +38,7 @@ class TestMakeCategory:
 
     def test_returns_false_for_title_without_tasneef_prefix(self, mocker):
         """Test that title must start with تصنيف:"""
-        mocker.patch("src.mk_cats.create_category_page.create_Page", return_value=False)
+        mocker.patch("src.core.mk_cats.create_category_page.create_Page", return_value=False)
 
         result = make_category([], "Category:Science", "علوم", "Q123")
         assert result.success is False
@@ -59,7 +59,7 @@ class TestNewCategory:
         from src.core.mk_cats.create_category_page import CategoryResult
 
         mocker.patch(
-            "src.mk_cats.create_category_page.make_category", return_value=CategoryResult(False, None, "Test error")
+            "src.core.mk_cats.create_category_page.make_category", return_value=CategoryResult(False, None, "Test error")
         )
 
         result = new_category("Category:Science", "تصنيف:علوم", ["تصنيف:علوم طبيعية"], "Q123")
@@ -70,7 +70,7 @@ class TestNewCategory:
         from src.core.mk_cats.create_category_page import CategoryResult
 
         mocker.patch(
-            "src.mk_cats.create_category_page.make_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
+            "src.core.mk_cats.create_category_page.make_category", return_value=CategoryResult(True, "تصنيف:علوم", None)
         )
 
         result = new_category("Category:Science", "تصنيف:علوم", ["تصنيف:علوم طبيعية"], "Q123")
@@ -89,10 +89,10 @@ class TestAddTextToCat:
 
     def test_handles_empty_categories(self, mocker):
         """Test that add_text_to_cat handles empty categories list"""
-        mocker.patch("src.mk_cats.create_category_page.page_put", return_value=False)
-        mocker.patch("src.mk_cats.create_category_page.categorytext.fetch_commons_category", return_value="")
-        mocker.patch("src.mk_cats.create_category_page.categorytext.generate_portal_content", return_value=("", []))
-        mocker.patch("src.mk_cats.create_category_page.categorytext.main_make_temp_no_title", return_value="")
+        mocker.patch("src.core.mk_cats.create_category_page.page_put", return_value=False)
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.fetch_commons_category", return_value="")
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.generate_portal_content", return_value=("", []))
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.main_make_temp_no_title", return_value="")
 
         text = "Test text"
         result = add_text_to_cat(text, [], "Category:Test", "تصنيف:اختبار", "Q123", family="wikipedia")
@@ -100,10 +100,10 @@ class TestAddTextToCat:
 
     def test_filters_none_and_false_categories(self, mocker):
         """Test that add_text_to_cat filters out None and False categories"""
-        mocker.patch("src.mk_cats.create_category_page.page_put", return_value=False)
-        mocker.patch("src.mk_cats.create_category_page.categorytext.fetch_commons_category", return_value="")
-        mocker.patch("src.mk_cats.create_category_page.categorytext.generate_portal_content", return_value=("", []))
-        mocker.patch("src.mk_cats.create_category_page.categorytext.main_make_temp_no_title", return_value="")
+        mocker.patch("src.core.mk_cats.create_category_page.page_put", return_value=False)
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.fetch_commons_category", return_value="")
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.generate_portal_content", return_value=("", []))
+        mocker.patch("src.core.mk_cats.create_category_page.categorytext.main_make_temp_no_title", return_value="")
 
         text = "Test text"
         categories = [None, False, "تصنيف:صالح", None]

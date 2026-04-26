@@ -59,7 +59,7 @@ class TestFindLagFunction:
 
     def test_updates_ffa_lag(self, mocker):
         """Test that FFa_lag is updated"""
-        mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+        mocker.patch("src.core.wd_bots.utils.lag_bot.time.sleep")
 
         initial_value = FFa_lag[1]
         err = {"lag": 10}
@@ -74,7 +74,7 @@ class TestFindLagFunction:
 
     def test_sleeps_for_lag_plus_one(self, mocker):
         """Test that function sleeps for lag + 1 seconds"""
-        mock_sleep = mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+        mock_sleep = mocker.patch("src.core.wd_bots.utils.lag_bot.time.sleep")
 
         err = {"lag": 5}
         find_lag(err)
@@ -106,8 +106,8 @@ class TestDoLag:
 
     def test_calls_make_sleep_def(self, mocker):
         """Test that make_sleep_def is called"""
-        mock_make_sleep = mocker.patch("src.wd_bots.utils.lag_bot.make_sleep_def")
-        mocker.patch("src.wd_bots.utils.lag_bot.time.sleep")
+        mock_make_sleep = mocker.patch("src.core.wd_bots.utils.lag_bot.make_sleep_def")
+        mocker.patch("src.core.wd_bots.utils.lag_bot.time.sleep")
 
         # Set low lag to avoid long sleep
         FFa_lag[1] = 1
