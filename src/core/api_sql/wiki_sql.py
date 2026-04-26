@@ -85,6 +85,7 @@ NS_TEXT_EN: dict[str, str] = {
 # Environment flag
 # ---------------------------------------------------------------------------
 
+
 @functools.lru_cache(maxsize=1)
 def GET_SQL() -> bool:
     """Return True when running in production (APP_ENV == 'production')."""
@@ -94,6 +95,7 @@ def GET_SQL() -> bool:
 # ---------------------------------------------------------------------------
 # Namespace helpers
 # ---------------------------------------------------------------------------
+
 
 def add_nstext_to_title(title: str, ns: str | int, lang: str = "ar") -> str:
     """Prepend the namespace label to *title*.
@@ -145,6 +147,7 @@ def make_labsdb_dbs_p(wiki: str) -> tuple[str, str]:
 # ---------------------------------------------------------------------------
 # SQL runners
 # ---------------------------------------------------------------------------
+
 
 @function_timer
 def sql_new(query: str, wiki: str = "", values: tuple | list = ()) -> list[dict]:

@@ -47,6 +47,7 @@ _ENCAT_QUERY = """
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _normalise_category_title(title: str, prefix_pattern: str) -> str:
     """Strip a category prefix and normalise spaces to underscores."""
     if not title:
@@ -68,6 +69,7 @@ def _with_ns_prefix(title: str, ns: int | str) -> str:
 # Fetchers
 # ---------------------------------------------------------------------------
 
+
 @function_timer
 def _fetch_ar_titles(ar_category: str) -> list[str]:
     """Return Arabic-wiki page titles that are in *ar_category* and have an en langlink."""
@@ -78,10 +80,7 @@ def _fetch_ar_titles(ar_category: str) -> list[str]:
     host, db_p = make_labsdb_dbs_p("ar")
     rows = make_sql_connect_silent(_ARCAT_QUERY, host=host, db=db_p, values=(title,))
 
-    return [
-        _with_ns_prefix(row["page_title"].replace(" ", "_"), row["page_namespace"])
-        for row in rows
-    ]
+    return [_with_ns_prefix(row["page_title"].replace(" ", "_"), row["page_namespace"]) for row in rows]
 
 
 @function_timer
@@ -106,6 +105,7 @@ def _fetch_en_titles(en_category: str) -> list[str]:
 # Public API
 # ---------------------------------------------------------------------------
 
+
 @function_timer
 def get_exclusive_category_titles(en_category: str, ar_category: str) -> list[str]:
     """Return en-wiki titles that are in *en_category* but absent from *ar_category*.
@@ -121,7 +121,9 @@ def get_exclusive_category_titles(en_category: str, ar_category: str) -> list[st
 
     logger.debug(
         "get_exclusive_category_titles: en=%d ar=%d for en_cat='%s'",
-        len(en_titles), len(ar_titles), en_category,
+        len(en_titles),
+        len(ar_titles),
+        en_category,
     )
 
     exclusive = [t for t in en_titles if t not in ar_titles]

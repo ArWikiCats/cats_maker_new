@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 # Connection config
 # ---------------------------------------------------------------------------
 
+
 @functools.lru_cache(maxsize=None)
 def _build_db_config(host: str, db: str) -> dict[str, Any]:
     """Build a pymysql connection config dict (cached per host+db pair)."""
@@ -39,6 +40,7 @@ def _build_db_config(host: str, db: str) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Query execution
 # ---------------------------------------------------------------------------
+
 
 def _run_query(query: str, host: str, db: str, values: tuple | None) -> list[dict]:
     """Connect, execute *query*, and return all rows.
@@ -74,6 +76,7 @@ def _run_query(query: str, host: str, db: str, values: tuple | None) -> list[dic
 # Byte decoding helpers
 # ---------------------------------------------------------------------------
 
+
 def _decode(value: bytes) -> str:
     try:
         return value.decode("utf-8")
@@ -83,15 +86,13 @@ def _decode(value: bytes) -> str:
 
 def decode_bytes_in_list(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Decode any byte values in a list of row dicts to str."""
-    return [
-        {k: (_decode(v) if isinstance(v, bytes) else v) for k, v in row.items()}
-        for row in rows
-    ]
+    return [{k: (_decode(v) if isinstance(v, bytes) else v) for k, v in row.items()} for row in rows]
 
 
 # ---------------------------------------------------------------------------
 # Public interface
 # ---------------------------------------------------------------------------
+
 
 def make_sql_connect_silent(
     query: str,

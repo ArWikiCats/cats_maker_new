@@ -11,8 +11,8 @@ This module tests:
 import pytest
 
 from src.core.api_sql.mysql_client import (
-    decode_bytes_in_list,
     _decode,
+    decode_bytes_in_list,
 )
 
 

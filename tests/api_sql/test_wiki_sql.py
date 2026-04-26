@@ -5,10 +5,10 @@ This module tests namespace handling and SQL query functions for MediaWiki.
 """
 
 from src.core.api_sql.wiki_sql import (
-    add_nstext_to_title,
-    make_labsdb_dbs_p,
     NS_TEXT_AR,
     NS_TEXT_EN,
+    add_nstext_to_title,
+    make_labsdb_dbs_p,
 )
 
 
