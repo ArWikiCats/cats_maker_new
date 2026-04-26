@@ -54,12 +54,14 @@ def add_labels(
 
     text = str(r4)
     if ("using the same description text" in text) and ("associated with language code" in text):
-        item2 = re.search(r"(Q\d+)", str(r4["error"]["info"])).group(1)
-        logger.debug(f"<<lightred>>API: same label item: {item2}")
+        info = (r4.get("error") or {}).get("info", "")
+        m = re.search(r"(Q\d+)", str(info))
+        if m:
+            logger.debug(f"<<lightred>>API: same label item: {m.group(1)}")
 
     success = r4.get("success", 0)
     if success == 1:
-        logger.warning(f"<<lightgreen>> ** true.")
+        logger.warning("<<lightgreen>> ** true.")
         return True
 
     d = outbot_json(r4, fi=out)
@@ -141,7 +143,6 @@ def add_sitelinks_to_wikidata(
 def create_new_item(
     data2,
     summary,
-    RRE=0,
     returnid=False,
     nowait=False,
 ):
@@ -169,32 +170,18 @@ def create_new_item(
 
     success = r4.get("success", 0)
 
-    if success == 1:
-        logger.warning(f"<<lightgreen>> ** true.")
-        if returnid:
-            Qid = False
-            if cf is True:
-                if "entity" in r4 and "id" in r4["entity"]:
-                    Qid = r4["entity"]["id"]
-                    logger.debug(f'<<lightgreen>> bot.py : returnid:"{Qid}" ')
-            return Qid
-        return str(r4)
+    if success != 1:
+        return False
 
-    cf = outbot_json(r4, fi=summary)
+    logger.warning("<<lightgreen>> ** true.")
 
-    if cf == "reagain" and RRE == 0:
-        return create_new_item(
-            data2,
-            summary,
-            RRE=1,
-            returnid=returnid,
-            nowait=nowait,
-        )
+    if returnid:
+        if "entity" in r4 and "id" in r4["entity"]:
+            qid = r4["entity"]["id"]
+            logger.debug(f'<<lightgreen>> bot.py : returnid:"{qid}" ')
+            return qid
 
-    if cf == "warn":
-        logger.warning(str(r4))
-
-    return str(r4)
+    return True
 
 
 def makejson(property, numeric):
@@ -221,15 +208,21 @@ def makejson(property, numeric):
         }
 
 
-def Make_New_item(artitle, entitle, family=""):
+def Log_to_wikidata(artitle, entitle, qid) -> None:
+    if qid:
+        add_sitelinks_to_wikidata(qid, artitle, "arwiki", nowait=True)
+        add_labels(qid, artitle, "ar")
+        return True
+
+    cd = add_sitelinks_to_wikidata("", artitle, "arwiki", enlink=entitle, ensite="enwiki", nowait=True)
+
+    if cd is True:
+        return True
+
     logger.debug(f'<<lightgreen>>* :ar:"{artitle}", english:"{entitle}".')
 
     enwiki = "enwiki"
     arwiki = "arwiki"
-
-    if family and family != "wikipedia":
-        enwiki = f"en{family}"
-        arwiki = f"ar{family}"
 
     data = {
         "sitelinks": {enwiki: {"site": enwiki, "title": entitle}, arwiki: {"site": arwiki, "title": artitle}},
@@ -240,18 +233,4 @@ def Make_New_item(artitle, entitle, family=""):
     summary = f"Bot: New item from [[w:en:{entitle}|{enwiki}]]/[[w:ar:{artitle}|{arwiki}]]."
 
     new_item_id = create_new_item(data, summary, returnid=True, nowait=True)
-
-    if new_item_id and new_item_id.startswith("Q"):
-        return True
-    return False
-
-
-def Log_to_wikidata(ar, enca, qid) -> None:
-    if qid:
-        add_sitelinks_to_wikidata(qid, ar, "arwiki", nowait=True)
-        add_labels(qid, ar, "ar")
-        return
-
-    cd = add_sitelinks_to_wikidata("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)
-    if cd is not True:
-        Make_New_item(ar, enca, family="wikipedia")
+    return new_item_id
