@@ -139,7 +139,6 @@ DATABASE_SUFFIX = "_p"
 | `fetch_arcat_titles`            | `(arcatTitle)`                      | `(arcatTitle: str) -> list[str]`                           |
 | `fetch_encat_titles`            | `(encatTitle)`                      | `(encatTitle: str) -> list[str]`                           |
 | `get_exclusive_category_titles` | `(encatTitle, arcatTitle) -> list`  | Already typed (returns `list`)                             |
-| `find_sql`                      | `(enpageTitle)`                     | `(enpageTitle: str) -> list[str]`                          |
 
 **5.1.3 Normalize naming to snake_case**
 
@@ -163,7 +162,7 @@ DATABASE_SUFFIX = "_p"
 
 `sql_bot.py` calls `GET_SQL()` at three entry points (`fetch_arcat_titles:24`, `get_exclusive_category_titles:74`, `fetch_encat_titles:111`). Since `wiki_sql.py:sql_new` already guards with `GET_SQL()` and returns `[]` when disabled, the guards in `fetch_arcat_titles` and `fetch_encat_titles` are redundant if they route through `sql_new`.
 
-**Action:** Remove `GET_SQL()` guards from `fetch_arcat_titles` and `fetch_encat_titles`. Keep guard only at the top-level entry point (`find_sql` or `get_exclusive_category_titles`).
+**Action:** Remove `GET_SQL()` guards from `fetch_arcat_titles` and `fetch_encat_titles`. Keep guard only at the top-level entry point (`get_exclusive_category_titles`).
 
 **Before:**
 
@@ -239,7 +238,7 @@ Pure rename with shim. Contains: `load_db_config`, `_sql_connect_pymysql`, `deco
 
 **5.3.3 Rename `sql_bot.py` → `queries.py`**
 
-Pure rename with shim. Contains: `fetch_arcat_titles`, `fetch_encat_titles`, `get_exclusive_category_titles`, `find_sql`.
+Pure rename with shim. Contains: `fetch_arcat_titles`, `fetch_encat_titles`, `get_exclusive_category_titles`.
 
 **Success criteria:** All old file paths importable via deprecation shims (`mysql_client.py`, `wiki_sql.py`, `sql_bot.py`). All new paths work.
 
@@ -340,7 +339,6 @@ pytest tests/api_sql/ tests/integration/test_main_flow.py -v
 | `api_sql.sql_new`                       | `api_sql.gateway.sql_new`                       | Yes, via `__init__.py`     |
 | `api_sql.sql_new_title_ns`              | `api_sql.gateway.sql_new_title_ns`              | Yes, via `__init__.py`     |
 | `api_sql.add_nstext_to_title`           | `api_sql.gateway.add_nstext_to_title`           | Yes, via `__init__.py`     |
-| `api_sql.find_sql`                      | `api_sql.queries.find_sql`                      | Yes, via `__init__.py`     |
 | `api_sql.get_exclusive_category_titles` | `api_sql.queries.get_exclusive_category_titles` | Yes, via `__init__.py`     |
 | `api_sql.mysql_client.*`                | `api_sql.client.*`                              | Via `mysql_client.py` shim |
 | `api_sql.wiki_sql.*`                    | `api_sql.gateway.*` + `api_sql.constants.*`     | Via `wiki_sql.py` shim     |
@@ -370,13 +368,13 @@ The public API exported from `__init__.py` stays **identical** — no consumer c
 
 ## 8. Risks & Mitigations
 
-| Risk                                                                                  | Impact | Mitigation                                                                                            |
-| ------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
-| Removing `GET_SQL()` from `fetch_*` functions could expose dev to real DB calls       | Medium | Keep guard at `get_exclusive_category_titles` and `find_sql` — these are the only public entry points |
-| `sql_new` returns `[]` silently when SQL is disabled; `fetch_*` callers may not check | Low    | Behavior identical to current — not a regression                                                      |
-| Renaming files breaks internal relative imports                                       | Medium | Shim files at old paths guarantee backward compat                                                     |
-| `_is_select_query` misses edge cases (CTE, comments before SELECT)                    | Low    | Conservative — only affects non-SELECT paths that would have broken anyway                            |
-| `decode_bytes` removal could affect external consumers                                | Low    | Function was never called; safe to remove                                                             |
+| Risk                                                                                  | Impact | Mitigation                                                                             |
+| ------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------- |
+| Removing `GET_SQL()` from `fetch_*` functions could expose dev to real DB calls       | Medium | Keep guard at `get_exclusive_category_titles` — these are the only public entry points |
+| `sql_new` returns `[]` silently when SQL is disabled; `fetch_*` callers may not check | Low    | Behavior identical to current — not a regression                                       |
+| Renaming files breaks internal relative imports                                       | Medium | Shim files at old paths guarantee backward compat                                      |
+| `_is_select_query` misses edge cases (CTE, comments before SELECT)                    | Low    | Conservative — only affects non-SELECT paths that would have broken anyway             |
+| `decode_bytes` removal could affect external consumers                                | Low    | Function was never called; safe to remove                                              |
 
 ---
 
@@ -422,10 +420,9 @@ After refactoring, verify these consumer files still work (imports unchanged due
 
 | Consumer file                          | Symbols imported from api_sql |
 | -------------------------------------- | ----------------------------- |
-| `src/core/b18_new/sql_cat.py`               | `GET_SQL`, `sql_new_title_ns` |
-| `src/core/b18_new/cat_tools_enlist.py`      | (via settings-based SQL flag) |
-| `src/core/c18_new/dontadd.py`               | (via settings-based SQL flag) |
-| `src/core/c18_new/cats_tools/ar_from_en.py` | `find_sql`                    |
+| `src/core/b18_new/sql_cat.py`          | `GET_SQL`, `sql_new_title_ns` |
+| `src/core/b18_new/cat_tools_enlist.py` | (via settings-based SQL flag) |
+| `src/core/c18_new/dontadd.py`          | (via settings-based SQL flag) |
 | `tests/integration/test_main_flow.py`  | (mock-based import test)      |
 
 No import changes are needed — `api_sql/__init__.py` re-exports all public symbols unchanged.
