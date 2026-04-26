@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .bots import main_make_temp, main_make_temp_no_title
 from .bots.temp_cent import Make_Cent_temp
 from .bots.temp_decades import MakedecadesTemp

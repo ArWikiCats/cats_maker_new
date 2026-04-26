@@ -41,7 +41,7 @@ def sample_page_info():
 @pytest.fixture
 def mock_wikidata_api(mocker):
     """Mock Wikidata API calls"""
-    return mocker.patch("src.wd_bots.wd_api_bot.Get_infos_wikidata")
+    return mocker.patch("src.core.wd_bots.wd_api_bot.Get_infos_wikidata")
 
 
 @pytest.fixture
@@ -50,14 +50,14 @@ def mock_database(mocker):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
-    mocker.patch("src.api_sql.mysql_client.make_sql_connect_silent", return_value=[])
+    mocker.patch("src.core.api_sql.mysql_client.make_sql_connect_silent", return_value=[])
     return mock_cursor
 
 
 @pytest.fixture
 def mock_logger(mocker):
     """Mock the project logger to suppress output during testing"""
-    return mocker.patch("src.helps.log.logger")
+    return mocker.patch("src.core.helps.log.logger")
 
 
 # ===== API Response Fixtures =====

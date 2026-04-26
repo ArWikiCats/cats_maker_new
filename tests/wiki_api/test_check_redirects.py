@@ -4,7 +4,7 @@ Tests for src/wiki_api/check_redirects.py
 This module tests Wikipedia API helper functions.
 """
 
-from src.wiki_api.check_redirects import remove_redirect_pages
+from src.core.wiki_api.check_redirects import remove_redirect_pages
 
 
 class TestRemoveRedirectPages:
@@ -13,7 +13,7 @@ class TestRemoveRedirectPages:
     def test_returns_non_redirect_pages(self, mocker):
         """Test that remove_redirect_pages returns only non-redirect pages"""
         mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
+            "src.core.wiki_api.check_redirects.load_non_redirects",
             return_value={
                 "Science": True,
                 "Mathematics": True,
@@ -28,7 +28,7 @@ class TestRemoveRedirectPages:
     def test_logs_zero_removals(self, mocker):
         """Test that remove_redirect_pages logs correctly when no redirects are removed"""
         mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
+            "src.core.wiki_api.check_redirects.load_non_redirects",
             return_value={
                 "Page1": True,
                 "Page2": True,
@@ -46,7 +46,7 @@ class TestRemoveRedirectPages:
     def test_handles_all_redirects(self, mocker):
         """Test that remove_redirect_pages handles case where all pages are redirects"""
         mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
+            "src.core.wiki_api.check_redirects.load_non_redirects",
             return_value={
                 "Page1": False,
                 "Page2": False,
@@ -61,7 +61,7 @@ class TestRemoveRedirectPages:
     def test_preserves_order(self, mocker):
         """Test that remove_redirect_pages preserves the order of non-redirect pages"""
         mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
+            "src.core.wiki_api.check_redirects.load_non_redirects",
             return_value={
                 "Page1": True,
                 "Page2": False,
@@ -78,7 +78,7 @@ class TestRemoveRedirectPages:
     def test_works_with_different_languages(self, mocker):
         """Test that remove_redirect_pages works with different language codes"""
         mocker.patch(
-            "src.wiki_api.check_redirects.load_non_redirects",
+            "src.core.wiki_api.check_redirects.load_non_redirects",
             return_value={
                 "صفحة": True,
             },

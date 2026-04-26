@@ -6,7 +6,7 @@ This module tests the WD_API class.
 
 import pytest
 
-from src.wd_bots.wd_bots_main import WD_API
+from src.core.wd_bots.wd_bots_main import WD_API
 
 
 class TestWDAPI:
@@ -47,8 +47,8 @@ class TestWDAPI:
         """Test that filter_data adds format and utf8"""
         mock_login = mocker.MagicMock()
         mock_login.user_login = "testuser"
-        mocker.patch("src.wd_bots.wd_bots_main.lag_bot.do_lag")
-        mocker.patch("src.wd_bots.wd_bots_main.lag_bot.FFa_lag", {1: 5, 2: 0})
+        mocker.patch("src.core.wd_bots.wd_bots_main.lag_bot.do_lag")
+        mocker.patch("src.core.wd_bots.wd_bots_main.lag_bot.FFa_lag", {1: 5, 2: 0})
 
         api = WD_API(mock_login)
         data = {"action": "wbeditentity"}
