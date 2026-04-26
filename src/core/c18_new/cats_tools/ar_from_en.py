@@ -89,7 +89,6 @@ def make_ar_list_from_en_cat(encat):
 
 
 def Get_ar_list_from_en_list(enlist):
-
     new_ar_list = []
     en_done = []
 
@@ -104,13 +103,11 @@ def Get_ar_list_from_en_list(enlist):
 
             if new_list:
                 for p_w in new_list:
-
                     arpagetitle = ""
                     if "langlinks" in new_list[p_w] and "ar" in new_list[p_w]["langlinks"]:
                         arpagetitle = new_list[p_w]["langlinks"]["ar"]
 
                     if arpagetitle:
-
                         logger.debug(f"<<lightblue>>Adding {arpagetitle} to ar lists {p_w}")
 
                         new_ar_list.append(arpagetitle)

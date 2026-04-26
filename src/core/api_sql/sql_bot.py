@@ -17,7 +17,6 @@ def decode_bytes(x):
 
 
 def fetch_arcat_titles(arcatTitle):
-
     if not arcatTitle:
         return []
 
@@ -51,7 +50,6 @@ def fetch_arcat_titles(arcatTitle):
     arcats = []
 
     for ra in ar_results:
-
         title = re.sub(r" ", "_", ra["page_title"])
 
         ns = ra["page_namespace"]
@@ -68,7 +66,6 @@ def fetch_arcat_titles(arcatTitle):
 
 @function_timer
 def get_exclusive_category_titles(encatTitle, arcatTitle) -> list:
-
     logger.debug(f"<<yellow>> sql . MySQLdb_finder {encatTitle}: ")
 
     if not GET_SQL():
@@ -130,7 +127,6 @@ def fetch_encat_titles(encatTitle: str) -> list:
 
 
 def find_sql(enpageTitle):
-
     logger.info(f", enpageTitle:'{enpageTitle}'")
 
     if not GET_SQL():
@@ -144,7 +140,6 @@ def find_sql(enpageTitle):
     listenpageTitle = []
 
     for numbrr, pages in enumerate(fapages, 1):
-
         if not pages.strip():
             continue
 

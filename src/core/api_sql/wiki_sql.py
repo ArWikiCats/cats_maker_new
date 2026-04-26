@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ """
+
 import functools
 import logging
 import os
@@ -156,7 +157,6 @@ def make_labsdb_dbs_p(wiki: str):
 
 @function_timer
 def sql_new(queries, wiki="", values=[]):
-
     logger.debug(f"wiki_sql.py wiki '{wiki}'")
 
     host, dbs_p = make_labsdb_dbs_p(wiki)

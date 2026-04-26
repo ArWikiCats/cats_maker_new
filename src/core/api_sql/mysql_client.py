@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ """
+
 import functools
 import logging
 from pathlib import Path
@@ -69,7 +70,6 @@ def _sql_connect_pymysql(query: str, db: str = "", host: str = "", values: tuple
         raise DatabaseConnectionError(f"Failed to connect to database: {e}") from e
 
     with connection as conn, conn.cursor() as cursor:
-
         # Execute query with parameters
         try:
             cursor.execute(query, params)
