@@ -91,8 +91,8 @@ class NEW_API:
         return deep_merge(all_jsons, json1)
 
 
-def load_non_redirects(lang: str, page_titles: list) -> list:
-    """Remove redirect pages from a list of page titles."""
+def load_non_redirects(lang: str, page_titles: list) -> dict:
+    """Return a mapping of page title -> True (exists) / False (missing) / "redirect"."""
     if not page_titles:
         return {}
 
@@ -100,7 +100,6 @@ def load_non_redirects(lang: str, page_titles: list) -> list:
 
     api_n = NEW_API(_bot.login_bot)
     result = api_n.Find_pages_exists_or_not(page_titles, get_redirect=True)
-
     return result
 
 

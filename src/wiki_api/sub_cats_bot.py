@@ -51,7 +51,16 @@ def sub_cats_query(enlink, sitecode, ctype=""):
 
     logger.info(f"<<lightblue>> API_n_CALLS {API_n_CALLS[1]} for {sitecode}:{enlink}")
 
-    api = submitAPI(params, sitecode, "wikipedia", printurl=False) or {}
+    try:
+        api = submitAPI(params, sitecode, "wikipedia", printurl=False) or {}
+    except Exception as exc:
+        logger.exception(
+            "sub_cats_query failed: sitecode=%s enlink=%s ctype=%s",
+            sitecode,
+            enlink,
+            ctype,
+        )
+        return {"error": f"Failed to query Wikipedia API for '{enlink}' on '{sitecode}'", "categorymembers": {}}
 
     tablemember = {}
 
