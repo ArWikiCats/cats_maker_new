@@ -68,7 +68,6 @@ def Get_Sitelinks_From_wikidata(
     title,
     ssite="",
     ids="",
-    props="",
     return_main_table=False,
 ):
 
@@ -87,9 +86,6 @@ def Get_Sitelinks_From_wikidata(
         # "tllimit": "max",
         # "tltemplates": "Template:Category redirect",
     }
-
-    if props:
-        params["props"] = props
 
     if ids:
         params["ids"] = ids
