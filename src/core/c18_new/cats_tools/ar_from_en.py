@@ -3,9 +3,9 @@
 
 import logging
 
+from ....config import settings
 from ...api_sql import find_sql
 from ...b18_new import get_ar_list_from_encat
-from ....config import settings
 from ...wiki_api import find_LCN, get_arpage_inside_encat
 from ..cat_tools2 import Categorized_Page_Generator
 

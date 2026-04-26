@@ -7,12 +7,12 @@ import os
 import sys
 from pathlib import Path
 
+from ...config import settings
 from ..b18_new import (
     get_ar_list_from_en,
     make_ar_list_newcat2,
     validate_categories_for_new_cat,
 )
-from ...config import settings
 from ..new_api import load_main_api
 from ..wd_bots import Get_Sitelinks_From_wikidata, add_labels, log_to_wikidata, log_to_wikidata_qid
 from ..wiki_api import find_Page_Cat_without_hidden

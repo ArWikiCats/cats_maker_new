@@ -13,8 +13,8 @@ Responsibilities:
 
 import logging
 
-from ..b18_new import MakeLitApiWay, get_ar_list_from_encat, get_listenpageTitle
 from ...config import settings
+from ..b18_new import MakeLitApiWay, get_ar_list_from_encat, get_listenpageTitle
 from ..wiki_api import remove_redirect_pages
 
 logger = logging.getLogger(__name__)

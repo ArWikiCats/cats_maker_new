@@ -4,8 +4,8 @@
 import logging
 
 from ...config import settings
-from . import get_cache_L_C_N, set_cache_L_C_N
 from ..wiki_api import submitAPI
+from . import get_cache_L_C_N, set_cache_L_C_N
 
 logger = logging.getLogger(__name__)
 

@@ -2,8 +2,8 @@
 """ """
 import logging
 
-from ..c18_new.cat_tools2 import Categorized_Page_Generator
 from ...config import settings
+from ..c18_new.cat_tools2 import Categorized_Page_Generator
 from ..wiki_api import find_LCN, get_arpage_inside_encat, sub_cats_query
 
 logger = logging.getLogger(__name__)

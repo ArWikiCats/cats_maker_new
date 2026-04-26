@@ -3,8 +3,8 @@
 import logging
 from typing import NamedTuple, Optional
 
-from ..new_api import load_main_api
 from ...temp import main_make_temp_no_title
+from ..new_api import load_main_api
 from ..utils.skip_cats import skip_encats
 from . import categorytext
 

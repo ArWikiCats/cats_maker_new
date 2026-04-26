@@ -8,8 +8,8 @@ import stat
 from datetime import datetime
 from pathlib import Path
 
-from ..api_sql import GET_SQL, sql_new_title_ns
 from ...config import settings
+from ..api_sql import GET_SQL, sql_new_title_ns
 
 logger = logging.getLogger(__name__)
 

@@ -2,8 +2,8 @@
 """ """
 import logging
 
-from ..api_sql import GET_SQL, get_exclusive_category_titles
 from ...config import settings
+from ..api_sql import GET_SQL, get_exclusive_category_titles
 from .sql_cat import make_ar_list_newcat2
 from .sql_cat_checker import validate_categories_for_new_cat
 

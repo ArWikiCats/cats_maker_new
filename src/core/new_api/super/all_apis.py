@@ -3,9 +3,7 @@
 import functools
 import logging
 
-from . import catdepth_new
-
-from . import super_page
+from . import catdepth_new, super_page
 from .super_login import Login
 
 logger = logging.getLogger(__name__)
