@@ -129,22 +129,11 @@ rows = db_manager.execute_query(
     params=("My_Category",),
 )
 
-# Option A: use the internal helper (simplest if you are inside the same package boundary)
+# use the internal helper (simplest if you are inside the same package boundary)
 titles = [
     CategoryRepository._add_namespace_prefix(row["page_title"], row["page_namespace"], lang="ar")
     for row in rows
 ]
-
-# Option B: inline the logic yourself
-def add_nstext_to_title(title: str, ns: str | int, lang: str = "ar") -> str:
-    ns_key = str(ns)
-    if not title or ns_key == "0":
-        return title
-    table = NS_TEXT_AR if lang == "ar" else NS_TEXT_EN
-    prefix = table.get(ns_key)
-    return f"{prefix}:{title}" if prefix else title
-
-titles = [add_nstext_to_title(r["page_title"], r["page_namespace"], lang="ar") for r in rows]
 ```
 
 ---
