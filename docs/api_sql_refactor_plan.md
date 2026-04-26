@@ -408,13 +408,13 @@ Legacy shims (import from new locations):
 | Phase      | Steps                                                                  | Status     | Estimated effort | Dependencies |
 | ---------- | ---------------------------------------------------------------------- | ---------- | ---------------- | ------------ |
 | Quick Wins | Fix mutable default, remove dead code, add `__all__`                   | Done       | 15 min           | None         |
-| Phase 1    | Create `constants.py`, add type hints, rename symbols                  | Pending    | 1 hr             | Quick Wins   |
-| Phase 2    | DRY: route through `sql_new`, use `add_nstext_to_title`, remove guards | Partial    | 1 hr             | Phase 1      |
+| Phase 1    | Create `constants.py`, add type hints, rename symbols                  | Done       | 1 hr             | Quick Wins   |
+| Phase 2    | DRY: route through `sql_new`, use `add_nstext_to_title`, remove guards | Done       | 1 hr             | Phase 1      |
 | Phase 3    | Rename and split files, add shims                                      | Pending    | 30 min           | Phase 2      |
-| Phase 4    | Fix `fetchall` for non-SELECT, add connection timeout                  | Pending    | 30 min           | Phase 3      |
-| Phase 5    | Update tests, add missing tests                                        | Partial    | 1-2 hr           | Phase 4      |
+| Phase 4    | Fix `fetchall` for non-SELECT, add connection timeout                  | Done       | 30 min           | Phase 3      |
+| Phase 5    | Update tests, add missing tests                                        | Done       | 1-2 hr           | Phase 4      |
 
-**Total estimated effort:** ~4-5 hours. **Spent so far:** ~15 min (formatting + import ordering).
+**Total estimated effort:** ~4-5 hours. **Spent so far:** ~2 hours.
 
 ---
 

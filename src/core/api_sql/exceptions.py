@@ -19,6 +19,10 @@ class QueryExecutionError(DatabaseError):
     pass
 
 
+class DatabaseFetchError(DatabaseError):
+    """Raised when fetching results from a cursor fails."""
+
+
 class ConfigurationError(DatabaseError):
     """Raised when required configuration is missing or invalid."""
     pass
