@@ -18,10 +18,10 @@ logins_count = {1: 0}
 
 
 @functools.lru_cache(maxsize=1024)
-def _load_session(lang="", family="") -> requests.Session:
-    Session = requests.Session()
-    Session.headers.update({"User-Agent": settings.wikipedia.user_agent})
-    return Session
+def _load_session(lang: str = "", family: str = "", username: str = "") -> requests.Session:
+    s = requests.Session()
+    s.headers.update({"User-Agent": settings.wikipedia.user_agent})
+    return s
 
 
 class LOGIN_HELPS(PARAMS_HELPS):
@@ -247,7 +247,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         logger.debug(f":({self.lang}, {self.family}, {self.username})")
 
-        self.session = _load_session(lang=self.lang, family=self.family)
+        self.session = _load_session(lang=self.lang, family=self.family, username=self.username)
 
         self.cookies_file = get_file_name(self.lang, self.family, self.username)
 
@@ -262,7 +262,9 @@ class LOGIN_HELPS(PARAMS_HELPS):
             except Exception as e:
                 logger.warning(e)
 
-        self.session.cookies = self.cookie_jar
+        # Bind cookies once; subsequent calls for the same user reuse the same jar.
+        if self.session.cookies is not self.cookie_jar:
+            self.session.cookies = self.cookie_jar
 
         loged_t = False
 
@@ -380,6 +382,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 del_cookies_file(self.cookies_file)
 
                 self.username_in = ""
+                _load_session.cache_clear()
                 self.make_new_session()
 
                 return self.post_it_parse_data(params, files, timeout, relogin=True)

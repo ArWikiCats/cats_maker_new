@@ -46,7 +46,7 @@ class WD_API:
         self,
         error: dict,
         function: str = "",
-        params: dict = None,
+        params: dict | None = None,
     ):
         """Handle errors related to the specified function.
 
@@ -114,17 +114,23 @@ class WD_API:
             logger.debug("<<lightred>> ** maxlag. ")
             return False
 
-        params["data"] = {}
+        if params is not None:
+            params["data"] = {}
+
         logger.debug(f"<<lightred>>{function} ERROR: <<defaut>>info: {err_info}, {params=}")
 
     def post_to_newapi(
         self,
-        params={},
-        data={},
+        params=None,
+        data=None,
         max_retry=0,
         **kwargs,
     ):
 
+        if params is None:
+            params = {}
+        if data is None:
+            data = {}
         if not params and data:
             params = data
 

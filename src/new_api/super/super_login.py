@@ -36,7 +36,7 @@ class Login(LOGIN_HELPS):
         params["format"] = "json"
         params["utf8"] = 1
 
-        if params["action"] in ["query"]:
+        if params.get("action") == "query":
             if "bot" in params:
                 del params["bot"]
             if "summary" in params:

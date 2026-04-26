@@ -1,7 +1,7 @@
 """ """
 
 import logging
-from copy import copy
+from copy import deepcopy
 from dataclasses import dataclass, field
 
 from ...config import settings
@@ -709,7 +709,7 @@ class MainPage(ASK_BOT):
         d = 0
 
         while continue_params != {} or d == 0:
-            params2 = copy.deepcopy(params)
+            params2 = deepcopy(params)
             d += 1
 
             if continue_params:

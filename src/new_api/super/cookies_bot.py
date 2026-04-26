@@ -101,7 +101,10 @@ def from_folder(lang, family, username):
             cookies = f.read()
     else:
         file.touch()
-        os.chmod(str(file), statgroup)
+        try:
+            os.chmod(str(file), statgroup)
+        except Exception as e:
+            logger.warning(f"<<red>> chmod: Exception:{e}")
 
     return cookies
 
