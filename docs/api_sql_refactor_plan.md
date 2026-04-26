@@ -67,11 +67,11 @@ Legacy files become thin shims:
 
 ## 4. Quick Wins (Execute Before Any Phase)
 
--   [ ] Fix mutable default arg `values=[]` → `values=None` in `wiki_sql.py:sql_new`
--   [ ] Remove dead `decode_bytes` in `sql_bot.py:13-16` (use `mysql_client.decode_value`)
--   [ ] Add `__all__` to `sql_bot.py`
--   [ ] Add `__all__` to `wiki_sql.py`
--   [ ] Add `__all__` to `mysql_client.py` (already present)
+-   [x] Fix mutable default arg `values=[]` → `values=None` in `wiki_sql.py:sql_new` — changed to `values: tuple | list = ()` (tuple is immutable, bug fixed; not `None` as originally planned)
+-   [x] Remove dead `decode_bytes` in `sql_bot.py:13-16` (use `mysql_client.decode_value`) — already removed in a prior commit
+-   [x] Add `__all__` to `sql_bot.py`
+-   [x] Add `__all__` to `wiki_sql.py`
+-   [x] Add `__all__` to `mysql_client.py` (already present)
 
 ---
 
@@ -81,7 +81,7 @@ Legacy files become thin shims:
 
 **Target:** All files in `api_sql`.
 
-**5.1.1 Create `constants.py`**
+**5.1.1 Create `constants.py`** _(NOT DONE)_
 
 Move namespace dicts and wiki config from `wiki_sql.py`:
 
@@ -124,7 +124,7 @@ ANALYTICS_DB_TEMPLATE = "{wiki}.analytics.db.svc.wikimedia.cloud"
 DATABASE_SUFFIX = "_p"
 ```
 
-**5.1.2 Add full type hints to all functions**
+**5.1.2 Add full type hints to all functions** _(PARTIALLY DONE — signatures typed, but `_run_query` returns bare `list[dict]` without `Any`, several helpers still lack full annotations)_
 
 | Function                        | Current signature                   | Target signature                                           |
 | ------------------------------- | ----------------------------------- | ---------------------------------------------------------- | ------------------------------ |
