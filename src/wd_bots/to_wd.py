@@ -23,28 +23,21 @@ def add_labels(
     qid,
     label,
     lang,
-    ret=True,
-    number=0,
-    nowait=False,
-    remove=False,
 ):
 
-    if bad_lag(nowait):
+    if bad_lag(True):
         return ""
 
     if not qid:
         logger.debug(" Qid == '' ")
         return False
 
-    if label == "" and not remove:
+    if label == "":
         logger.debug(" label == '' and remove = False ")
         return False
 
     # save the edit
     out = f'{qid} label:"{lang}"@{label}.'
-    if number:
-        out = f'{number} {qid} label:"{lang}"@{label}.'
-
     wd_api = get_session_post()
     r4 = wd_api.post_to_newapi(
         params={
@@ -64,10 +57,12 @@ def add_labels(
         item2 = re.search(r"(Q\d+)", str(r4["error"]["info"])).group(1)
         logger.debug(f"<<lightred>>API: same label item: {item2}")
 
-    if ret:
-        return text
+    success = r4.get("success", 0)
+    if success == 1:
+        logger.warning(f"<<lightgreen>> ** true.")
+        return True
 
-    d = outbot_json(r4, fi=out, NoWait=nowait)
+    d = outbot_json(r4, fi=out)
 
     if d == "warn":
         logger.warning(str(r4))
@@ -122,9 +117,8 @@ def add_sitelinks_to_wikidata(
     if not r4:
         return False
 
-    d = outbot_json(r4, fi=out, NoWait=nowait)
-
-    if d is True:
+    success = r4.get("success", 0)
+    if success == 1:
         logger.warning(f"<<lightgreen>> true {out}")
         if enlink and returnid:
             ido = re.match(r".*\"id\"\:\"(Q\d+)\".*", str(r4))
@@ -132,6 +126,8 @@ def add_sitelinks_to_wikidata(
                 return ido.group(1)
         else:
             return True
+
+    d = outbot_json(r4, fi=out)
 
     if return_text:
         return str(r4)
@@ -171,7 +167,21 @@ def create_new_item(
     if not r4:
         return False
 
-    cf = outbot_json(r4, fi=summary, NoWait=nowait)
+    success = r4.get("success", 0)
+
+    if success == 1:
+        logger.warning(f"<<lightgreen>> ** true.")
+        if returnid:
+            Qid = False
+            if cf is True:
+                if "entity" in r4 and "id" in r4["entity"]:
+                    Qid = r4["entity"]["id"]
+                    logger.debug(f'<<lightgreen>> bot.py : returnid:"{Qid}" ')
+            return Qid
+        return str(r4)
+
+    cf = outbot_json(r4, fi=summary)
+
     if cf == "reagain" and RRE == 0:
         return create_new_item(
             data2,
@@ -183,14 +193,6 @@ def create_new_item(
 
     if cf == "warn":
         logger.warning(str(r4))
-
-    if returnid:
-        Qid = False
-        if cf is True:
-            if "entity" in r4 and "id" in r4["entity"]:
-                Qid = r4["entity"]["id"]
-                logger.debug(f'<<lightgreen>> bot.py : returnid:"{Qid}" ')
-        return Qid
 
     return str(r4)
 
@@ -247,7 +249,7 @@ def Make_New_item(artitle, entitle, family=""):
 def Log_to_wikidata(ar, enca, qid) -> None:
     if qid:
         add_sitelinks_to_wikidata(qid, ar, "arwiki", nowait=True)
-        add_labels(qid, ar, "ar", False, nowait=True)
+        add_labels(qid, ar, "ar")
         return
 
     cd = add_sitelinks_to_wikidata("", ar, "arwiki", enlink=enca, ensite="enwiki", nowait=True)

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 
 from ...config import settings
 from ..api_utils import ASK_BOT, bot_May_Edit, change_codes
+from .handel_errors import HANDEL_ERRORS
 from .super_login import Login
 
 logger = logging.getLogger(__name__)
@@ -82,7 +83,7 @@ def find_edit_error(old, new):
     return False
 
 
-class MainPage(ASK_BOT):
+class MainPage(ASK_BOT, HANDEL_ERRORS):
     def __init__(
         self,
         login_bot: Login,

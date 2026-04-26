@@ -324,7 +324,7 @@ def make_ar(en_page_title, ar_title, callback=None):  # -> list:
     created_category = new_category(en_page_title, ar_title, cats_of_new_cat, qid, family=WIKI_SITE_AR["family"])
 
     if not created_category.success:
-        add_labels(qid, ar_title, "ar", True, nowait=True)
+        add_labels(qid, ar_title, "ar")
         return en_cats_of_new_cat
 
     # Finalize: add members, update SubSub, log to Wikidata

@@ -101,7 +101,7 @@ def outbot_json_bot(err):
             return err_code
 
 
-def outbot_json(js_text, fi="", line="", timesleeps=0, NoWait=False):
+def outbot_json(js_text, fi="", line=""):
 
     success = js_text.get("success", 0)
 
