@@ -527,7 +527,7 @@ class MainPage(ASK_BOT, HANDEL_ERRORS):
             self.get_text()
         return self.ns
 
-    def save(self, newtext="", summary="", nocreate=1, minor="0", tags="", nodiff=False, ASK=False):
+    def save(self, newtext="", summary="", nocreate=1, minor="0", tags="", nodiff=False):
         """
         Saves new text to the page, updating its content and metadata.
 
@@ -540,7 +540,6 @@ class MainPage(ASK_BOT, HANDEL_ERRORS):
                 minor: Indicates if the edit should be marked as minor.
                 tags: Optional tags to associate with the edit.
                 nodiff: If True, skips showing a diff before saving.
-                ASK: If True, prompts the user for confirmation before saving.
 
         Returns:
                 True if the edit was successful, False otherwise.

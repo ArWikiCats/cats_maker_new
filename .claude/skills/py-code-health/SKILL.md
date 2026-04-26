@@ -31,13 +31,13 @@ Remove dead code and consolidate duplication to keep codebase clean and maintain
 
 ```bash
 # Using vulture (primary tool)
-vulture .                              # Find all unused code
-vulture . --min-confidence 80          # High confidence only
-vulture . --min-confidence 80 --sort-by-size  # Largest dead code first
-vulture . --exclude=tests/,venv/,.venv/ # Exclude directories
+vulture src                              # Find all unused code
+vulture src --min-confidence 80          # High confidence only
+vulture src --min-confidence 80 --sort-by-size  # Largest dead code first
+vulture src --exclude=tests/,venv/,.venv/ # Exclude directories
 
 # Generate report
-vulture . --min-confidence 80 > dead_code_report.txt
+vulture src --min-confidence 80 > dead_code_report.txt
 ```
 
 ### Interpret Vulture Output
@@ -91,7 +91,7 @@ def public_function():
 
 **Solutions**:
 
--   Add to whitelist file: `vulture . whitelist.py`
+-   Add to whitelist file: `vulture src whitelist.py`
 -   Add comment: `# pragma: no cover` or custom marker
 -   Accept false positives for public APIs
 
@@ -128,7 +128,7 @@ pylint --disable=all --enable=duplicate-code --recursive=y .
 pylint --disable=all --enable=duplicate-code --duplicate-code-min-lines=6 --recursive=y .
 
 # JSON output for parsing
-pylint --disable=all --enable=duplicate-code --output-format=json --recursive=y . > duplication.json
+pylint --disable=all --enable=duplicate-code --output-format=json --recursive=y src > duplication.json
 ```
 
 ### Interpret Pylint Output
@@ -279,7 +279,7 @@ def calculate_total(items: list) -> float:
 
 ## Verification Checklist
 
--   [ ] `vulture . --min-confidence 80` reports no dead code (or only accepted false positives)
+-   [ ] `vulture src --min-confidence 80` reports no dead code (or only accepted false positives)
 -   [ ] `pylint --disable=all --enable=duplicate-code` reports no duplicate blocks >6 lines
 -   [ ] No commented-out code blocks remain
 -   [ ] All tests pass after removals
@@ -291,7 +291,7 @@ def calculate_total(items: list) -> float:
 **Example: Code health cleanup workflow**
 
 ```
-1. Scan: vulture . --min-confidence 80; pylint --disable=all --enable=duplicate-code --recursive=y .
+1. Scan: vulture src --min-confidence 80; pylint --disable=all --enable=duplicate-code --recursive=y .
 2. Found: 5 unused functions (67 lines), 3 duplicate blocks (45 lines)
 3. Remove: Verify unused code with Explore agent, delete confirmed dead code
 4. Consolidate: Extract duplicates to shared utilities
@@ -301,10 +301,10 @@ def calculate_total(items: list) -> float:
 **Example: Handle false positives**
 
 ```
-1. Scan: vulture . --min-confidence 80
+1. Scan: vulture src --min-confidence 80
 2. Found: public_api_function flagged as unused (actually part of library API)
 3. Create whitelist.py with: public_api_function  # Used by external consumers
-4. Re-scan: vulture . whitelist.py --min-confidence 80
+4. Re-scan: vulture src whitelist.py --min-confidence 80
 5. Result: False positive suppressed, real dead code still detected
 ```
 

@@ -18,7 +18,7 @@ def _load_session() -> requests.Session:
     return Session
 
 
-def submitAPI(params, Code, family, printurl=False, **kwargs):
+def submitAPI(params, Code, family, **kwargs):
 
     if Code.endswith("wiki"):
         Code = Code[:-4]

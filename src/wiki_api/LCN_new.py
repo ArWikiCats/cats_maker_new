@@ -15,6 +15,8 @@ page_is_redirect = {}  # self.page_is_redirect
 class WikiApiCache:
     def __init__(self, max_size=1000, ttl_seconds=3600):
         self.cache: Dict[Tuple, Any] = {}
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
 
 
 class WikiApiHandler:
@@ -107,7 +109,7 @@ class WikiApiHandler:
 
         logger.debug(f" for page {site_code}:{page_title}")
 
-        api_response = submitAPI(params, site_code, self.family, printurl=False)
+        api_response = submitAPI(params, site_code, self.family)
 
         if not (api_response and "query" in api_response and "pages" in api_response["query"]):
             logger.debug("<<lightblue>> API call failed or returned no query/pages.")

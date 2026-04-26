@@ -52,7 +52,7 @@ def sub_cats_query(enlink, sitecode, ctype=""):
     logger.info(f"<<lightblue>> API_n_CALLS {API_n_CALLS[1]} for {sitecode}:{enlink}")
 
     try:
-        api = submitAPI(params, sitecode, "wikipedia", printurl=False) or {}
+        api = submitAPI(params, sitecode, "wikipedia") or {}
     except Exception as exc:
         logger.exception(
             "sub_cats_query failed: sitecode=%s enlink=%s ctype=%s",

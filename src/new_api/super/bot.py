@@ -359,7 +359,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         return req0
 
-    def post_it_parse_data(self, params, files=None, timeout=30, relogin=False) -> dict:
+    def post_it_parse_data(self, params, files=None, timeout=30) -> dict:
 
         req = self.post_it(params, files, timeout)
 
@@ -385,6 +385,6 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 _load_session.cache_clear()
                 self.make_new_session()
 
-                return self.post_it_parse_data(params, files, timeout, relogin=True)
+                return self.post_it_parse_data(params, files, timeout)
 
         return data
