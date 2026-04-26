@@ -1,93 +1,93 @@
-# خطة إعادة هيكلة `c18_new`
+# c18_new Refactoring Plan
 
-## ملخص تنفيذي
+## Executive Summary
 
-تهدف هذه الخطة إلى تحويل وحدة `src/c18_new` من حالة "النصوص البرمجية القديمة السريعة" إلى وحدة **صيانية، قابلة للاختبار، وخالية من التكرار**. تتركز الخطة على خمس مراحل متتالية: النظافة البرمجية، إزالة التكرار، تبسيط التعقيد، إعادة التنظيم الهيكلي، والاختبار. كل مرحلة مصممة لتكون ذاتية الكفاية قدر الإمكان بحيث يمكن تنفيذها على دفعات.
-
----
-
-## 1. تحليل الوضع الراهن (التشخيص)
-
-| الملف                        | المشكلة الرئيسية                                                                                                                                                       | الخطورة        |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `cat_tools2.py`              | متغير عام قابل للتغيير (`tatone_ns`)، اسم دالة بصيغة `CamelCase`، لا يوجد معالجة أخطاء لاستدعاءات API.                                                                 | متوسطة         |
-| `dontadd.py`                 | `except Exception` عارية، خلط منطق القراءة/الكتابة على القرص مع منطق SQL، اسم الدالة `Dont_add_to_pages_def` غير مطابق لـ PEP 8.                                       | متوسطة         |
-| `cats_tools/ar_from_en.py`   | تكرار منطق التقطيع إلى دفعات (chunking) واستدعاء `find_LCN`. نوع الإرجاع غير متسق (`list` أو `False`).                                                                 | عالية          |
-| `cats_tools/ar_from_en2.py`  | **تكرار شبه كامل** لـ `ar_from_en.py` مع اختلافات طفيفة فقط في مصدر الويكي (`en` vs `fr`). يحتوي على نسخة مكررة من `Categorized_Page_Generator`.                       | **عالية جداً** |
-| `bots/english_page_title.py` | دوال عملاقة (`english_page_link_from_api` ~80 سطر)، تعشيش عميق، تكرار أنماط التعبيرات النمطية (Regex)، خلط مسؤوليات (جلب من API + Wikidata + التحقق + التخزين المؤقت). | عالية          |
-| `bots/filter_cat.py`         | دالة أحادية (`filter_cats_text`) بطول 140 سطر، تعقيد حلقي عالٍ O(n²) بسبب `remove()` متكرر من قائمة أثناء التكرار، قوائم عامة قابلة للتعديل (`Skippe_Cat`).            | عالية          |
-| `bots/text_to_temp_bot.py`   | سلسلة `elif` طويلة في `add_direct`، أسماء قوالب مُدمجة (hardcoded) متناثرة، خلط بين معالجة النصوص الخام واستخدام `wikitextparser`.                                     | متوسطة         |
-| `tools_bots/temp_bot.py`     | تكرار شبه كامل بين `templatequery` و `templatequerymulti`. ذاكرة تخزين مؤقت على مستوى الوحدة (`templatequery_cache`).                                                  | متوسطة         |
-| `tools_bots/sort_bot.py`     | خوارزمية فرز يدوية غريبة تعتمد على استبدال الأحرف بأرقام ثم الفرز الأبجدي، غير فعالة وهشة.                                                                             | متوسطة         |
+This plan aims to transform the `src/c18_new` module from a legacy "quick-script" state into a **maintainable, testable, and DRY** codebase. It is organized into five sequential phases: code hygiene, duplication removal, complexity reduction, structural reorganization, and testing. Each phase is designed to be as self-contained as possible so it can be delivered in incremental batches.
 
 ---
 
-## 2. الأهداف وغير الأهداف
+## 1. Current State Diagnosis
 
-### الأهداف
-
--   تطبيق **PEP 8** بالكامل على أسماء الدوال والمتغيرات.
--   **إزالة التكرار** بنسبة 100% بين `ar_from_en.py` و `ar_from_en2.py`، وبين `templatequery` و `templatequerymulti`.
--   تقليل **تعقيد الحلقي (Cyclomatic Complexity)** لأكبر ثلاث دوال بنسبة 50% على الأقل.
--   جعل المنطق **خالص (Pure)** حيثما أمكن ليسهل اختباره.
--   توحيد **معالجة الأخطاء** حول استدعاءات API والملفات.
-
-### غير الأهداف (للمرحلة الحالية)
-
--   تغيير منطق الأعمال (Business Logic): يجب أن تظل سلوكيات التصفية والفرز مطابقة تماماً لما هي عليه الآن.
--   إعادة كتابة استدعاءات API الخارجية (`find_LCN`, `load_main_api`، إلخ).
--   إنشاء واجهة مستخدم جديدة أو تغيير معاملات سطر الأوامر.
+| File                         | Primary Issue                                                                                                                                                                      | Severity     |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `cat_tools2.py`              | Mutable global (`tatone_ns`), `CamelCase` function name, no API error handling.                                                                                                    | Medium       |
+| `dontadd.py`                 | Bare `except Exception`, mixes disk I/O logic with SQL logic, non-PEP-8 name `Dont_add_to_pages_def`.                                                                              | Medium       |
+| `cats_tools/ar_from_en.py`   | Duplicated chunking/batching logic and `find_LCN` call pattern. Inconsistent return types (`list` vs `False`).                                                                     | High         |
+| `cats_tools/ar_from_en2.py`  | **Near-complete duplication** of `ar_from_en.py` with only minor wiki-source differences (`en` vs `fr`). Contains a duplicated `Categorized_Page_Generator`.                       | **Critical** |
+| `bots/english_page_title.py` | Giant functions (`english_page_link_from_api` ~80 lines), deep nesting, repeated regex patterns, mixed responsibilities (API + Wikidata + validation + caching).                   | High         |
+| `bots/filter_cat.py`         | Single 140-line function `filter_cats_text`, high cyclomatic complexity, O(n²) loops due to repeated `remove()` from a list during iteration, mutable global lists (`Skippe_Cat`). | High         |
+| `bots/text_to_temp_bot.py`   | Long `elif` chain in `add_direct`, scattered hardcoded template names, mixing raw string parsing with `wikitextparser`.                                                            | Medium       |
+| `tools_bots/temp_bot.py`     | Near-duplication between `templatequery` and `templatequerymulti`. Module-level mutable cache (`templatequery_cache`).                                                             | Medium       |
+| `tools_bots/sort_bot.py`     | Bespoke sorting algorithm that replaces characters with digits then sorts alphabetically; inefficient and fragile.                                                                 | Medium       |
 
 ---
 
-## 3. المراحل التفصيلية للتنفيذ
+## 2. Goals and Non-Goals
 
-### المرحلة 1: النظافة البرمجية والأساسيات (أسبوع 1)
+### Goals
 
-**الملفات المستهدفة:** جميع ملفات `c18_new`
+-   Apply **PEP 8** naming conventions across all functions and variables.
+-   **Eliminate duplication** between `ar_from_en.py` and `ar_from_en2.py`, and between `templatequery` and `templatequerymulti`.
+-   Reduce **cyclomatic complexity** of the top three functions by at least 50%.
+-   Make logic **pure** wherever possible to ease unit testing.
+-   Standardize **error handling** around API calls and file I/O.
 
-**المهام:**
+### Non-Goals (for this phase)
 
-1. **الثوابت والأرقام السحرية:** أنشئ ملف `src/c18_new/constants.py` (أو أضف إلى إعدادات مركزية) يحتوي على:
-    - معرفات النطاقات: `NS_MAIN = 0`, `NS_CAT = 14`, `NS_TEMPLATE = 10`.
-    - بادئات التصنيفات: `CAT_PREFIX_AR = "تصنيف:"`, `CAT_PREFIX_EN = "Category:"`.
-    - أسماء القوالب المُدمجة كثوابت (`frozenset`) بدلاً من القوائم العامة القابلة للتعديل.
-2. **إعادة التسمية:** حوّل جميع أسماء الدوال إلى `snake_case`:
+-   Change business logic: filtering and sorting behavior must remain pixel-for-pixel identical.
+-   Rewrite external API wrappers (`find_LCN`, `load_main_api`, etc.).
+-   Introduce new CLI arguments or UI changes.
+
+---
+
+## 3. Detailed Implementation Phases
+
+### Phase 1: Code Hygiene & Basics (Week 1)
+
+**Target files:** All files in `c18_new`
+
+**Tasks:**
+
+1. **Constants & Magic Numbers:** Create `src/c18_new/constants.py` (or add to centralized settings) containing:
+    - Namespace IDs: `NS_MAIN = 0`, `NS_CAT = 14`, `NS_TEMPLATE = 10`.
+    - Category prefixes: `CAT_PREFIX_AR = "تصنيف:"`, `CAT_PREFIX_EN = "Category:"`.
+    - Hardcoded template names as `frozenset` constants instead of mutable global lists.
+2. **Rename symbols:** Convert all function names to `snake_case`:
     - `Categorized_Page_Generator` → `generate_categorized_pages`
     - `Dont_add_to_pages_def` → `get_dont_add_pages`
     - `Get_ar_list_from_en_list` → `get_ar_list_from_en_list`
     - `english_page_link_from_api` → `_resolve_page_link_via_api`
     - `filter_cats_text` → `filter_category_text`
-3. **التلميحات النوعية (Type Hints):** أضف `list[str]`, `Optional[str]`, `dict[str, Any]` لجميع التواقيع العامة.
-4. **توحيد الإرجاع:** لا تعُد `False` بدلاً من قائمة أو سلسلة نصية. استخدم `list[str]` فارغة أو `None`.
-5. **جعل القوائم العامة غير قابلة للتغيير:** حوّل `Skippe_Cat` و `page_false_templates` و `tatone_ns` إلى `tuple` أو `frozenset`. إذا كان منطق الاستدعاء يتطلب تعديلاً ديناميكياً (مثل `stubs`)، استخدم دالة بنّاء (`factory function`) أو `copy` بدلاً من التعديل على الوحدة أثناء الاستيراد.
+3. **Type hints:** Add `list[str]`, `Optional[str]`, `dict[str, Any]` to all public signatures.
+4. **Normalize return types:** Do not return `False` instead of a list or string. Return empty `list[str]` or `None`.
+5. **Freeze globals:** Convert `Skippe_Cat`, `page_false_templates`, and `tatone_ns` into `tuple` or `frozenset`. If callers need dynamic mutation (e.g., `stubs`), use a factory function or `copy` instead of mutating the module at import time.
 
-**معيار النجاح:** يمر `ruff check src/c18_new` و `mypy src/c18_new` (إذا تم تفعيله) بدون أخطاء شكلية.
+**Success criteria:** `ruff check src/c18_new` and `mypy src/c18_new` (if enabled) pass without style errors.
 
 ---
 
-### المرحلة 2: إزالة التكرار وتجنيد الأجزاء المشتركة (أسبوع 2)
+### Phase 2: Deduplication & Shared Utilities (Week 2)
 
-**المهمة 2.1: دمج `ar_from_en.py` و `ar_from_en2.py`**
+**Task 2.1: Merge `ar_from_en.py` and `ar_from_en2.py`**
 
--   أنشئ وحدة موحدة: `src/c18_new/mappers/en_to_ar_mapper.py`.
--   استخرج دالة موحدة واحدة:
+-   Create a unified module: `src/c18_new/mappers/en_to_ar_mapper.py`.
+-   Extract a single public function:
     ```python
     def fetch_ar_titles_from_en_category(enpage_title: str, wiki: str = "en") -> list[str]:
         ...
     ```
--   استخرج دالة التقطيع إلى دفعات الموحدة:
+-   Extract a shared batching helper:
     ```python
     def batch_fetch_langlinks(titles: list[str], source_wiki: str, target_lang: str = "ar", batch_size: int = 50) -> list[str]:
         ...
     ```
--   احذف `ar_from_en2.py` بالكامل، واجعل `ar_from_en.py` يستورد من `en_to_ar_mapper` للتوافقية المؤقتة (أو حدّث مستورديها مباشرة إذا كان عددهم قليلاً).
+-   Delete `ar_from_en2.py` entirely. Make `ar_from_en.py` import from `en_to_ar_mapper` temporarily for backward compatibility (or update its consumers directly if there are few).
 
-**المهمة 2.2: دمج `templatequery` و `templatequerymulti`**
+**Task 2.2: Merge `templatequery` and `templatequerymulti`**
 
-في `tools_bots/temp_bot.py`:
+In `tools_bots/temp_bot.py`:
 
--   اجعل `templatequery` تستدعي `templatequerymulti` وتُرجع الحقل `templates` فقط:
+-   Make `templatequery` call `templatequerymulti` and return only the `templates` field:
     ```python
     def templatequery(enlink: str, sitecode: str = "ar") -> list[str] | bool:
         multi_result = templatequerymulti(enlink, sitecode)
@@ -95,75 +95,75 @@
             return False
         return multi_result.get(enlink, {}).get("templates", False)
     ```
--   أخرج منطق التخزين المؤقت إلى كلاس بسيط `TemplateCache` أو استخدم `functools.lru_cache` بدلاً من `defaultdict` العام.
+-   Extract caching logic into a small `TemplateCache` class or use `functools.lru_cache` instead of a module-level `defaultdict`.
 
-**المهمة 2.3: إعادة استخدام مولد التصنيفات**
+**Task 2.3: Reuse the category generator**
 
-في `ar_from_en2.py` (قبل حذفه)، كانت توجد نسخة مكررة من `Categorized_Page_Generator`. تأكد أن جميع مكامِلات الوحدة تستخدم `cat_tools2.generate_categorized_pages` فقط.
+In `ar_from_en2.py` (before deletion), a duplicated `Categorized_Page_Generator` existed. Ensure all consumers across the project use `cat_tools2.generate_categorized_pages` exclusively.
 
-**معيار النجاح:** عدد أسطر الكود في `c18_new` يقل بنسبة 15-20% دون فقدان وظائف.
+**Success criteria:** Code volume in `c18_new` drops by 15–20% with no functional loss.
 
 ---
 
-### المرحلة 3: تبسيط التعقيد (أسبوع 3)
+### Phase 3: Complexity Reduction (Week 3)
 
-**المهمة 3.1: إعادة هيكلة `filter_cats_text`**
+**Task 3.1: Refactor `filter_cats_text`**
 
-في `bots/filter_cat.py`:
+In `bots/filter_cat.py`:
 
-1. حوّل كل قاعدة تصفية إلى دالة بريديكات (Predicate) منفصلة:
+1. Turn each filtering rule into a standalone predicate function:
     ```python
     def is_template_category(cat: str, ns: int) -> bool: ...
     def is_deleted_category(cat: str, deleted_pages: set[str]) -> bool: ...
     def has_false_template(cat: str, false_templates: frozenset[str]) -> bool: ...
     def is_already_in_text(cat: str, text: str) -> bool: ...
     ```
-2. استبدل الحذف المتكرر من القائمة ببناء **قائمة جديدة**:
+2. Replace repeated list removal with **building a new list**:
 
     ```python
     def filter_category_text(cats: list[str], ns: int, text: str) -> list[str]:
         deleted = set(get_deleted_pages())
         false_temps = frozenset(page_false_templates)
-        # جلب القوالب مرة واحدة
+        # Fetch templates once
         templates_map = templatequerymulti("|".join(cats), "ar") or {}
 
         survivors = []
         for cat in cats:
             if any(predicate(cat) for predicate in get_predicates(ns, text, deleted, false_temps)):
                 continue
-            # فحص القوالب
+            # Template-based checks
             if is_bad_template(templates_map.get(cat, {})):
                 continue
             survivors.append(cat)
         return survivors
     ```
 
-3. هذا يحول التعقيد من O(n²) إلى O(n) تقريباً ويجعل اختبار كل قاعدة بالعزل ممكناً.
+3. This changes complexity from roughly O(n²) to O(n) and makes each rule independently testable.
 
-**المهمة 3.2: تقسيم `english_page_title.py`**
+**Task 3.2: Break down `english_page_title.py`**
 
-في `bots/english_page_title.py`:
+In `bots/english_page_title.py`:
 
-1. استخرج جميع أنماط regex إلى قائمة مُركّبة في أعلى الملف:
+1. Extract all regex patterns into a composed list at the top of the file:
     ```python
     QID_PATTERNS = [
         re.compile(r"..."),
         ...
     ]
     ```
-2. قسّم `english_page_link_from_api` إلى دوال فرعية صغيرة:
+2. Split `english_page_link_from_api` into smaller helpers:
     - `_check_local_cache(tubb)`
     - `_fetch_from_api(link, firstsite_code)`
     - `_fetch_from_text(text)`
     - `_validate_via_wikidata(result, ...)`
     - `_update_caches(tubb, result, ...)`
-3. قلّل التعشيش باستخدام `return` المبكر (Guard Clauses).
+3. Reduce nesting by using early returns (guard clauses).
 
-**المهمة 3.3: تنظيف `text_to_temp_bot.py`**
+**Task 3.3: Clean up `text_to_temp_bot.py`**
 
-في `bots/text_to_temp_bot.py`:
+In `bots/text_to_temp_bot.py`:
 
-1. استبدل سلسلة `elif` في `add_direct` بقاموس (Dictionary Dispatch) أو قائمة من tuples:
+1. Replace the `elif` chain in `add_direct` with a dictionary dispatch or a list of `(marker, handler)` tuples:
     ```python
     INSERTION_MARKERS = [
         ("{{توثيق", lambda text, idx: ...),
@@ -171,53 +171,53 @@
         ...
     ]
     ```
-2. استخدم `wikitextparser` بشكل أكثر اتساقاً بدلاً من `str.find` عند البحث عن قوالب.
-3. استخرج النصوص الطويلة (`pre_text`) إلى ملفات قوالب منفصلة إذا أمكن، أو على الأقل ثابت مسماة بشكل واضح.
+2. Use `wikitextparser` consistently instead of `str.find` when searching for templates.
+3. Extract long text blocks (`pre_text`) into separate template files if feasible, or at least into a clearly named constant.
 
-**المهمة 3.4: استبدال خوارزمية الفرز في `sort_bot.py`**
+**Task 3.4: Replace the sorting algorithm in `sort_bot.py`**
 
-في `tools_bots/sort_bot.py`:
+In `tools_bots/sort_bot.py`:
 
--   استبدل المنطق اليدوي بـ **مفتاح فرز (Sort Key)** واضح:
+-   Replace the manual algorithm with a clear **sort key**:
 
     ```python
     _ARABIC_ORDER = str.maketrans({
-        'آ': '02', 'ا': '03', 'أ': '04', ... # الخريطة الكاملة
+        'آ': '02', 'ا': '03', 'أ': '04', ... # full mapping
     })
 
     def collation_key(text: str) -> str:
-        # يمكن تحسينه لاحقاً باستخدام pyuca إن أُضيفت المكتبة
+        # Can be upgraded later to pyuca if the library is added
         return text.translate(_ARABIC_ORDER)
     ```
 
--   استخدم `sorted(categorylist, key=collation_key)` بدلاً من التلاعب بالسلاسل النصية والأصفار.
+-   Use `sorted(categorylist, key=collation_key)` instead of string padding and zero tricks.
 
-**معيار النجاح:** انخفاض تقرير تعقيد الحلقي (مثلاً عبر `radon cc`) لأكبر 3 دوال بأكثر من 50%.
+**Success criteria:** Cyclomatic complexity report (e.g., via `radon cc`) for the top 3 functions drops by more than 50%.
 
 ---
 
-### المرحلة 4: إعادة التنظيم الهيكلي (أسبوع 4)
+### Phase 4: Structural Reorganization (Week 4)
 
-الشكل الحالي للمجلدات غير واضح المعالم (`bots` مقابل `tools_bots` مقابل `cats_tools`). اقترح إعادة ترتيب أوهن بحيث يعكس **الغرض** لا **التاريخ**.
+The current folder names are historically grown and unclear (`bots` vs `tools_bots` vs `cats_tools`). Propose a clearer layout that reflects **purpose** rather than **history**.
 
-**الخطة المقترحة (مع الحفاظ على التوافقية):**
+**Proposed layout (with backward compatibility):**
 
 ```
 src/c18_new/
-├── __init__.py              # تصدير الواجهة العامة فقط
-├── constants.py             # الثوابت والقوائم السوداء
-├── category_fetcher.py      # (was cat_tools2.py) جلب أعضاء التصنيف من API
-├── exclusions.py            # (was dontadd.py) القائمة السوداء وJSON/SQL
+├── __init__.py              # Export only the public interface
+├── constants.py             # Constants and blacklists
+├── category_fetcher.py      # (was cat_tools2.py) API category member fetching
+├── exclusions.py            # (was dontadd.py) Blacklists and JSON/SQL loading
 ├── filters/
 │   ├── __init__.py
-│   ├── category_filter.py   # (was filter_cat.py) الدالة الرئيسية
-│   └── predicates.py        # قواعد التصفية المنفردة
+│   ├── category_filter.py   # (was filter_cat.py) main filtering function
+│   └── predicates.py        # individual filtering rules
 ├── mappers/
 │   ├── __init__.py
 │   └── en_to_ar.py          # (merged ar_from_en + ar_from_en2)
 ├── resolvers/
 │   ├── __init__.py
-│   └── page_links.py        # (was english_page_title.py) حل روابط اللغة
+│   └── page_links.py        # (was english_page_title.py) language link resolution
 ├── injectors/
 │   ├── __init__.py
 │   ├── template_categories.py # (was text_to_temp_bot.py)
@@ -227,73 +227,73 @@ src/c18_new/
     └── template_query.py    # (was temp_bot.py)
 ```
 
-**استراتيجية الترحيل:**
+**Migration strategy:**
 
-1. أنشئ المجلدات والملفات الجديدة.
-2. انقل الكود إليها.
-3. في الملفات القديمة، اترك **استيرادات إعادة توجيه** (Re-export aliases) مع تحذير إهمال (`warnings.warn("Deprecated import...", DeprecationWarning)`):
+1. Create the new directories and files.
+2. Move code into them.
+3. In the old files, leave **re-export aliases** with a deprecation warning:
     ```python
-    # bots/filter_cat.py (قديم)
+    # bots/filter_cat.py (legacy)
     from ..filters.category_filter import filter_category_text as filter_cats_text
     ```
-4. بعد دورة إصدار واحدة، احذف الملفات القديمة.
+4. After one release cycle, delete the legacy files.
 
-**معيار النجاح:** جميع الاستيرادات القديمة تعمل (مع تحذير) وجميع الاستيرادات الجديدة نظيفة.
-
----
-
-### المرحلة 5: الاختبار والتحقق (أسبوع 5)
-
-**المهام:**
-
-1. **اختبارات الوحدة:** لكل دالة "خالصة" (Pure Function) تم استخراجها، اكتب اختباراً:
-    - `clean_category_input` → اختبار إزالة البادئات.
-    - `sort_text` → اختبار الفرز الأبجدي العربي.
-    - `is_template_category` → اختبار True/False لحالات مختلفة.
-    - `collation_key` → اختبار ترتيب الأحرف.
-2. **اختبارات التكامل:** شغّل مسار `run.py -encat:Science` (أو أي تصنيف تجريبي) **قبل وبعد** كل مرحلة للتأكد من تطابق المخرجات.
-3. **اختبارات الأداء:** قسّم وقت تنفيذ `filter_cats_text` و `sort_text` على قائمة كبيرة (مثلاً 1000 تصنيف) للتأكد من أن التحسينات لم تؤثر سلباً.
-4. **CI/CD:** تأكد من أن `pytest tests/c18_new/` يمر بنجاح في GitHub Actions.
-
-**معيار النجاح:** تغطية الاختبارات لـ `c18_new` لا تقل عن 80%، ونجاح جميع الاختبارات القديمة والجديدة.
+**Success criteria:** All old imports still work (with a warning) and all new imports are clean.
 
 ---
 
-## 4. قائمة المهام السريعة (Quick-Win Checklist)
+### Phase 5: Testing & Validation (Week 5)
 
-يمكن تنفيذ هذه المهام فوراً حتى قبل بدء المراحل الكبرى:
+**Tasks:**
 
--   [ ] استبدال `tatone_ns` القابل للتغيير بثابت `frozenset` أو دالة.
--   [ ] استبدال `Skippe_Cat` القائمة بـ `tuple`.
--   [ ] استبدال `page_false_templates.remove("بذرة")` (التعديل أثناء الاستيراد) بمنطق شرطي داخل الدالة.
--   [ ] حذف `__pycache__` من المستودع وإضافته إلى `.gitignore` إن لم يكن موجوداً.
--   [ ] إضافة `__all__` إلى `__init__.py` الملفات لتحديد الصادرات العلنية.
+1. **Unit tests:** For every extracted "pure" function, write a test:
+    - `clean_category_input` → test prefix stripping.
+    - `sort_text` → test Arabic alphabetical order.
+    - `is_template_category` → test True/False for different inputs.
+    - `collation_key` → test character ordering.
+2. **Integration tests:** Run the pipeline with `run.py -encat:Science` (or any trial category) **before and after** each phase to confirm output parity.
+3. **Performance tests:** Benchmark `filter_cats_text` and `sort_text` on a large list (e.g., 1,000 categories) to ensure optimizations did not regress performance.
+4. **CI/CD:** Confirm `pytest tests/c18_new/` passes in GitHub Actions.
 
----
-
-## 5. المخاطر واستراتيجيات التخفيف
-
-| المخاطر                                                   | التأثير | التخفيف                                                                                               |
-| --------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| كسر استيرادات `mk_cats` أو `b18_new`                      | عالٍ    | الاحتفاظ بملفات توجيه (Re-export) قديمة لمدة دورة إصدار كاملة مع `DeprecationWarning`.                |
-| تغيير سلوك التصفية بسبب إعادة الترتيب                     | متوسط   | اختبار تكاملي على تصنيف حقيقي (مثلاً `Science`) قبل وبعد، ومقارنة المخرجات.                           |
-| تدهور الأداء بسبب بناء قوائم جديدة بدلاً من الحذف المباشر | منخفض   | قياس الأداء على بيانات كبيرة؛ البناء الجديد عادةً أسرع بكثير بسبب تجنب O(n²).                         |
-| فقدان معلومات التسجيل (Logging) أثناء التقسيم             | منخفض   | الحفاظ على استدعاءات `logger.info/debug` في الدالة الرئيسية وعدم نقلها إلى الدوال البريديكات الصغيرة. |
+**Success criteria:** `c18_new` test coverage is at least 80%, and all old and new tests pass.
 
 ---
 
-## 6. المعايير النهائية للنجاح
+## 4. Quick-Win Checklist
 
-1. **نظافة الشيفرة:** لا توجد دوال `CamelCase` في `c18_new`، ولا أرقام سحرية.
-2. **خلو من التكرار:** لا يوجد تكرار بين `ar_from_en` و `ar_from_en2`، ولا بين `templatequery` و `templatequerymulti`.
-3. **الأداء:** `filter_cats_text` أسرع بنسبة 30% على الأقل مع القوائم الكبيرة.
-4. **الاختبار:** تمر جميع الاختبارات الحالية (`880+`) بالإضافة إلى 20+ اختبار جديد خاص بالمنطق المستخرج.
-5. **التوثيق:** جميع الدوال العامة تحتوي على docstrings واضحة باللغة العربية أو الإنجليزية (حسب اتفاقية المشروع).
+These can be executed immediately before the larger phases begin:
+
+-   [ ] Replace mutable `tatone_ns` with an immutable `frozenset` or a function.
+-   [ ] Replace mutable `Skippe_Cat` list with a `tuple`.
+-   [ ] Replace `page_false_templates.remove("بذرة")` (mutation at import time) with conditional logic inside the function.
+-   [ ] Remove `__pycache__` directories from the repository and ensure they are in `.gitignore`.
+-   [ ] Add `__all__` to `__init__.py` files to define public exports.
 
 ---
 
-## 7. الخلاصة
+## 5. Risks & Mitigations
 
-`c18_new` ليست في حالة سيئة جداً، لكنها تراكمت عليها "ديون تقنية" واضحة: التكرار، الأسماء غير المطابقة للمعايير، والدوال العملاقة. بتطبيق هذه الخطة على خمس مراحل، ستتحول الوحدة إلى كود **نظيف، قابل للاختبار، وسهل الصيانة** دون المساس بمنطق الأعمال الحساس الذي يدير تصنيفات ويكيبيديا العربية.
+| Risk                                           | Impact | Mitigation                                                                                                            |
+| ---------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| Breaking imports in `mk_cats` or `b18_new`     | High   | Keep legacy re-export files for one full release cycle with `DeprecationWarning`.                                     |
+| Changing filtering behavior due to reordering  | Medium | Run an integration test on a real category (e.g., `Science`) before and after; compare outputs.                       |
+| Performance regression from building new lists | Low    | Benchmark on large datasets; new list building is usually much faster because it avoids O(n²) removal.                |
+| Losing logging context during splitting        | Low    | Keep `logger.info/debug` calls in the top-level orchestrator functions; do not move them into tiny predicate helpers. |
 
-> **نصيحة:** ابدأ بالمرحلة 1 والـ Quick-Wins فوراً؛ فهي آمنة تماماً وتوفر قاعدة نظيفة للمراحل اللاحقة.
+---
+
+## 6. Final Success Criteria
+
+1. **Code cleanliness:** No `CamelCase` functions in `c18_new`, no magic numbers.
+2. **DRY:** No duplication between `ar_from_en` and `ar_from_en2`, and none between `templatequery` and `templatequerymulti`.
+3. **Performance:** `filter_cats_text` is at least 30% faster on large lists.
+4. **Testing:** All existing tests (`880+`) still pass, plus 20+ new unit tests for extracted pure logic.
+5. **Documentation:** All public functions have clear docstrings in the project's documentation language.
+
+---
+
+## 7. Conclusion
+
+`c18_new` is not in terrible shape, but it carries visible technical debt: duplication, non-standard naming, and oversized functions. By applying this five-phase plan, the module will become **clean, testable, and easy to maintain** without touching the sensitive business logic that drives Arabic Wikipedia categorization.
+
+> **Recommendation:** Start with Phase 1 and the Quick-Wins immediately; they are completely safe and provide a clean foundation for the later phases.
