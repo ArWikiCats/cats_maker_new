@@ -8,7 +8,7 @@
 
 **Source plans:** `api_sql_refactor_plan.md` (5.1.1), `new_api_refactor_plan.md` (5.1.4)
 
-`api_sql/constants.py` will define `NS_TEXT_AR`, `NS_TEXT_EN`, `WIKI_DATABASE_OVERRIDES` etc. Meanwhile `new_api/catdepth_new.py:17-39` has a separate hardcoded `ns_list` dict that overlaps.
+`api_sql/constants.py` is *planned* but not yet created — namespace dicts (`NS_TEXT_AR`, `NS_TEXT_EN`) still live in `wiki_sql.py`. Meanwhile `new_api/catdepth_new.py:17-39` has a separate hardcoded `ns_list` dict that overlaps.
 
 **Suggestion:** Consolidate namespace constants into a single shared location:
 
@@ -69,7 +69,7 @@ Consolidated dead-code removal checklist:
 
 | Dead code                                             | Module                                           | Plan                            |
 | ----------------------------------------------------- | ------------------------------------------------ | ------------------------------- |
-| `decode_bytes` function                               | `api_sql/sql_bot.py`                             | api_sql (Quick Wins)            |
+| `decode_bytes` function                               | `api_sql/sql_bot.py`                             | api_sql (Quick Wins) — **DONE** |
 | `printurl` param, `url`/`url2` variables              | `wiki_api/api_requests.py`                       | wiki_api (Phase 1)              |
 | `WikiApiCache` stub (never instantiated)              | `wiki_api/LCN_new.py`                            | wiki_api (Phase 2)              |
 | `numb` variable (assigned twice, used once)           | `wiki_api/himoBOT2.py`                           | wiki_api (Phase 4)              |
