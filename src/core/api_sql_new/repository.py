@@ -1,9 +1,10 @@
 """Data Access Layer (Repository Pattern)."""
+
 import logging
 from typing import List
 
-from .db_pool import db_manager
 from .constants import NS_TEXT_AR, NS_TEXT_EN
+from .db_pool import db_manager
 
 logger = logging.getLogger(__name__)
 
@@ -43,11 +44,7 @@ class CategoryRepository:
         and have an English language link.
         """
         try:
-            rows = db_manager.execute_query(
-                wiki="ar",
-                query=_ARCAT_QUERY,
-                params=(category_title,)
-            )
+            rows = db_manager.execute_query(wiki="ar", query=_ARCAT_QUERY, params=(category_title,))
 
             titles = []
             for row in rows:
@@ -68,11 +65,7 @@ class CategoryRepository:
         English category.
         """
         try:
-            rows = db_manager.execute_query(
-                wiki="enwiki",
-                query=_ENCAT_QUERY,
-                params=(category_title,)
-            )
+            rows = db_manager.execute_query(wiki="enwiki", query=_ENCAT_QUERY, params=(category_title,))
 
             titles = sorted(row["ll_title"] for row in rows)
             logger.debug("Fetched %d English titles for category '%s'", len(titles), category_title)
