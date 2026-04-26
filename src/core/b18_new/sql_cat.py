@@ -4,8 +4,7 @@
 import logging
 
 from ...config import settings
-from ..api_sql import add_namespace_prefix
-from ..api_sql import db_manager
+from ..api_sql import add_namespace_prefix, db_manager
 from ..c18_new import fetch_ar_titles_based_on_en_category
 from ..new_api import load_main_api
 

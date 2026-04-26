@@ -8,9 +8,9 @@ import logging
 import time
 
 from ...config import settings
+from ..new_api import Login
 from ..new_api.pagenew import password, username
-from ..new_api.super.super_login import Login
-from .utils import lag_bot, do_lag, find_lag
+from .utils import do_lag, find_lag, lag_bot
 
 logger = logging.getLogger(__name__)
 

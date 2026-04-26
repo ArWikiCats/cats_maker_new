@@ -3,9 +3,8 @@
 
 import functools
 import logging
-from ..c18_new.bots import add_text_to_template
-from ..c18_new import Dont_add_to_pages_def
-from ..c18_new.tools_bots import sort_categories
+
+from ..c18_new import Dont_add_to_pages_def, add_text_to_template, sort_categories
 from ..helps import function_timer
 from ..new_api import load_main_api
 

@@ -82,9 +82,7 @@ class TestGetArListFromEn:
 
     def test_replaces_underscores_in_results(self, mocker):
         """Test that underscores are replaced with spaces in results"""
-        mocker.patch(
-            "src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"ll_title": "صفحة_اختبار"}]
-        )
+        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"ll_title": "صفحة_اختبار"}])
 
         result = get_ar_list_from_en("Science", us_sql=True)
 

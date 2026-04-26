@@ -160,8 +160,9 @@ class TestDatabaseManager:
     def test_execute_query_returns_empty_when_not_prod(self, mocker):
         """Test that DatabaseManager raises error when not in production."""
         mocker.patch("src.core.api_sql.config.ConfigLoader.is_production", return_value=False)
-        from src.core.api_sql.exceptions import DatabaseConnectionError
         import pytest
+
+        from src.core.api_sql.exceptions import DatabaseConnectionError
 
         with pytest.raises(DatabaseConnectionError):
             db_manager.execute_query(wiki="ar", query="SELECT 1")
@@ -169,5 +170,6 @@ class TestDatabaseManager:
     def test_execute_query_rejects_non_select(self):
         """Test that only SELECT queries are allowed."""
         import pytest
+
         with pytest.raises(ValueError, match="Only SELECT queries are allowed"):
             db_manager.execute_query(wiki="ar", query="DELETE FROM page")

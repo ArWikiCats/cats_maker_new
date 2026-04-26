@@ -8,7 +8,7 @@ import difflib
 import logging
 
 from ....config import settings
-from ...helps.printe_helper import make_str
+from ...helps import make_str
 
 yes_answer = ["y", "a", "", "Y", "A", "all", "aaa"]
 Save_or_Ask = {}

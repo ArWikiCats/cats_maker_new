@@ -10,8 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ...config import settings
-from ..api_sql import add_namespace_prefix
-from ..api_sql import db_manager
+from ..api_sql import add_namespace_prefix, db_manager
 
 logger = logging.getLogger(__name__)
 
