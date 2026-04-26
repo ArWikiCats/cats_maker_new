@@ -4,7 +4,7 @@ import logging
 import re
 
 from ..helps import function_timer
-from .wiki_sql import GET_SQL, add_nstext_to_title, sql_new
+from .service import GET_SQL, add_nstext_to_title, sql_new
 
 logger = logging.getLogger(__name__)
 

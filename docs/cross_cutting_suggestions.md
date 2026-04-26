@@ -8,7 +8,7 @@
 
 **Source plans:** `api_sql_refactor_plan.md` (5.1.1), `new_api_refactor_plan.md` (5.1.4)
 
-`api_sql/constants.py` **created** — namespace dicts (`NS_TEXT_AR`, `NS_TEXT_EN`, `WIKI_ALIASES`, `SUFFIXED_WIKIS`) now live there and are imported by `wiki_sql.py`. `new_api/catdepth_new.py:17-39` still has a separate hardcoded `ns_list` dict that should eventually import from `api_sql/constants.py`.
+`api_sql/constants.py` **created** — namespace dicts (`NS_TEXT_AR`, `NS_TEXT_EN`, `WIKI_ALIASES`, `SUFFIXED_WIKIS`) now live there and are imported by `service.py`. `new_api/catdepth_new.py:17-39` still has a separate hardcoded `ns_list` dict that should eventually import from `api_sql/constants.py`.
 
 **Suggestion:** Consolidate namespace constants into a single shared location:
 
@@ -121,7 +121,7 @@ Multiple error-handling approaches across modules:
 | Plan     | Old name           | New name                                 | Pattern                     |
 | -------- | ------------------ | ---------------------------------------- | --------------------------- |
 | api_sql  | `db_pool.py`  | `client.py`                              | Lower-layer file renamed    |
-| api_sql  | `wiki_sql.py`      | `gateway.py` + `constants.py`            | Split                       |
+| api_sql  | `service.py`      | `gateway.py` + `constants.py`            | Split                       |
 | api_sql  | `sql_bot.py`       | `queries.py`                             | Business query file renamed |
 | new_api  | `bot.py`           | `transport.py` + `auth.py` + `client.py` | Split into 3                |
 | new_api  | `handel_errors.py` | `handle_errors.py`                       | Spelling fix                |

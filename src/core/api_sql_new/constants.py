@@ -1,4 +1,4 @@
-"""Shared constants for the wiki_sql package."""
+"""Shared constants for the service package."""
 
 from __future__ import annotations
 

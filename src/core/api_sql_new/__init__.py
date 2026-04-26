@@ -1,4 +1,4 @@
-"""Public API for the wiki_sql package."""
+"""Public API for the service package."""
 
 from .service import CategoryComparator
 
