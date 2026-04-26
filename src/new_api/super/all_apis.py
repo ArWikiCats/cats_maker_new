@@ -3,7 +3,7 @@
 import functools
 import logging
 
-from . import bot_api, catdepth_new, super_page
+from . import catdepth_new, super_page
 from .super_login import Login
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,6 @@ class ALL_APIS:
         main_api = ALL_APIS(lang='en', family='wikipedia', username='your_username', password='your_password')
         page = main_api.MainPage('Main Page Title')
         cat_members = main_api.CatDepth('Category Title')
-        new_api = main_api.NEW_API()
     """
 
     def __init__(self, lang, family, username, password) -> None:
@@ -40,9 +39,6 @@ class ALL_APIS:
     def CatDepth(self, title, sitecode="", family="", *args, **kwargs):
         # cat_members = CatDepth("RTTNEURO", sitecode="www", family="mdwiki", depth=3, ns="0")
         return catdepth_new.subcatquery(self.login_bot, title, sitecode=self.lang, family=self.family, **kwargs)
-
-    def NEW_API(self, *args, **kwargs) -> bot_api.NEW_API:
-        return bot_api.NEW_API(self.login_bot, lang=self.lang)
 
     def _login(self) -> Login:
         bot = _login(self.lang, self.family, self.username)

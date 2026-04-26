@@ -13,13 +13,12 @@ from .params_help import PARAMS_HELPS
 
 logger = logging.getLogger(__name__)
 
-seasons_by_lang = {}
 users_by_lang = {}
 logins_count = {1: 0}
 
 
-@functools.lru_cache(maxsize=1)
-def _load_session() -> requests.Session:
+@functools.lru_cache(maxsize=1024)
+def _load_session(lang="", family="") -> requests.Session:
     Session = requests.Session()
     Session.headers.update({"User-Agent": settings.wikipedia.user_agent})
     return Session
@@ -28,7 +27,7 @@ def _load_session() -> requests.Session:
 class LOGIN_HELPS(PARAMS_HELPS):
     def __init__(self) -> None:
         self.cookie_jar = False
-        self.session = requests.Session()
+        self.session = None
 
         self.username = getattr(self, "username", "")
         self.family = getattr(self, "family", "")
@@ -44,7 +43,6 @@ class LOGIN_HELPS(PARAMS_HELPS):
         self.user_table_done = False
         self.user_agent = settings.wikipedia.user_agent
         self.headers = {"User-Agent": self.user_agent}
-        self.sea_key = f"{self.lang}-{self.family}-{self.username}"
 
         super().__init__()
 
@@ -73,8 +71,6 @@ class LOGIN_HELPS(PARAMS_HELPS):
                 self.username = table["username"]
                 self.password = table["password"]
 
-                self.sea_key = f"{langx}-{self.family}-{self.username}"
-
     def make_new_r3_token(self) -> str:
 
         r3_params = {
@@ -102,17 +98,16 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         color = colors.get(self.lang, "")
 
-        Bot_passwords = self.password.find("@") != -1
         logins_count[1] += 1
         logger.debug(f"<<{color}>> {self.endpoint} count:{logins_count[1]}")
-        logger.debug(f"page.py: log to {self.lang}.{self.family}.org user:{self.username}, ({Bot_passwords=})")
+        logger.debug(f"page.py: log to {self.lang}.{self.family}.org user:{self.username})")
 
         logintoken = self.get_logintoken()
 
         if not logintoken:
             return False
 
-        success = self.get_login_result(logintoken)
+        success = self.get_login_result(logintoken, self.username, self.password)
 
         if success:
             logger.debug("<<green>> new_api login Success")
@@ -131,7 +126,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # WARNING: /data/project/himo/core/bots/page.py:101: UserWarning: Exception:502 Server Error: Server Hangup for url: https://ar.wikipedia.org/w/api.php
 
         try:
-            r11 = seasons_by_lang[self.sea_key].request("POST", self.endpoint, data=r1_params, headers=self.headers)
+            r11 = self.session.request("POST", self.endpoint, data=r1_params, headers=self.headers)
 
             self.log_error(r11.status_code, "logintoken")
 
@@ -153,23 +148,23 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         return jsson1.get("query", {}).get("tokens", {}).get("logintoken") or ""
 
-    def get_login_result(self, logintoken) -> bool:
-        if not self.password:
+    def get_login_result(self, logintoken, username, password) -> bool:
+        if not password:
             logger.debug("No password")
             return False
 
         r2_params = {
             "format": "json",
             "action": "login",
-            "lgname": self.username,
-            "lgpassword": self.password,
+            "lgname": username,
+            "lgpassword": password,
             "lgtoken": logintoken,
         }
 
         req = ""
 
         try:
-            req = seasons_by_lang[self.sea_key].request("POST", self.endpoint, data=r2_params, headers=self.headers)
+            req = self.session.request("POST", self.endpoint, data=r2_params, headers=self.headers)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} login request exception: {e}")
             return False
@@ -201,13 +196,9 @@ class LOGIN_HELPS(PARAMS_HELPS):
         # logger.warning(r22)
 
         if reason == "Incorrect username or password entered. Please try again.":
-            logger.debug(f"user:{self.username}, pass:******")
+            logger.debug(f"user:{username}, pass:******")
 
         return False
-
-    def log_to_wiki_1(self, do=False) -> str:
-
-        return self.make_new_r3_token()
 
     def loged_in(self) -> bool:
         params = {
@@ -219,7 +210,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         req = ""
         try:
-            req = seasons_by_lang[self.sea_key].request("POST", self.endpoint, data=params, headers=self.headers)
+            req = self.session.request("POST", self.endpoint, data=params, headers=self.headers)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} userinfo request exception: {e}")
             self.log_error("failed", "userinfo")
@@ -256,7 +247,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
 
         logger.debug(f":({self.lang}, {self.family}, {self.username})")
 
-        seasons_by_lang[self.sea_key] = requests.Session()
+        self.session = _load_session(lang=self.lang, family=self.family)
 
         self.cookies_file = get_file_name(self.lang, self.family, self.username)
 
@@ -271,7 +262,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             except Exception as e:
                 logger.warning(e)
 
-        seasons_by_lang[self.sea_key].cookies = self.cookie_jar
+        self.session.cookies = self.cookie_jar
 
         loged_t = False
 
@@ -316,7 +307,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
             logger.debug("<<green>> dopost:::")
             logger.debug(params)
             logger.debug("<<green>> :::dopost")
-            req0 = seasons_by_lang[self.sea_key].request("POST", self.endpoint, **args)
+            req0 = self.session.request("POST", self.endpoint, **args)
 
             self._handle_server_error(req0, u_action, params=params)
 
@@ -325,7 +316,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         req0 = None
 
         try:
-            req0 = seasons_by_lang[self.sea_key].request("POST", self.endpoint, **args)
+            req0 = self.session.request("POST", self.endpoint, **args)
 
         except requests.exceptions.ReadTimeout:
             self.log_error("ReadTimeout", u_action, params=params)
@@ -346,7 +337,7 @@ class LOGIN_HELPS(PARAMS_HELPS):
         if not self.username_in:
             self.username_in = users_by_lang.get(self.lang, "")
 
-        if not seasons_by_lang.get(self.sea_key):
+        if not self.session:
             self.make_new_session()
 
         if not self.username_in:

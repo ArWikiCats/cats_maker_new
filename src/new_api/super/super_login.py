@@ -7,7 +7,6 @@ import urllib.parse
 
 from ...config import settings
 from .bot import LOGIN_HELPS
-from .handel_errors import HANDEL_ERRORS
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ ar_lag = {1: 3}
 urls_prints = {"all": 0}
 
 
-class Login(LOGIN_HELPS, HANDEL_ERRORS):
+class Login(LOGIN_HELPS):
     """
     Represents a login session for a wiki.
     """
@@ -47,12 +46,6 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
 
         return params
 
-    def add_users(self, Users_tables, lang=""):
-        if Users_tables:
-            for family, user_tab in Users_tables.items():
-                self.user_login = user_tab.get("username")
-                self.add_User_tables(family, user_tab, lang=lang)
-
     def p_url(self, params):
         """
         Print the URL for debugging purposes.
@@ -66,11 +59,20 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
                 if k not in no_url
             }
             self.url_o_print = f"{self.endpoint}?{urllib.parse.urlencode(pams2)}".replace("&format=json", "")
+
             if self.url_o_print not in urls_prints:
                 urls_prints[self.url_o_print] = 0
+
             urls_prints[self.url_o_print] += 1
             urls_prints["all"] += 1
+
             logger.debug(f"c: {urls_prints[self.url_o_print]}/{urls_prints['all']}\t {self.url_o_print}")
+
+    def add_users(self, Users_tables, lang=""):
+        if Users_tables:
+            for family, user_tab in Users_tables.items():
+                self.user_login = user_tab.get("username")
+                self.add_User_tables(family, user_tab, lang=lang)
 
     def make_response(
         self,
@@ -155,12 +157,16 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
         error_code = error.get("code", "")
 
         if error_code == "maxlag" and max_retry < 4:
+
             lage = int(error.get("lag", "0"))
             logger.debug(params)
             logger.debug(f"<<purple>>: <<red>> {lage=} {max_retry=}, sleep: {lage + 1}")
+
             time.sleep(lage + 1)
+
             ar_lag[1] = lage + 1
             params["maxlag"] = ar_lag[1]
+
             return self.post_params(
                 params,
                 Type=Type,
@@ -169,66 +175,3 @@ class Login(LOGIN_HELPS, HANDEL_ERRORS):
             )
 
         return data
-
-    def post_continue(
-        self,
-        params,
-        action,
-        _p_="pages",
-        p_empty=None,
-        Max=500000,
-        first=False,
-        _p_2="",
-        _p_2_empty=None,
-    ):
-        logger.debug("_______________________")
-        logger.debug(f", start. {action=}, {_p_=}")
-        if not isinstance(Max, int) and Max.isdigit():
-            Max = int(Max)
-        if Max == 0:
-            Max = 500000
-        p_empty = p_empty or []
-        _p_2_empty = _p_2_empty or []
-        results = p_empty
-        continue_params = {}
-        d = 0
-        while continue_params != {} or d == 0:
-            params2 = copy.deepcopy(params)
-            d += 1
-            if continue_params:
-                logger.debug("continue_params:")
-                for k, v in continue_params.items():
-                    params2[k] = v
-                logger.debug(params2)
-            json1 = self.post_params(params2)
-            if not json1:
-                logger.debug(", json1 is empty. break")
-                break
-            continue_params = {}
-            if action == "wbsearchentities":
-                data = json1.get("search", [])
-            else:
-                continue_params = json1.get("continue", {})
-                data = json1.get(action, {}).get(_p_, p_empty)
-                if _p_ == "querypage":
-                    data = data.get("results", [])
-                elif first:
-                    if isinstance(data, list) and len(data) > 0:
-                        data = data[0]
-                        if _p_2:
-                            data = data.get(_p_2, _p_2_empty)
-            if not data:
-                logger.debug("post continue, data is empty. break")
-                break
-            logger.debug(f"post continue, len:{len(data)}, all: {len(results)}")
-            if Max <= len(results) and len(results) > 1:
-                logger.debug(f"post continue, {Max=} <= {len(results)=}. break")
-                break
-            if isinstance(results, list):
-                results.extend(data)
-            else:
-                print(f"{type(results)=}")
-                print(f"{type(data)=}")
-                results = {**results, **data}
-        logger.debug(f"post continue, {len(results)=}")
-        return results

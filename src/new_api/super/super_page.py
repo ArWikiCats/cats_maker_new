@@ -1,11 +1,11 @@
 """ """
 
+from copy import copy
 import logging
 from dataclasses import dataclass, field
 
 from ...config import settings
 from ..api_utils import ASK_BOT, bot_May_Edit, change_codes
-from .handel_errors import HANDEL_ERRORS
 from .super_login import Login
 
 logger = logging.getLogger(__name__)
@@ -82,18 +82,7 @@ def find_edit_error(old, new):
     return False
 
 
-class PAGE_APIS(HANDEL_ERRORS):
-    def __init__(self, login_bot: Login):
-        self.login_bot = login_bot
-
-        self.user_login = login_bot.user_login
-
-        self.title = getattr(self, "title", "")
-
-        super().__init__()
-
-
-class MainPage(PAGE_APIS, ASK_BOT):
+class MainPage(ASK_BOT):
     def __init__(
         self,
         login_bot: Login,
@@ -706,6 +695,53 @@ class MainPage(PAGE_APIS, ASK_BOT):
 
         return False
 
+    def post_continue(
+        self,
+        params,
+        action,
+    ) -> list:
+        logger.debug("_______________________")
+        logger.debug(f", start. {action=}, links")
+
+        Max = 500000
+        results = []
+        continue_params = {}
+        d = 0
+
+        while continue_params != {} or d == 0:
+            params2 = copy.deepcopy(params)
+            d += 1
+
+            if continue_params:
+                logger.debug("continue_params:")
+                for k, v in continue_params.items():
+                    params2[k] = v
+                logger.debug(params2)
+
+            json1 = self.login_bot.post_params(params2)
+
+            if not json1:
+                logger.debug(", json1 is empty. break")
+                break
+
+            continue_params = json1.get("continue", {})
+            data = json1.get(action, {}).get("links", [])
+
+            if not data:
+                logger.debug("post continue, data is empty. break")
+                break
+
+            logger.debug(f"post continue, len:{len(data)}, all: {len(results)}")
+
+            if Max <= len(results) and len(results) > 1:
+                logger.debug(f"post continue, {Max=} <= {len(results)=}. break")
+                break
+
+            results.extend(data)
+
+        logger.debug(f"post continue, {len(results)=}")
+        return results
+
     def page_links(self):
         params = {
             "action": "parse",
@@ -713,10 +749,8 @@ class MainPage(PAGE_APIS, ASK_BOT):
             "formatversion": "2",
             "page": self.title,
         }
-        # data = self.login_bot.post_params(params)
-        # data = data.get('parse', {}).get('links', [])
 
-        data = self.login_bot.post_continue(params, "parse", _p_="links", p_empty=[])
+        data = self.post_continue(params, "parse")
 
         # [{'ns': 14, 'title': 'تصنيف:مقالات بحاجة لشريط بوابات', 'exists': True}, {'ns': 14, 'title': 'تصنيف:مقالات بحاجة لصندوق معلومات', 'exists': False}]
 
