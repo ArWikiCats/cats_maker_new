@@ -8,7 +8,7 @@
 
 **Source plans:** `api_sql_refactor_plan.md` (5.1.1), `new_api_refactor_plan.md` (5.1.4)
 
-`api_sql/constants.py` is *planned* but not yet created — namespace dicts (`NS_TEXT_AR`, `NS_TEXT_EN`) still live in `wiki_sql.py`. Meanwhile `new_api/catdepth_new.py:17-39` has a separate hardcoded `ns_list` dict that overlaps.
+`api_sql/constants.py` **created** — namespace dicts (`NS_TEXT_AR`, `NS_TEXT_EN`, `WIKI_ALIASES`, `SUFFIXED_WIKIS`) now live there and are imported by `wiki_sql.py`. `new_api/catdepth_new.py:17-39` still has a separate hardcoded `ns_list` dict that should eventually import from `api_sql/constants.py`.
 
 **Suggestion:** Consolidate namespace constants into a single shared location:
 
