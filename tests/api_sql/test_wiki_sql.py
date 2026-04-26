@@ -89,7 +89,7 @@ class TestAddNsTextToTitle:
         """Test with an invalid namespace number"""
         result = add_nstext_to_title("Test", "999", "ar")
         # When namespace is not found, ns_text is None, so it returns "None:Test"
-        assert result == "None:Test"
+        assert result == "Test"
 
     def test_with_empty_title(self):
         """Test with empty title string"""

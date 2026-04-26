@@ -5,29 +5,29 @@ This module tests SQL query functions for Wikipedia databases.
 """
 
 from src.core.api_sql.sql_bot import (
-    fetch_arcat_titles,
+    _fetch_ar_titles,
     get_exclusive_category_titles,
 )
 
 
 class TestFetchArcatTitles:
-    """Tests for fetch_arcat_titles function"""
+    """Tests for _fetch_ar_titles function"""
 
     def test_returns_empty_list_for_empty_title(self):
         """Test that empty list is returned for empty title"""
-        result = fetch_arcat_titles("")
+        result = _fetch_ar_titles("")
         assert result == []
 
     def test_returns_empty_list_for_none_title(self):
         """Test that empty list is returned for None title"""
-        result = fetch_arcat_titles(None)
+        result = _fetch_ar_titles(None)
         assert result == []
 
     def test_returns_empty_list_when_sql_disabled(self, mocker):
         """Test that empty list is returned when SQL is disabled"""
         mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=False)
 
-        result = fetch_arcat_titles("تصنيف:علوم")
+        result = _fetch_ar_titles("تصنيف:علوم")
         assert result == []
 
     def test_strips_tasneef_prefix(self, mocker):
@@ -36,7 +36,7 @@ class TestFetchArcatTitles:
         mocker.patch("src.core.api_sql.sql_bot.make_labsdb_dbs_p", return_value=("host", "db"))
         mock_connect = mocker.patch("src.core.api_sql.sql_bot.make_sql_connect_silent", return_value=[])
 
-        fetch_arcat_titles("تصنيف:علوم")
+        _fetch_ar_titles("تصنيف:علوم")
 
         # Query should not contain تصنيف: prefix
         call_args = mock_connect.call_args[0][0]
@@ -48,7 +48,7 @@ class TestFetchArcatTitles:
         mocker.patch("src.core.api_sql.sql_bot.make_labsdb_dbs_p", return_value=("host", "db"))
         mock_connect = mocker.patch("src.core.api_sql.sql_bot.make_sql_connect_silent", return_value=[])
 
-        fetch_arcat_titles("علوم الحاسوب")
+        _fetch_ar_titles("علوم الحاسوب")
 
         # Check that the parameter is passed correctly (with underscores)
         call_kwargs = mock_connect.call_args[1]
@@ -69,7 +69,7 @@ class TestGetExclusiveCategoryTitles:
     def test_returns_difference_of_lists(self, mocker):
         """Test that result is difference of en and ar lists"""
         mocker.patch("src.core.api_sql.sql_bot.GET_SQL", return_value=True)
-        mocker.patch("src.core.api_sql.sql_bot.fetch_arcat_titles", return_value=["Page1", "Page2"])
+        mocker.patch("src.core.api_sql.sql_bot._fetch_ar_titles", return_value=["Page1", "Page2"])
 
         # Mock fetch_encat_titles indirectly through Make_sql
         mocker.patch("src.core.api_sql.sql_bot.make_labsdb_dbs_p", return_value=("host", "db"))
