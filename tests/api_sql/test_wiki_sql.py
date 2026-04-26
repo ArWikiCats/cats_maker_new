@@ -4,16 +4,11 @@ Tests for src/core/api_sql/wiki_sql.py
 This module tests namespace handling and SQL query functions for MediaWiki.
 """
 
-import pytest
-
 from src.core.api_sql.wiki_sql import (
-    GET_SQL,
     add_nstext_to_title,
     make_labsdb_dbs_p,
-    ns_text_tab_ar,
-    ns_text_tab_en,
-    sql_new,
-    sql_new_title_ns,
+    NS_TEXT_AR,
+    NS_TEXT_EN,
 )
 
 
@@ -112,28 +107,28 @@ class TestNsTextTables:
 
     def test_ar_namespace_table_has_category(self):
         """Test Arabic namespace table has category (14)"""
-        assert "14" in ns_text_tab_ar
-        assert ns_text_tab_ar["14"] == "تصنيف"
+        assert "14" in NS_TEXT_AR
+        assert NS_TEXT_AR["14"] == "تصنيف"
 
     def test_en_namespace_table_has_category(self):
         """Test English namespace table has category (14)"""
-        assert "14" in ns_text_tab_en
-        assert ns_text_tab_en["14"] == "Category"
+        assert "14" in NS_TEXT_EN
+        assert NS_TEXT_EN["14"] == "Category"
 
     def test_ar_namespace_table_has_template(self):
         """Test Arabic namespace table has template (10)"""
-        assert "10" in ns_text_tab_ar
-        assert ns_text_tab_ar["10"] == "قالب"
+        assert "10" in NS_TEXT_AR
+        assert NS_TEXT_AR["10"] == "قالب"
 
     def test_en_namespace_table_has_template(self):
         """Test English namespace table has template (10)"""
-        assert "10" in ns_text_tab_en
-        assert ns_text_tab_en["10"] == "Template"
+        assert "10" in NS_TEXT_EN
+        assert NS_TEXT_EN["10"] == "Template"
 
     def test_namespace_0_is_empty_string(self):
         """Test that namespace 0 maps to empty string"""
-        assert ns_text_tab_ar["0"] == ""
-        assert ns_text_tab_en["0"] == ""
+        assert NS_TEXT_AR["0"] == ""
+        assert NS_TEXT_EN["0"] == ""
 
 
 class TestMakeLabsdbDbsP:

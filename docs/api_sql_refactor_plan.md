@@ -147,7 +147,7 @@ DATABASE_SUFFIX = "_p"
 | `encatTitle`            | `en_cat_title`                       | `sql_bot.py`                   |
 | `arcatTitle`            | `ar_cat_title`                       | `sql_bot.py`                   |
 | `enpageTitle`           | `en_page_title`                      | `sql_bot.py`                   |
-| `db_p`                 | `db_name`                            | `wiki_sql.py:sql_new`          |
+| `db_p`                  | `db_name`                            | `wiki_sql.py:sql_new`          |
 | `ns_text_tab_ar`        | `NS_TEXT_AR` (module-level constant) | `wiki_sql.py`                  |
 | `ns_text_tab_en`        | `NS_TEXT_EN` (module-level constant) | `wiki_sql.py`                  |
 | `t1`, `t2` (parameters) | `title_key`, `ns_key`                | `wiki_sql.py:sql_new_title_ns` |
