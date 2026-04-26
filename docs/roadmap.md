@@ -32,8 +32,8 @@ Zero-risk changes that can be done immediately, in any order:
 | 0.1 | Add `__all__` to all `__init__.py` and submodule files | All 7            |
 | 0.2 | Remove commented-out debug code                        | All 7            |
 | 0.3 | Remove empty `__init__` methods                        | new_api          |
-| 0.4 | Remove dead functions (`decode_bytes`, unused imports) | api_sql, new_api |
-| 0.5 | Fix mutable default args (`values=[]` → `values=None`) | api_sql          |
+| 0.4 | Remove dead functions (`decode_bytes`, unused imports) | api_sql (**done**), new_api |
+| 0.5 | Fix mutable default args (`values=[]` → `values=()`)   | api_sql (**done**) |
 | 0.6 | Replace mutable lists with tuples/frozensets           | mk_cats, c18_new |
 | 0.7 | Add `__pycache__` to `.gitignore`                      | mk_cats, c18_new |
 | 0.8 | Run `ruff` across all modules, fix auto-fixable issues | All 7            |
@@ -59,17 +59,20 @@ Zero-risk changes that can be done immediately, in any order:
 
 **Verification:** `pytest tests/wiki_api/` passes, `ruff check src/core/wiki_api` is clean.
 
-### Step 1.2 — `api_sql` refactoring
+### Step 1.2 — `api_sql` refactoring *(Quick Wins done; Phases 1-4 pending)*
 
 **Why second:** Database layer needed by business logic modules. No dependency on `wiki_api`.
 
 **Execute per plan:** `api_sql_refactor_plan.md`
 
--   Quick Wins + Phase 1: `constants.py`, type hints, snake_case
--   Phase 2: DRY — route queries through `sql_new`, remove guards
--   Phase 3: Structural split (`client.py`, `gateway.py`, `queries.py`)
--   Phase 4: Fix `fetchall` on non-SELECT, connection timeout
--   Phase 5: Tests
+| Phase   | Status       | Notes                                                                         |
+| ------- | ------------ | ----------------------------------------------------------------------------- |
+| Quick Wins | Done      | `__all__` added, mutable default fixed, dead code removed, formatting done    |
+| Phase 1 | Pending      | `constants.py` not yet created; namespace dicts still in `wiki_sql.py`        |
+| Phase 2 | Partial      | `GET_SQL()` guards removed from helpers; still bypasses `sql_new` for queries |
+| Phase 3 | Pending      | No file split yet (`client.py`, `gateway.py`, `queries.py`)                   |
+| Phase 4 | Pending      | `fetchall` still unconditional; no connection timeout                         |
+| Phase 5 | Partial      | 48/48 tests pass; ≥ 85% coverage not yet verified                             |
 
 **Verification:** `pytest tests/api_sql/` passes with >= 85% coverage.
 
@@ -187,7 +190,7 @@ mypy src/core/ --ignore-missing-imports --statistics
 #    wiki_api_refactor_plan.md → Phase 1
 
 # 3. Build shared infrastructure
-#    api_sql: constants.py → type hints → DRY → structural split
+#    api_sql: Quick Wins done; next: constants.py → type hints → DRY → structural split
 #    utils:   shared constants.py + utils/text.py
 
 # 4. Refactor upstream layers in order:
