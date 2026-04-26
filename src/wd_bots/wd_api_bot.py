@@ -46,7 +46,7 @@ def Get_infos_wikidata(params):
     if "-1" in entities:
         return table
 
-    props = params["props"].split("|")
+    props = params.get("props", "").split("|") if params.get("props") else []
 
     for q, qprop in entities.items():
         table["q"] = q
@@ -69,7 +69,6 @@ def Get_Sitelinks_From_wikidata(
     ssite="",
     ids="",
     props="",
-    add_props=None,
     return_main_table=False,
 ):
 
@@ -91,11 +90,6 @@ def Get_Sitelinks_From_wikidata(
 
     if props:
         params["props"] = props
-
-    if isinstance(add_props, (list, tuple)):
-        for x in add_props:
-            if x not in params["props"]:
-                params["props"] += f"|{x}"
 
     if ids:
         params["ids"] = ids
