@@ -6,8 +6,8 @@ import logging
 from ....config import settings
 from ...api_sql import CategoryComparator
 from ...b18_new import get_ar_list_from_encat
-from ...wiki_api import find_LCN, get_arpage_inside_encat
 from ...cats_helpers.cat_tools2 import Categorized_Page_Generator
+from ...wiki_api import find_LCN, get_arpage_inside_encat
 
 logger = logging.getLogger(__name__)
 

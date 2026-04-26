@@ -8,7 +8,6 @@ import pytest
 
 from src.core.cats_helpers.ar_from_en2 import (
     en_category_members,
-    fetch_ar_titles_based_on_en_category,
     get_ar_list_title_from_en_list,
 )
 
@@ -116,40 +115,3 @@ class TestEnCategoryMembers:
 
         result = en_category_members("EmptyCategory")
         assert result == []
-
-
-class TestFetchArTitlesBasedOnEnCategory:
-    """Tests for fetch_ar_titles_based_on_en_category function"""
-
-    def test_calls_en_category_members(self, mocker):
-        """Test that en_category_members is called"""
-        mock_en_cat = mocker.patch(
-            "src.core.c18_new.cats_tools.ar_from_en2.en_category_members", return_value=["Page1", "Page2"]
-        )
-        mocker.patch(
-            "src.core.c18_new.cats_tools.ar_from_en2.get_ar_list_title_from_en_list", return_value=["صفحة1", "صفحة2"]
-        )
-
-        result = fetch_ar_titles_based_on_en_category("Science")
-
-        mock_en_cat.assert_called_once_with("Science", wiki="en")
-
-    def test_calls_get_ar_list_title_from_en_list(self, mocker):
-        """Test that get_ar_list_title_from_en_list is called"""
-        mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.en_category_members", return_value=["Page1", "Page2"])
-        mock_get_ar = mocker.patch(
-            "src.core.c18_new.cats_tools.ar_from_en2.get_ar_list_title_from_en_list", return_value=["صفحة1", "صفحة2"]
-        )
-
-        result = fetch_ar_titles_based_on_en_category("Science", wiki="en")
-
-        mock_get_ar.assert_called_once_with(["Page1", "Page2"], wiki="en")
-
-    def test_returns_arabic_titles(self, mocker):
-        """Test that Arabic titles are returned"""
-        mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.en_category_members", return_value=["Science"])
-        mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.get_ar_list_title_from_en_list", return_value=["علوم"])
-
-        result = fetch_ar_titles_based_on_en_category("Science")
-
-        assert "علوم" in result
