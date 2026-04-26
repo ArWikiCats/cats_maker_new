@@ -93,18 +93,20 @@ class NEW_API:
 
 def load_non_redirects(lang: str, page_titles: list) -> list:
     """Remove redirect pages from a list of page titles."""
+    if not page_titles:
+        return {}
+
     _bot = load_main_api(lang, "wikipedia")
 
     api_n = NEW_API(_bot.login_bot)
-
     result = api_n.Find_pages_exists_or_not(page_titles, get_redirect=True)
 
-    non_redirects = [x for x, v in result.items() if v is True]
-    return non_redirects
+    return result
 
 
 def remove_redirect_pages(lang: str, page_titles: list) -> list:
     """Remove redirect pages from a list of page titles."""
-    non_redirects = load_non_redirects(lang, page_titles)
+    result = load_non_redirects(lang, page_titles)
+    non_redirects = [x for x, v in result.items() if v is True]
     logger.info(f"<<lightgreen>> Removed {len(page_titles) - len(non_redirects)} redirect pages.")
     return non_redirects
