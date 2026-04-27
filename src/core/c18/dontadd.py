@@ -101,22 +101,21 @@ def get_pages_nocat():
     if settings.category.no_dontadd or settings.category.test_mode:
         return data
 
-    if not settings.category.test_add:
-        if str(Dir).find("/data/project/") == -1 and str(Dir).find("/mnt/") == -1:
-            logger.info("dont get dontadd list in local server")
-            return data
+    if not settings.category.test_add and settings.is_production():
+        logger.info("dont get dontadd list in local server")
+        return data
 
-    # logger.info("makenew to Dont_add_to_pages...")
+    # logger.info("makenew to dont_list...")
 
     encats = from_sql()
 
     data = encats
 
     if not data:
-        logger.info("Dont_add_to_pages is empty")
+        logger.info("dont_list is empty")
         return data
 
-    logger.info(f"len Dont_add_to_pages : {len(data)}")
+    logger.info(f"len dont_list : {len(data)}")
 
     log_to_file(data, filename_json)
 

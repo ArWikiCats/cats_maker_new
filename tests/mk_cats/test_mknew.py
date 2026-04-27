@@ -15,6 +15,8 @@ This module tests:
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from src.mk_cats.mknew import add_to_final_list
 
 
@@ -423,6 +425,7 @@ class TestMakeArMinMembers:
         mknew._already_created.clear()
         mknew._new_cat_done.clear()
 
+    @pytest.mark.network
     def test_proceeds_when_at_min_members(self, mocker):
         """Test that make_ar proceeds when members equals min_members."""
         from src.mk_cats import mknew

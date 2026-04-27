@@ -8,7 +8,7 @@ import re
 
 import pytest
 
-from src.core.new_c18.constants import PRE_TEXT, TOSEARCH_AND_REPLACE, TO_SEARCH
+from src.core.new_c18.constants import PRE_TEXT, TO_SEARCH, TOSEARCH_AND_REPLACE
 from src.core.new_c18.tools.doc_handler import (
     add_direct,
     add_text_to_template,

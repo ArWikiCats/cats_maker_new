@@ -32,7 +32,7 @@ class WikiApiClient:
         self.user_table_done = False
         self.r3_token = ""
 
-        from .transport import load_session, get_file_name
+        from .transport import get_file_name, load_session
 
         self.session = load_session(lang=lang, family=family, username=username)
         self.cookies_file = str(get_file_name(lang, family, username))
@@ -118,9 +118,7 @@ class WikiApiClient:
                 for k, v in params.items()
                 if k not in no_url
             }
-            url_o_print = f"{self.endpoint}?{__import__('urllib.parse').urlencode(pams2)}".replace(
-                "&format=json", ""
-            )
+            url_o_print = f"{self.endpoint}?{__import__('urllib.parse').urlencode(pams2)}".replace("&format=json", "")
             logger.debug(url_o_print)
 
     def make_response(

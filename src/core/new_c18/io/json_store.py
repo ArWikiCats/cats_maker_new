@@ -16,8 +16,7 @@ from .sql_queries import fetch_dont_add_pages
 
 logger = logging.getLogger(__name__)
 
-_DIR = Path(__file__).parent.parent.parent.parent
-_FILENAME_JSON = _DIR / "textfiles" / "Dont_add_to_pages.json"
+_FILENAME_JSON = settings.dont_add_to_pages_path
 _STATGROUP = stat.S_IRWXU | stat.S_IRWXG
 
 
@@ -96,16 +95,21 @@ def get_dont_add_pages() -> list[str]:
         return []
 
     if not settings.category.test_add:
-        if "/data/project/" not in str(_DIR) and "/mnt/" not in str(_DIR):
+        if settings.is_production():
             logger.info("dont get dontadd list in local server")
             return []
 
-    store = JsonStore(_FILENAME_JSON)
+    if not _FILENAME_JSON:
+        return []
+
+    _filename_json = Path(_FILENAME_JSON)
+
+    store = JsonStore(_filename_json)
     data = store.load()
 
     last_modified = ""
-    if _FILENAME_JSON.exists():
-        last_modified = datetime.fromtimestamp(os.path.getmtime(_FILENAME_JSON)).strftime("%Y-%m-%d")
+    if _filename_json.exists():
+        last_modified = datetime.fromtimestamp(os.path.getmtime(_filename_json)).strftime("%Y-%m-%d")
 
     today = datetime.today().strftime("%Y-%m-%d")
 
@@ -115,6 +119,6 @@ def get_dont_add_pages() -> list[str]:
         store.save(data)
 
     if not data:
-        logger.info("Dont_add_to_pages is empty")
+        logger.info("dont_list is empty")
 
     return data if isinstance(data, list) else []

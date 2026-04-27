@@ -4,8 +4,8 @@
 import functools
 import logging
 
-from ..core.new_c18 import add_text_to_template, get_dont_add_pages, sort_categories
 from ..core.new_api import load_main_api
+from ..core.new_c18 import add_text_to_template, get_dont_add_pages, sort_categories
 from ..core.utils import function_timer
 
 logger = logging.getLogger(__name__)
@@ -51,11 +51,11 @@ def _get_page(page_title):
 
 @function_timer
 def add_to_page(page_title, arcat):
-    Dont_add_to_pages = get_dont_add_pages()
+    dont_list = get_dont_add_pages()
 
     logger.info(f" page_title:{page_title} , cat:{arcat}")
 
-    if page_title in Dont_add_to_pages:
+    if page_title in dont_list:
         logger.info(f"<<lightred>> page_title:{page_title} in [[تصنيف:صفحات لا تقبل التصنيف المعادل]]")
         return False
 

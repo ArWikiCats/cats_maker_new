@@ -141,11 +141,9 @@ class Login(HandleErrors):
         return req0
 
     def _make_session(self):
-        from .transport import load_session, get_file_name
+        from .transport import get_file_name, load_session
 
-        self._client.session = load_session(
-            lang=self.lang, family=self.family, username=self._client.username
-        )
+        self._client.session = load_session(lang=self.lang, family=self.family, username=self._client.username)
         self._client.cookies_file = str(get_file_name(self.lang, self.family, self._client.username))
         return self._client.session
 
@@ -269,7 +267,7 @@ class Login(HandleErrors):
                 logger.debug(params)
                 logger.debug(f"<<purple>>: <<red>> {lage=} {max_retry=}, sleep: {lage + 1}")
 
-                sleep_time = min(2 ** attempt + lage, 30)
+                sleep_time = min(2**attempt + lage, 30)
                 time.sleep(sleep_time)
 
                 self._ar_lag = lage + 1
@@ -350,7 +348,9 @@ class Login(HandleErrors):
             "type": "login",
         }
         try:
-            r11 = self._client.session.request("POST", self.endpoint, data=r1_params, headers={"User-Agent": self.user_agent})
+            r11 = self._client.session.request(
+                "POST", self.endpoint, data=r1_params, headers={"User-Agent": self.user_agent}
+            )
             self._log_error(r11.status_code, "logintoken")
             if not str(r11.status_code).startswith("2"):
                 logger.debug(f"<<red>>  {r11.status_code} Server Error: Server Hangup for url: {self.endpoint}")
@@ -382,7 +382,9 @@ class Login(HandleErrors):
         }
         req = ""
         try:
-            req = self._client.session.request("POST", self.endpoint, data=r2_params, headers={"User-Agent": self.user_agent})
+            req = self._client.session.request(
+                "POST", self.endpoint, data=r2_params, headers={"User-Agent": self.user_agent}
+            )
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} login request exception: {e}")
             return False
@@ -421,7 +423,9 @@ class Login(HandleErrors):
         }
         req = ""
         try:
-            req = self._client.session.request("POST", self.endpoint, data=params, headers={"User-Agent": self.user_agent})
+            req = self._client.session.request(
+                "POST", self.endpoint, data=params, headers={"User-Agent": self.user_agent}
+            )
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} userinfo request exception: {e}")
             self._log_error("failed", "userinfo")
@@ -450,7 +454,7 @@ class Login(HandleErrors):
         return True
 
     def make_new_session(self) -> None:
-        from .transport import load_session, get_file_name
+        from .transport import get_file_name, load_session
 
         logger.debug(f":({self.lang}, {self.family}, {self._client.username})")
         self._client.session = load_session(lang=self.lang, family=self.family, username=self._client.username)
