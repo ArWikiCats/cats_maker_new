@@ -4,7 +4,7 @@
 import functools
 import logging
 
-from ..core.c18 import Dont_add_to_pages_def, add_text_to_template, sort_categories
+from ..core.new_c18 import add_text_to_template, get_dont_add_pages, sort_categories
 from ..core.new_api import load_main_api
 from ..core.utils import function_timer
 
@@ -51,7 +51,7 @@ def _get_page(page_title):
 
 @function_timer
 def add_to_page(page_title, arcat):
-    Dont_add_to_pages = Dont_add_to_pages_def()
+    Dont_add_to_pages = get_dont_add_pages()
 
     logger.info(f" page_title:{page_title} , cat:{arcat}")
 

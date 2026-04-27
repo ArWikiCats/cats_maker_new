@@ -1,15 +1,12 @@
 """
-Tests for src/core/c18/tools_bots/sort_bot.py
+Tests for src/core/new_c18/tools/sort.py
 
 This module tests category sorting functions.
 """
 
 import pytest
 
-from src.core.c18.tools_bots.sort_bot import (
-    sort_categories,
-    sort_text,
-)
+from src.core.new_c18.tools.sort import sort_categories, sort_text
 
 
 class TestSortText:

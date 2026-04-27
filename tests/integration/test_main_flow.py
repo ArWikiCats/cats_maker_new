@@ -11,7 +11,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.core.c18 import sql_cat
+from src.core.new_c18.core.category_resolver import CategoryResolver
+from src.core.new_c18.core.member_lister import MemberLister
 from src.core.wd_bots import wd_api_bot
 from src.core.wiki_api import himoBOT2
 from src.mk_cats import create_categories_from_list, create_category_page, mknew
@@ -42,31 +43,39 @@ class TestMainFlowIntegration:
         mock_lcn = mocker.patch("src.core.wiki_api.LCN_new.find_Page_Cat_without_hidden")
         mock_lcn.return_value = {}
 
-        # Mock database queries
-        mock_sql = mocker.patch("src.core.c18.sql_cat.get_ar_list_from_en")
+        # Mock CategoryResolver.list_en_pages_with_ar_links (used in mknew)
+        mock_sql = mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.list_en_pages_with_ar_links"
+        )
         mock_sql.return_value = ["Test Article 1", "Test Article 2"]
 
         # Mock category page creation
         mock_new_cat = mocker.patch("src.mk_cats.create_category_page.new_category")
         mock_new_cat.return_value = True
 
-        # Mock get_listenpageTitle
-        mock_listen = mocker.patch("src.core.c18.cat_tools_enlist.get_listenpageTitle")
+        # Mock MemberLister.get_listen_page_title (used in members_helper)
+        mock_listen = mocker.patch(
+            "src.core.new_c18.core.member_lister.MemberLister.get_listen_page_title"
+        )
         mock_listen.return_value = ["Article1", "Article2"]
 
-        # Mock MakeLitApiWay
-        mock_lit_api = mocker.patch("src.core.c18.cat_tools_enlist2.MakeLitApiWay")
+        # Mock CategoryResolver.make_lit_api_way (used in members_helper)
+        mock_lit_api = mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.make_lit_api_way"
+        )
         mock_lit_api.return_value = []
 
         # Mock to_wd.log_to_wikidata
         mock_log_wd = mocker.patch("src.core.wd_bots.to_wd.log_to_wikidata")
 
         # Mock validate_categories_for_new_cat
-        mock_validate = mocker.patch("src.core.c18.sql_cat_checker.validate_categories_for_new_cat")
-        mock_validate.return_value = []
+        mock_validate = mocker.patch("src.mk_cats.mknew.validate_categories_for_new_cat")
+        mock_validate.return_value = MagicMock(valid=True)
 
-        # Mock make_ar_list_newcat2
-        mock_make_ar_list = mocker.patch("src.core.c18.sql_cat.make_ar_list_newcat2")
+        # Mock CategoryResolver.resolve_members (used in mknew)
+        mock_make_ar_list = mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.resolve_members"
+        )
         mock_make_ar_list.return_value = []
 
         return {
@@ -203,8 +212,8 @@ class TestModuleInteraction:
         assert result is not None
         assert "title" in result
 
-    def test_c18_integration_with_sql(self, mocker):
-        """Test that c18 module integrates with SQL queries."""
+    def test_new_c18_integration_with_category_resolver(self, mocker):
+        """Test that new_c18 module integrates with CategoryResolver."""
         # Mock database connection
         mock_connect = mocker.patch("src.core.api_sql.db_pool.db_manager.execute_query")
         mock_connect.return_value = []
@@ -212,7 +221,7 @@ class TestModuleInteraction:
         # This tests that the modules can be imported and interact
 
         # The module should be importable without errors
-        assert sql_cat is not None
+        assert CategoryResolver is not None
 
     def test_mk_cats_integration_with_create_category_page(self, mocker):
         """Test that mk_cats integrates with create_category_page."""

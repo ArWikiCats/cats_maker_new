@@ -14,7 +14,7 @@ Responsibilities:
 import logging
 
 from ..config import settings
-from ..core.c18 import MakeLitApiWay, get_listenpageTitle
+from ..core.new_c18 import CategoryResolver, MemberLister
 from ..core.wiki_api import remove_redirect_pages, sub_cats_query
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,8 @@ def gather_members_from_sql(ar_title: str, en_page_title: str) -> list:
     Returns:
         A list of category member titles from SQL sources
     """
-    return get_listenpageTitle(ar_title, en_page_title)
+    lister = MemberLister()
+    return lister.get_listen_page_title(ar_title, en_page_title)
 
 
 def gather_members_from_api(en_page_title: str) -> list:
@@ -44,7 +45,8 @@ def gather_members_from_api(en_page_title: str) -> list:
     Returns:
         A list of category member titles from API sources
     """
-    result = MakeLitApiWay(en_page_title, Type="all")
+    resolver = CategoryResolver()
+    result = resolver.make_lit_api_way(en_page_title, item_type="all")
 
     if result:
         return result
