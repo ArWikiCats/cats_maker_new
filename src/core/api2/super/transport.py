@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import requests
+from .cookies_bot import get_file_name
 
 from ....config import settings
 
@@ -19,36 +20,6 @@ def load_session(lang: str = "", family: str = "", username: str = "") -> reques
     s = requests.Session()
     s.headers.update({"User-Agent": settings.wikipedia.user_agent})
     return s
-
-
-def del_cookies_file(file_path: str | Path) -> None:
-    file = Path(str(file_path))
-    if file.exists():
-        try:
-            file.unlink(missing_ok=True)
-            logger.debug(f"<<green>> unlink: file:{file}")
-        except Exception as e:
-            logger.warning(f"<<red>> unlink: Exception:{e}")
-
-
-def get_file_name(lang: str, family: str, username: str) -> Path:
-    tool = os.getenv("HOME")
-    if not tool:
-        tool = Path(__file__).parent
-    else:
-        tool = Path(tool)
-    cookies_dir = tool / "cookies"
-    if not cookies_dir.exists():
-        cookies_dir.mkdir(exist_ok=True)
-
-    if settings.bot.no_cookies:
-        randome = os.urandom(8).hex()
-        return cookies_dir / f"{randome}.txt"
-
-    lang = lang.lower()
-    family = family.lower()
-    username = username.lower().replace(" ", "_").split("@")[0]
-    return cookies_dir / f"{family}_{lang}_{username}.txt"
 
 
 class Transport:
@@ -140,6 +111,4 @@ class Transport:
 __all__ = [
     "Transport",
     "load_session",
-    "get_file_name",
-    "del_cookies_file",
 ]
