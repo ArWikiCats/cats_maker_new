@@ -8,7 +8,7 @@ import time
 
 from ...config import settings
 from ..new_api import Login
-from .utils import do_lag, find_lag, lag_bot
+from .lag_bot import do_lag, find_lag, get_lag_value, get_new_sleep
 
 logger = logging.getLogger(__name__)
 
@@ -138,9 +138,9 @@ class WD_API:
         if success == 1:
             # {"entity":{"sitelinks":{"arwiki":{}},"id":"Q97928551","type":"item","lastrevid":1242627521,"nochange":""},"success":1}
 
-            if lag_bot.newsleep[1] != 0:
-                logger.warning(f"<<lightgreen>> ** true. sleep({lag_bot.newsleep[1]})")
-                time.sleep(lag_bot.newsleep[1])
+            if get_new_sleep() != 0:
+                logger.warning(f"<<lightgreen>> ** true. sleep({get_new_sleep()})")
+                time.sleep(get_new_sleep())
             else:
                 logger.debug("<<lightgreen>> ** true.")
             # return True
@@ -151,7 +151,7 @@ class WD_API:
         do_lag()
 
         if "maxlag" not in data:
-            data["maxlag"] = lag_bot.FFa_lag[1] + 1
+            data["maxlag"] = get_lag_value() + 1
 
         data["format"] = "json"
         data["utf8"] = 1

@@ -54,12 +54,6 @@ def mock_database(mocker):
     return mock_cursor
 
 
-@pytest.fixture
-def mock_logger(mocker):
-    """Mock the project logger to suppress output during testing"""
-    return mocker.patch("src.core.helps.log.logger")
-
-
 # ===== API Response Fixtures =====
 
 
