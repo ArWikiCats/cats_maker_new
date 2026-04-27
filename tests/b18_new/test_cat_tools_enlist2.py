@@ -48,7 +48,6 @@ class TestMakeLitApiWay:
         """Test that pages from get_arpage_inside_encat are included"""
         mocker.patch("src.core.b18_new.cat_tools_enlist2.Categorized_Page_Generator", return_value=["Page1"])
         mocker.patch("src.core.b18_new.cat_tools_enlist2.get_arpage_inside_encat", return_value=["صفحة_عربية"])
-        mocker.patch("src.core.b18_new.cat_tools_enlist2.sub_cats_query", return_value=["صفحة_عربية"])
         mocker.patch(
             "src.core.b18_new.cat_tools_enlist2.find_LCN",
             return_value={"Page1": {"langlinks": {"ar": "صفحة1"}}, "صفحة عربية": {"langlinks": {"ar": "صفحة عربية"}}},
@@ -63,7 +62,6 @@ class TestMakeLitApiWay:
         """Test that False is returned when no pages found"""
         mocker.patch("src.core.b18_new.cat_tools_enlist2.Categorized_Page_Generator", return_value=[])
         mocker.patch("src.core.b18_new.cat_tools_enlist2.get_arpage_inside_encat", return_value=[])
-        mocker.patch("src.core.b18_new.cat_tools_enlist2.sub_cats_query", return_value=[])
 
         result = MakeLitApiWay("EmptyCategory")
 

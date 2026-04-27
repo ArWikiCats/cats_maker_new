@@ -51,7 +51,10 @@ class TestGetArList:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"page_title": "test", "page_namespace": 0}])
+        mocker.patch(
+            "src.core.b18_new.sql_cat.db_manager.execute_query",
+            return_value=[{"page_title": "test", "page_namespace": 0}],
+        )
 
         result = get_ar_list("تصنيف:علوم")
 
@@ -71,7 +74,10 @@ class TestGetArList:
 
     def test_replaces_spaces_with_underscores(self, mocker):
         """Test that spaces are replaced with underscores in parameter"""
-        mock_sql = mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"page_title": "test", "page_namespace": 0}])
+        mock_sql = mocker.patch(
+            "src.core.b18_new.sql_cat.db_manager.execute_query",
+            return_value=[{"page_title": "test", "page_namespace": 0}],
+        )
 
         result = get_ar_list("تصنيف:علوم الحاسوب", us_sql=True)
         assert result == ["test"]
