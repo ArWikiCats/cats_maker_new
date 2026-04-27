@@ -1,5 +1,5 @@
 """
-Tests for src/core/c18/cat_tools2.py
+Tests for cat_tools2.py
 
 This module tests category tools functions.
 """

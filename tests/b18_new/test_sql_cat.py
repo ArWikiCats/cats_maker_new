@@ -1,5 +1,5 @@
 """
-Tests for src/core/new_c18/core/category_resolver.py SQL-related methods.
+Tests for category_resolver.py SQL-related methods.
 
 This module tests SQL-based category functions.
 """
