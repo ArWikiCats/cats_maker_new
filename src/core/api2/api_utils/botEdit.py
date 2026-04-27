@@ -95,20 +95,31 @@ class BotEditChecker:
         self._bot_cache.setdefault(botjob, {})[title_page] = True
         return True
 
-    def bot_May_Edit_do(self, text: str = "", title_page: str = "", botjob: str = "all") -> bool:
+    def bot_May_Edit_do(
+        self,
+        text: str = "",
+        title_page: str = "",
+        botjob: str = "all",
+    ) -> bool:
+        """
+        Determines if a bot is permitted to edit a page based on templates in the page text.
+        """
         if settings.bot.force_edit:
             return True
+
         if botjob in ["", "fixref|cat|stub|tempcat|portal"]:
             botjob = "all"
+
         if botjob not in self._bot_cache:
             self._bot_cache[botjob] = {}
+
         if title_page in self._bot_cache[botjob]:
             return self._bot_cache[botjob][title_page]
+
         templates = extract_templates_and_params(text)
         all_stop = STOP_EDIT_TEMPLATES["all"]
         for temp in templates:
-            _name, namestrip, params, _template = (
-                temp["name"],
+            namestrip, params, _template = (
                 temp["namestrip"],
                 temp["params"],
                 temp["item"],
@@ -121,8 +132,11 @@ class BotEditChecker:
                 return False
             if title.lower() == "nobots":
                 return self._handle_nobots_template(params, title_page, botjob, _template)
+            # {{bots|allow=<botlist>}}  منع جميع البوتات غير الموجودة في القائمة
+            # {{bots|deny=<botlist>}}   منع جميع البوتات الموجودة في القائمة
             elif title.lower() == "bots":
                 return self._handle_bots_template(params, title_page, botjob, title)
+        # no restricting template found
         self._bot_cache.setdefault(botjob, {})[title_page] = True
         return True
 
@@ -131,6 +145,11 @@ _default_checker = BotEditChecker()
 
 
 def check_create_time(page, title_page: str) -> bool:
+    """
+    Checks if a page was created at least three hours ago before allowing bot edits.
+
+    Returns True if the page is not in the Arabic main namespace or if the creation timestamp is missing. Returns False if the page was created less than three hours ago, caching the result for future checks.
+    """
     if title_page in _default_checker._created_cache:
         return _default_checker._created_cache[title_page]
     ns = page.namespace()
@@ -154,9 +173,13 @@ def check_create_time(page, title_page: str) -> bool:
 
 
 def check_last_edit_time(page, title_page: str, delay: int) -> bool:
+    """
+    Checks if enough time has passed since the last non-bot edit before allowing a bot to edit.
+    """
     userinfo = page.get_userinfo()
     if "bot" in userinfo.get("groups", []):
         return True
+    # example: 2025-05-07T12:00:17Z
     timestamp = page.get_timestamp()
     now = datetime.datetime.now(datetime.timezone.utc)
     if timestamp:
@@ -179,6 +202,9 @@ def bot_May_Edit(
     page=None,
     delay: int = 0,
 ) -> bool:
+    """
+    Determines whether a bot is permitted to edit a page based on templates, last edit time, and creation time.
+    """
     check_it = _default_checker.bot_May_Edit_do(text=text, title_page=title_page, botjob=botjob)
     if page and check_it:
         if delay and isinstance(delay, int):

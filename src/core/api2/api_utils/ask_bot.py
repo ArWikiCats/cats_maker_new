@@ -42,7 +42,9 @@ class ASK_BOT:
         username: str = "",
         summary: str = "",
     ) -> bool:
-        """Prompts the user to confirm saving changes to a page, optionally displaying a diff."""
+        """
+        Prompts the user to confirm saving changes to a page, optionally displaying a diff.
+        """
         message = message or "Do you want to accept these changes?"
         if settings.bot.ask and not self._save_or_ask.get(job):
             if text or newtext:

@@ -20,6 +20,7 @@ def disable_network(mocker):
     mocker.patch("requests.post", side_effect=Exception("Network disabled in tests"))
     mocker.patch("urllib.request.urlopen", side_effect=Exception("Network disabled in tests"))
 
+
 # ===== Shared Test Data Fixtures =====
 
 

@@ -17,6 +17,10 @@ def _login(lang: str, family: str, username: str) -> Login:
 
 
 class ALL_APIS:
+    """
+    A class that provides access to various API functionalities.
+    """
+
     def __init__(self, lang: str, family: str, username: str, password: str) -> None:
         self.lang = lang
         self.family = family

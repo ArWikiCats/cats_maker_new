@@ -19,24 +19,23 @@ if not tool:
 else:
     tool = Path(tool)
 
-ta_dir = tool / "cookies"
+cookies_dir = tool / "cookies"
 
-if not ta_dir.exists():
-    ta_dir.mkdir(exist_ok=True, parents=True)
+if not cookies_dir.exists():
+    cookies_dir.mkdir(exist_ok=True, parents=True)
 
     logger.debug("<<green>> mkdir:")
-    logger.debug(f"ta_dir:{ta_dir}")
+    logger.debug(f"cookies_dir:{cookies_dir}")
     logger.debug("<<green>> mkdir:")
 
     try:
-        os.chmod(ta_dir, statgroup)
+        os.chmod(cookies_dir, statgroup)
     except Exception as e:
         logger.warning(f"<<red>> chmod: Exception:{e}")
 
 
-def del_cookies_file(file_path):
+def del_cookies_file(file_path: str | Path) -> None:
     file = Path(str(file_path))
-
     if file.exists():
         try:
             file.unlink(missing_ok=True)
@@ -45,21 +44,17 @@ def del_cookies_file(file_path):
             logger.warning(f"<<red>> unlink: Exception:{e}")
 
 
-def get_file_name(lang, family, username) -> Path:
+def get_file_name(lang: str, family: str, username: str) -> Path:
     if settings.bot.no_cookies:
         randome = os.urandom(8).hex()
-        return ta_dir / f"{randome}.txt"
+        return cookies_dir / f"{randome}.txt"
 
     lang = lang.lower()
     family = family.lower()
-
     username = username.lower().replace(" ", "_").split("@")[0]
-
-    file = ta_dir / f"{family}_{lang}_{username}.txt"
+    file = cookies_dir / f"{family}_{lang}_{username}.txt"
 
     if file.exists():
-        # check if file old is > 3 days
-
         file_time = datetime.fromtimestamp(file.stat().st_mtime)
 
         if not file.stat().st_size:
@@ -70,19 +65,15 @@ def get_file_name(lang, family, username) -> Path:
     return file
 
 
-def from_folder(lang, family, username):
+def from_folder(lang: str, family: str, username: str) -> str | bool:
     file = get_file_name(lang, family, username)
-
     cookies = False
 
     if file.exists():
         if not file.stat().st_size:
             return False
 
-        # check if file old is > 3 days
-
         file_time = datetime.fromtimestamp(file.stat().st_mtime)
-
         if datetime.now() - file_time > timedelta(days=3):
             del_cookies_file(file)
             return False
@@ -100,11 +91,17 @@ def from_folder(lang, family, username):
 
 
 @lru_cache(maxsize=128)
-def get_cookies(lang, family, username):
+def get_cookies(lang: str, family: str, username: str) -> str:
     cookies = from_folder(lang, family, username)
-
     if not cookies:
         logger.debug(f" <<red>> : <<yellow>> [[{lang}:{family}]] user:{username} <<red>> not found")
         return "make_new"
-
     return cookies
+
+
+__all__ = [
+    "get_cookies",
+    "get_file_name",
+    "del_cookies_file",
+    "from_folder",
+]
