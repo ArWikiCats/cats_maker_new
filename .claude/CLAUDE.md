@@ -45,8 +45,8 @@ run.py (CLI args) → config/settings.py (dataclass config) → mk_cats/mknew.py
 ## Key Modules
 
 -   `src/config/settings.py`: Centralized dataclass-based configuration. All settings accessed via `from src.config import settings`
--   `src/core/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`
--   `src/core/mk_cats/members_helper.py`: Member collection from SQL, API, and SubSub sources
+-   `src/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`
+-   `src/mk_cats/members_helper.py`: Member collection from SQL, API, and SubSub sources
 -   `src/core/wd_bots/`: Wikidata API integration
 -   `src/core/wiki_api/`: MediaWiki API calls
 

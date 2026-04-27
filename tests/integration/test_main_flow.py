@@ -12,16 +12,16 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.core.b18_new import sql_cat
-from src.core.mk_cats import create_categories_from_list, create_category_page, mknew
-from src.core.mk_cats.mknew import (
+from src.core.wd_bots import wd_api_bot
+from src.core.wiki_api import himoBOT2
+from src.mk_cats import create_categories_from_list, create_category_page, mknew
+from src.mk_cats.mknew import (
     clear_processing_state,
     make_ar,
     one_cat,
     process_catagories,
     scan_ar_title,
 )
-from src.core.wd_bots import wd_api_bot
-from src.core.wiki_api import himoBOT2
 
 
 class TestMainFlowIntegration:
@@ -47,7 +47,7 @@ class TestMainFlowIntegration:
         mock_sql.return_value = ["Test Article 1", "Test Article 2"]
 
         # Mock category page creation
-        mock_new_cat = mocker.patch("src.core.mk_cats.create_category_page.new_category")
+        mock_new_cat = mocker.patch("src.mk_cats.create_category_page.new_category")
         mock_new_cat.return_value = True
 
         # Mock get_listenpageTitle
@@ -59,7 +59,7 @@ class TestMainFlowIntegration:
         mock_lit_api.return_value = []
 
         # Mock add_to_final_list
-        mock_add_final = mocker.patch("src.core.mk_cats.add_bot.add_to_final_list")
+        mock_add_final = mocker.patch("src.mk_cats.add_bot.add_to_final_list")
 
         # Mock to_wd.log_to_wikidata
         mock_log_wd = mocker.patch("src.core.wd_bots.to_wd.log_to_wikidata")
@@ -89,21 +89,21 @@ class TestMainFlowIntegration:
     @pytest.fixture
     def mock_ar_make_lab(self, mocker):
         """Mock the ar_make_lab function that generates Arabic labels."""
-        mock = mocker.patch("src.core.mk_cats.mknew.ar_make_lab")
+        mock = mocker.patch("src.mk_cats.mknew.ar_make_lab")
         mock.return_value = "علوم"
         return mock
 
     @pytest.fixture
     def mock_check_en_temps(self, mocker):
         """Mock check_en_temps to always return True."""
-        mock = mocker.patch("src.core.mk_cats.mknew.check_en_temps")
+        mock = mocker.patch("src.mk_cats.mknew.check_en_temps")
         mock.return_value = True
         return mock
 
     @pytest.fixture
     def mock_filter_en(self, mocker):
         """Mock filter_en.filter_cat to always return True."""
-        mock = mocker.patch("src.core.mk_cats.utils.filter_en.filter_cat")
+        mock = mocker.patch("src.mk_cats.utils.filter_en.filter_cat")
         mock.return_value = True
         return mock
 
@@ -119,7 +119,7 @@ class TestMainFlowIntegration:
         """Test that create_categories_from_list iterates over all categories."""
 
         # Mock the entire one_cat function to track calls
-        mock_one_cat = mocker.patch("src.core.mk_cats.mknew.one_cat")
+        mock_one_cat = mocker.patch("src.mk_cats.mknew.one_cat")
 
         categories = ["Category:Science", "Category:Technology", "Category:Art"]
         create_categories_from_list(categories)
@@ -140,7 +140,7 @@ class TestMainFlowIntegration:
         clear_processing_state()
 
         # Mock ar_make_lab to return a label
-        mocker.patch("src.core.mk_cats.mknew.ar_make_lab", return_value="")
+        mocker.patch("src.mk_cats.mknew.ar_make_lab", return_value="")
 
         # First call should process
         result1 = one_cat("Category:Test", 1, 2)
@@ -158,7 +158,7 @@ class TestMainFlowIntegration:
         """Test that process_catagories calls make_ar with correct parameters."""
 
         # Mock make_ar to return an empty list (no subcategories)
-        mock_make_ar = mocker.patch("src.core.mk_cats.mknew.make_ar")
+        mock_make_ar = mocker.patch("src.mk_cats.mknew.make_ar")
         mock_make_ar.return_value = []
 
         process_catagories("Category:Science", "علوم", 1, 1)
@@ -222,8 +222,8 @@ class TestModuleInteraction:
         """Test that mk_cats integrates with create_category_page."""
 
         # Mock all external calls in create_category_page
-        mocker.patch("src.core.mk_cats.create_category_page.add_text_to_cat", return_value="Test text")
-        mocker.patch("src.core.mk_cats.create_category_page.make_category", return_value=True)
+        mocker.patch("src.mk_cats.create_category_page.add_text_to_cat", return_value="Test text")
+        mocker.patch("src.mk_cats.create_category_page.make_category", return_value=True)
 
         # The module functions should be callable
         assert create_category_page.new_category is not None
@@ -267,7 +267,7 @@ class TestCallbackIntegration:
         callback_mock = MagicMock()
 
         # Mock all dependencies
-        mocker.patch("src.core.mk_cats.mknew.ar_make_lab", return_value="")
+        mocker.patch("src.mk_cats.mknew.ar_make_lab", return_value="")
 
         # Call with callback
         create_categories_from_list(["Category:Test"], callback=callback_mock)
@@ -281,7 +281,7 @@ class TestCallbackIntegration:
         callback_mock = MagicMock()
 
         # Mock make_ar to capture the callback
-        mock_make_ar = mocker.patch("src.core.mk_cats.mknew.make_ar")
+        mock_make_ar = mocker.patch("src.mk_cats.mknew.make_ar")
         mock_make_ar.return_value = []
 
         process_catagories("Category:Test", "اختبار", 1, 1, callback=callback_mock)
@@ -298,7 +298,7 @@ class TestErrorHandling:
         """Test that the flow handles None values in the list."""
 
         # Mock one_cat to track calls
-        mock_one_cat = mocker.patch("src.core.mk_cats.mknew.one_cat")
+        mock_one_cat = mocker.patch("src.mk_cats.mknew.one_cat")
 
         # Should handle list with None gracefully
         # The actual implementation strips empty strings
@@ -331,10 +331,10 @@ class TestDataFlowIntegration:
     def test_category_data_flows_from_en_to_ar(self, mocker):
         """Test that category data flows correctly from English to Arabic."""
         # Mock the translation/label generation
-        mock_label = mocker.patch("src.core.mk_cats.mknew.ar_make_lab")
+        mock_label = mocker.patch("src.mk_cats.mknew.ar_make_lab")
         mock_label.return_value = "علوم الحاسوب"
 
-        from src.core.mk_cats.mknew import ar_make_lab
+        from src.mk_cats.mknew import ar_make_lab
 
         # Import after patching
 

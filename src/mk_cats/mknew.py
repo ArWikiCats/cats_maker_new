@@ -7,15 +7,15 @@ import os
 import sys
 from pathlib import Path
 
-from ...config import settings
-from ..b18_new import (
+from ..config import settings
+from ..core.b18_new import (
     get_ar_list_from_en,
     make_ar_list_newcat2,
     validate_categories_for_new_cat,
 )
-from ..new_api import load_main_api
-from ..wd_bots import Get_Sitelinks_From_wikidata, add_labels, log_to_wikidata, log_to_wikidata_qid
-from ..wiki_api import find_Page_Cat_without_hidden
+from ..core.new_api import load_main_api
+from ..core.wd_bots import Get_Sitelinks_From_wikidata, add_labels, log_to_wikidata, log_to_wikidata_qid
+from ..core.wiki_api import find_Page_Cat_without_hidden
 from .add_bot import add_to_final_list
 from .create_category_page import new_category
 from .members_helper import collect_category_members
