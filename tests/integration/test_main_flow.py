@@ -58,9 +58,6 @@ class TestMainFlowIntegration:
         mock_lit_api = mocker.patch("src.core.b18_new.cat_tools_enlist2.MakeLitApiWay")
         mock_lit_api.return_value = []
 
-        # Mock add_to_final_list
-        mock_add_final = mocker.patch("src.mk_cats.add_bot.add_to_final_list")
-
         # Mock to_wd.log_to_wikidata
         mock_log_wd = mocker.patch("src.core.wd_bots.to_wd.log_to_wikidata")
 
@@ -80,7 +77,6 @@ class TestMainFlowIntegration:
             "new_cat": mock_new_cat,
             "listen": mock_listen,
             "lit_api": mock_lit_api,
-            "add_final": mock_add_final,
             "log_wd": mock_log_wd,
             "make_ar_list": mock_make_ar_list,
             "validate": mock_validate,
