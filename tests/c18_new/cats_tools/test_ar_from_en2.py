@@ -22,7 +22,7 @@ class TestGetArListTitleFromEnList:
 
     def test_processes_list_in_batches(self, mocker):
         """Test that list is processed in batches of 50"""
-        mock_find_lcn = mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.find_LCN", return_value={})
+        mock_find_lcn = mocker.patch("src.core.cats_helpers.ar_from_en2.find_LCN", return_value={})
 
         # Create list with 55 items to ensure batching
         input_list = [f"Page{i}" for i in range(55)]
@@ -33,7 +33,7 @@ class TestGetArListTitleFromEnList:
     def test_extracts_arabic_langlinks(self, mocker):
         """Test that Arabic langlinks are extracted"""
         mocker.patch(
-            "src.core.c18_new.cats_tools.ar_from_en2.find_LCN",
+            "src.core.cats_helpers.ar_from_en2.find_LCN",
             return_value={
                 "Science": {"langlinks": {"ar": "علوم"}},
                 "History": {"langlinks": {"ar": "تاريخ"}},
@@ -46,7 +46,7 @@ class TestGetArListTitleFromEnList:
 
     def test_uses_correct_site_code_for_en(self, mocker):
         """Test that English site code is used by default"""
-        mock_find_lcn = mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.find_LCN", return_value={})
+        mock_find_lcn = mocker.patch("src.core.cats_helpers.ar_from_en2.find_LCN", return_value={})
 
         get_ar_list_title_from_en_list(["Test"], wiki="en")
 
@@ -56,7 +56,7 @@ class TestGetArListTitleFromEnList:
 
     def test_uses_correct_site_code_for_fr(self, mocker):
         """Test that French site code is used when wiki='fr'"""
-        mock_find_lcn = mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.find_LCN", return_value={})
+        mock_find_lcn = mocker.patch("src.core.cats_helpers.ar_from_en2.find_LCN", return_value={})
 
         get_ar_list_title_from_en_list(["Test"], wiki="fr")
 
@@ -65,7 +65,7 @@ class TestGetArListTitleFromEnList:
 
     def test_handles_pipe_prefix(self, mocker):
         """Test handling of pipe prefix in joined list"""
-        mock_find_lcn = mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.find_LCN", return_value={})
+        mock_find_lcn = mocker.patch("src.core.cats_helpers.ar_from_en2.find_LCN", return_value={})
 
         get_ar_list_title_from_en_list(["Page"])
 
@@ -79,7 +79,7 @@ class TestEnCategoryMembers:
     @pytest.mark.skip(reason="ru_cache_wrapper object does not have the attribute 'CatDepth'")
     def test_calls_catdepth_with_correct_params(self, mocker):
         """Test that CatDepth is called with correct parameters"""
-        mock_cat_depth = mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.load_main_api.CatDepth", return_value={})
+        mock_cat_depth = mocker.patch("src.core.cats_helpers.ar_from_en2.load_main_api.CatDepth", return_value={})
 
         en_category_members("Science", wiki="en")
 
@@ -92,7 +92,7 @@ class TestEnCategoryMembers:
     def test_filters_by_namespace(self, mocker):
         """Test that results are filtered by namespace"""
         mocker.patch(
-            "src.core.c18_new.cats_tools.ar_from_en2.load_main_api.CatDepth",
+            "src.core.cats_helpers.ar_from_en2.load_main_api.CatDepth",
             return_value={
                 "Page1": {"ns": 0},  # Article
                 "Page2": {"ns": 14},  # Category
@@ -111,7 +111,7 @@ class TestEnCategoryMembers:
     @pytest.mark.skip(reason="ru_cache_wrapper object does not have the attribute 'CatDepth'")
     def test_returns_empty_list_when_no_members(self, mocker):
         """Test that empty list is returned when no members"""
-        mocker.patch("src.core.c18_new.cats_tools.ar_from_en2.load_main_api.CatDepth", return_value={})
+        mocker.patch("src.core.cats_helpers.ar_from_en2.load_main_api.CatDepth", return_value={})
 
         result = en_category_members("EmptyCategory")
         assert result == []
