@@ -6,7 +6,7 @@ import time
 import urllib.parse
 
 from ....config import settings
-from .bot import LOGIN_HELPS
+from .transport import LOGIN_HELPS
 from .handel_errors import HandleErrors
 
 logger = logging.getLogger(__name__)
