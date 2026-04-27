@@ -133,7 +133,7 @@ def post_wd_params(params) -> bool:
 
     success = result.get("success", 0)
     if success == 1:
-        after_success(success)
+        after_success()
         logger.warning("<<lightgreen>> ** true.")
         return True
 
