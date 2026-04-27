@@ -37,7 +37,6 @@ new_all_tab = {1: False}
 
 def new_all_work_on_title(title, **Kwargs):
     if new_all:
-
         new_all.work_on_title(title=title, dont_create=True, **Kwargs)
 
 
@@ -69,7 +68,6 @@ def get_result(num):
 
 
 def get_quarry_result(number, get_rows=None):
-
     logger.info(f"Get quarry result from number: {number}")
 
     results = get_result(number)

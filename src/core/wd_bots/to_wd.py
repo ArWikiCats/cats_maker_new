@@ -97,7 +97,6 @@ def outbot_json_bot(err):
 
 
 def outbot_json(js_text, fi="", line=""):
-
     err = js_text.get("error", {})
 
     if not err:
