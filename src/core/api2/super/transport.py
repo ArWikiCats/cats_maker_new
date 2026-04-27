@@ -5,6 +5,7 @@ import logging
 import os
 from http.cookiejar import MozillaCookieJar
 from pathlib import Path
+from typing import Any
 
 import requests
 
