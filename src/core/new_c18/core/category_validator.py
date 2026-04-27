@@ -9,7 +9,7 @@ from ....config import settings
 from ...wiki_api import get_page_info_from_wikipedia
 from ..constants import NO_TEMPLATES_AR, NO_TEMPLATES_AR_WITHOUT_STUBS
 from ..models import ValidationResult
-from ..utils import global_False_entemps
+from ...utils import global_False_entemps
 
 logger = logging.getLogger(__name__)
 

@@ -7,8 +7,8 @@ import logging
 
 from ....config import settings
 from ...api_sql import CategoryComparator
-from ..core.category_resolver import CategoryResolver
-from ..core.category_validator import validate_categories_for_new_cat
+from .category_resolver import CategoryResolver
+from .category_validator import validate_categories_for_new_cat
 from ..utils.text import normalize_category_title
 
 logger = logging.getLogger(__name__)
