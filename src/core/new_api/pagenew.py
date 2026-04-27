@@ -28,11 +28,7 @@ def load_login_bot(lang="ar", family="wikipedia") -> Login:
     return load_main_api(lang=lang, family=family).login_bot
 
 
-main_api = load_main_api()
-MainPage = main_api.MainPage
-CatDepth = main_api.CatDepth
-
 __all__ = [
-    "MainPage",
-    "CatDepth",
+    "load_main_api",
+    "load_login_bot",
 ]
