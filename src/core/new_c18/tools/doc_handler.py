@@ -9,7 +9,7 @@ import re
 import wikitextparser as wtp
 
 from ...new_api import load_main_api
-from ..constants import PRE_TEXT, TOSEARCH_AND_REPLACE, TO_SEARCH
+from ..constants import PRE_TEXT, TO_SEARCH, TOSEARCH_AND_REPLACE
 
 logger = logging.getLogger(__name__)
 

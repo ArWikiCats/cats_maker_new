@@ -6,9 +6,9 @@ from __future__ import annotations
 import logging
 
 from ...config import settings
+from ..models import ValidationResult
 from ..utils import global_False_entemps
 from ..wiki_api import get_page_info_from_wikipedia
-from ..models import ValidationResult
 from .constants import NO_TEMPLATES_AR, NO_TEMPLATES_AR_WITHOUT_STUBS
 
 logger = logging.getLogger(__name__)

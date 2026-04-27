@@ -7,11 +7,11 @@ import logging
 
 from ...config import settings
 from ..cats_helpers import Categorized_Page_Generator
-from ..new_api import load_main_api
-from ..wiki_api import find_LCN, get_arpage_inside_encat
-from ..io.sql_queries import fetch_ar_category_members, fetch_en_category_langlinks
-from ..utils.text import normalize_category_title
 from ..constants import DEFAULT_MEMBER_NAMESPACES, STUB_MEMBER_NAMESPACES
+from ..io.sql_queries import fetch_ar_category_members, fetch_en_category_langlinks
+from ..new_api import load_main_api
+from ..utils.text import normalize_category_title
+from ..wiki_api import find_LCN, get_arpage_inside_encat
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +36,8 @@ class CategoryResolver:
         if self._use_sql():
             rows = fetch_ar_category_members(ar_title)
             from ..api_sql import add_namespace_prefix
-            ar_list = [
-                add_namespace_prefix(r["page_title"], r["page_namespace"], lang="ar")
-                for r in rows
-            ]
+
+            ar_list = [add_namespace_prefix(r["page_title"], r["page_namespace"], lang="ar") for r in rows]
 
         if not ar_list:
             api = load_main_api("ar")

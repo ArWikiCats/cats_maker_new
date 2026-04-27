@@ -6,9 +6,9 @@ from __future__ import annotations
 import logging
 
 from ...config import settings
+from ..constants import DEFAULT_MEMBER_NAMESPACES, STUB_MEMBER_NAMESPACES
 from ..new_api import load_main_api
 from ..wiki_api import find_LCN
-from ..constants import DEFAULT_MEMBER_NAMESPACES, STUB_MEMBER_NAMESPACES
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +37,7 @@ def fetch_category_members(title: str, wiki: str = "en", namespaces: list[int] |
     api = load_main_api(wiki)
     cat_member = api.CatDepth(title, depth=0, ns=ns_str, with_lang="ar")
 
-    return [
-        title.replace("_", " ")
-        for title, info in cat_member.items()
-        if int(info["ns"]) in namespaces
-    ]
+    return [title.replace("_", " ") for title, info in cat_member.items() if int(info["ns"]) in namespaces]
 
 
 def translate_titles_to_ar(titles: list[str], source_wiki: str = "en", batch_size: int = 50) -> list[str]:

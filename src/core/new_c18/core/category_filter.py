@@ -146,11 +146,7 @@ def filter_category_text(
 
     len_first = len(cats)
 
-    filtered = [
-        cat
-        for cat in cats
-        if not _should_exclude(cat, ns, text, deleted, false_temps, templates_map)
-    ]
+    filtered = [cat for cat in cats if not _should_exclude(cat, ns, text, deleted, false_temps, templates_map)]
 
     removed = len_first - len(filtered)
     logger.info(f"len removed items: {removed}")

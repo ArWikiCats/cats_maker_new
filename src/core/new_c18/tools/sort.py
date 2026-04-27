@@ -7,10 +7,7 @@ import re
 
 from ..constants import ARABIC_ALPHABET
 
-
-_ARABIC_COLLATION = str.maketrans(
-    {ch: f"{i:02d}" for i, ch in enumerate(ARABIC_ALPHABET)}
-)
+_ARABIC_COLLATION = str.maketrans({ch: f"{i:02d}" for i, ch in enumerate(ARABIC_ALPHABET)})
 
 
 def arabic_sort_key(text: str) -> str:

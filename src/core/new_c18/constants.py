@@ -19,58 +19,70 @@ CAT_PREFIX_EN = "Category:"
 CAT_PREFIX_FR = "Catégorie:"
 
 # Blacklists (immutable)
-SKIPPED_CATEGORIES: frozenset[str] = frozenset({
-    "تصنيف:مقالات ويكيبيديا تضمن نصوصا من الطبعة العشرين لكتاب تشريح جرايز (1918)",
-    "تصنيف:Webarchive template wayback links",
-    "تصنيف:Templates generating hCalendars",
-    "تصنيف:Templates generating hCards and Geo",
-    "تصنيف:قوالب معلومات مباني",
-    "تصنيف:قوالب بحقول إحداثيات",
-    "تصنيف:قوالب لغة-س",
-    "تصنيف:قوالب معلومات",
-    "تصنيف:قوالب تستند على وحدات لوا",
-    "تصنيف:قوالب تستخدم بيانات من ويكي بيانات",
-    "تصنيف:قوالب تستخدم قالب بيانات القالب",
-    "تصنيف:صفحات توضيح",
-})
+SKIPPED_CATEGORIES: frozenset[str] = frozenset(
+    {
+        "تصنيف:مقالات ويكيبيديا تضمن نصوصا من الطبعة العشرين لكتاب تشريح جرايز (1918)",
+        "تصنيف:Webarchive template wayback links",
+        "تصنيف:Templates generating hCalendars",
+        "تصنيف:Templates generating hCards and Geo",
+        "تصنيف:قوالب معلومات مباني",
+        "تصنيف:قوالب بحقول إحداثيات",
+        "تصنيف:قوالب لغة-س",
+        "تصنيف:قوالب معلومات",
+        "تصنيف:قوالب تستند على وحدات لوا",
+        "تصنيف:قوالب تستخدم بيانات من ويكي بيانات",
+        "تصنيف:قوالب تستخدم قالب بيانات القالب",
+        "تصنيف:صفحات توضيح",
+    }
+)
 
-FALSE_TEMPLATES: frozenset[str] = frozenset({
-    "شطب",
-    "مقالات متعلقة",
-    "بذرة",
-    "ويكي بيانات",
-    "تستند على",
-})
+FALSE_TEMPLATES: frozenset[str] = frozenset(
+    {
+        "شطب",
+        "مقالات متعلقة",
+        "بذرة",
+        "ويكي بيانات",
+        "تستند على",
+    }
+)
 
-FALSE_TEMPLATES_WITHOUT_STUBS: frozenset[str] = frozenset({
-    "شطب",
-    "مقالات متعلقة",
-    "ويكي بيانات",
-    "تستند على",
-})
+FALSE_TEMPLATES_WITHOUT_STUBS: frozenset[str] = frozenset(
+    {
+        "شطب",
+        "مقالات متعلقة",
+        "ويكي بيانات",
+        "تستند على",
+    }
+)
 
-NO_TEMPLATES_AR: frozenset[str] = frozenset({
-    "تصنيف ويكيبيديا",
-    "تحويل تصنيف",
-    "تصنيف تتبع",
-    "تصنيف تهذيب شهري",
-    "تصنيف مخفي",
-    "تصنيف بذرة",
-    "تصنيف حاوية",
-})
+NO_TEMPLATES_AR: frozenset[str] = frozenset(
+    {
+        "تصنيف ويكيبيديا",
+        "تحويل تصنيف",
+        "تصنيف تتبع",
+        "تصنيف تهذيب شهري",
+        "تصنيف مخفي",
+        "تصنيف بذرة",
+        "تصنيف حاوية",
+    }
+)
 
-NO_TEMPLATES_AR_WITHOUT_STUBS: frozenset[str] = frozenset({
-    "تصنيف ويكيبيديا",
-    "تحويل تصنيف",
-    "تصنيف تتبع",
-    "تصنيف تهذيب شهري",
-    "تصنيف حاوية",
-})
+NO_TEMPLATES_AR_WITHOUT_STUBS: frozenset[str] = frozenset(
+    {
+        "تصنيف ويكيبيديا",
+        "تحويل تصنيف",
+        "تصنيف تتبع",
+        "تصنيف تهذيب شهري",
+        "تصنيف حاوية",
+    }
+)
 
-SKIP_CATEGORIES: frozenset[str] = frozenset({
-    "تصنيف:أشخاص على قيد الحياة",
-    "تصنيف:أشخاص أحياء",
-})
+SKIP_CATEGORIES: frozenset[str] = frozenset(
+    {
+        "تصنيف:أشخاص على قيد الحياة",
+        "تصنيف:أشخاص أحياء",
+    }
+)
 
 # Template replacement markers
 TOSEARCH_AND_REPLACE: list[str] = [
