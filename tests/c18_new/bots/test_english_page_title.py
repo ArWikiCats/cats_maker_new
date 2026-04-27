@@ -41,16 +41,16 @@ class TestExtractWikidataQid:
         result = extract_wikidata_qid(text)
         assert result == "Q22222"
 
-    def test_returns_empty_string_when_no_qid(self):
-        """Test that empty string is returned when no QID found"""
+    def test_returns_none_when_no_qid(self):
+        """Test that None is returned when no QID found"""
         text = "مقالة عادلة بدون قالب ويكي بيانات"
         result = extract_wikidata_qid(text)
-        assert result == ""
+        assert result is None
 
-    def test_returns_empty_string_for_empty_text(self):
-        """Test that empty string is returned for empty text"""
+    def test_returns_none_for_empty_text(self):
+        """Test that None is returned for empty text"""
         result = extract_wikidata_qid("")
-        assert result == ""
+        assert result is None
 
     def test_handles_multiple_templates(self):
         """Test that first matching QID is extracted"""

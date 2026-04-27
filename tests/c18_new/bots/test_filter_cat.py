@@ -109,10 +109,9 @@ class TestFilterCategoryText:
     def test_removes_deleted_pages(self, mocker):
         """Test that deleted pages are removed"""
         mocker.patch("src.core.new_c18.core.category_filter.get_templates", return_value={})
-        mocker.patch("src.core.new_c18.core.category_filter.get_deleted_pages", return_value=["تصنيف:محذوف"])
 
         final_cats = ["تصنيف:محذوف", "تصنيف:علوم"]
-        result = filter_category_text(final_cats, 0, "")
+        result = filter_category_text(final_cats, 0, "", deleted={"تصنيف:محذوف"})
 
         assert "تصنيف:محذوف" not in result
 
@@ -131,7 +130,7 @@ class TestFilterCategoryText:
         """Test that categories with redirect template are removed"""
         mocker.patch(
             "src.core.new_c18.core.category_filter.get_templates",
-            return_value={"تصنيف:علوم": {"templates": ["قالب:تحويل تصنيف"]}},
+            return_value={"تصنيف:علوم": ["قالب:تحويل تصنيف"]},
         )
         mocker.patch("src.core.new_c18.core.category_filter.get_deleted_pages", return_value=[])
 

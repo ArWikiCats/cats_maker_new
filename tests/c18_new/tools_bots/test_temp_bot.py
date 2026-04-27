@@ -45,7 +45,7 @@ class TestGetTemplates:
     def test_returns_cached_value_if_available(self, mocker):
         """Test that cached values are returned without API call"""
         # Clear cache first
-        _cache._store["ar"]["cached_test"] = {"templates": ["قالب:تصنيف ويكيميديا"]}
+        _cache._store["ar"]["cached_test"] = {"cached_test": {"templates": ["قالب:تصنيف ويكيميديا"]}}
 
         result = get_templates("cached_test", "ar")
         assert result == ["قالب:تصنيف ويكيميديا"]
