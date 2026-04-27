@@ -56,7 +56,6 @@ class TestGatherMembersFromApi:
     def test_returns_empty_list_when_api_returns_none(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns None."""
         mocker.patch("src.core.mk_cats.members_helper.MakeLitApiWay", return_value=None)
-        mocker.patch("src.core.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
 
         result = gather_members_from_api("Category:Science")
 
@@ -65,7 +64,6 @@ class TestGatherMembersFromApi:
     def test_returns_empty_list_when_api_returns_false(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns False."""
         mocker.patch("src.core.mk_cats.members_helper.MakeLitApiWay", return_value=False)
-        mocker.patch("src.core.mk_cats.members_helper.get_ar_list_from_encat", return_value={})
 
         result = gather_members_from_api("Category:Science")
 

@@ -11,26 +11,6 @@ from ...wiki_api import find_LCN, get_arpage_inside_encat, sub_cats_query
 logger = logging.getLogger(__name__)
 
 
-def get_ar_list_from_encat(cat, code="ar", typee="cat"):
-    """
-    Retrieve a list of category members from a specified category.
-    """
-
-    if cat.startswith("Category:"):
-        cat = cat.replace("Category:", "")
-
-    if cat.startswith("تصنيف:"):
-        cat = cat.replace("تصنيف:", "")
-
-    ctype = "subcat" if typee == "cat" else "page" if typee == "page" else ""
-
-    subcategories_result = sub_cats_query("Category:" + cat, code, ctype=ctype)
-
-    categorymembers = subcategories_result.get("categorymembers", {}) if subcategories_result else {}
-
-    return categorymembers
-
-
 def retrieve_ar_list_from_category(encat, enpageTitle):
     gent_faso_list = Categorized_Page_Generator(enpageTitle, "all")
 
@@ -97,8 +77,8 @@ def make_ar_list_from_en_cat(encat):
 
     if not listenpageTitle2:
         # {'Yemen': {'ns': 0, 'ar': 'اليمن'}, 'Outline of Yemen': {'ns': 0, 'ar': 'مخطط اليمن'}, ... }
-        gent_faso_list = get_ar_list_from_encat(encat, code="en", typee="all")
-        listenpageTitle2 = [x["ar"] for x in gent_faso_list.values() if x.get("ar")]
+        subcategories_result = sub_cats_query("Category:" + encat, "en")
+        listenpageTitle2 = [x["ar"] for x in subcategories_result.get("categorymembers", {}).values() if x.get("ar")]
 
     listenpageTitle = list(set(listenpageTitle2))
 

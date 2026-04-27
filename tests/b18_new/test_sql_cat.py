@@ -51,11 +51,12 @@ class TestGetArList:
 
     def test_returns_list(self, mocker):
         """Test that function returns a list"""
-        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[])
+        mocker.patch("src.core.b18_new.sql_cat.db_manager.execute_query", return_value=[{"page_title": "test", "page_namespace": 0}])
 
         result = get_ar_list("تصنيف:علوم")
 
         assert isinstance(result, list)
+        assert result == ["test"]
 
     def test_uses_sql_when_enabled(self, mocker):
         """Test that SQL is used when enabled"""

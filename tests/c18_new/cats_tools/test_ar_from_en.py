@@ -75,7 +75,6 @@ class TestMakeArListFromEnCat:
         """Test that category input is cleaned"""
         mocker.patch("src.core.c18_new.cats_tools.ar_from_en.settings.database.use_sql", False)
         mocker.patch("src.core.c18_new.cats_tools.ar_from_en.retrieve_ar_list_from_category", return_value=[])
-        mocker.patch("src.core.c18_new.cats_tools.ar_from_en.get_ar_list_from_encat", return_value={})
 
         result = make_ar_list_from_en_cat("[[Category:Science]]")
         assert result == []
