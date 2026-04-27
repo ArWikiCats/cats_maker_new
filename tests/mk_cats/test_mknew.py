@@ -207,7 +207,10 @@ class TestProcessCatagories:
         # First call returns subcategories, second call returns empty
         mock_make_ar = mocker.patch.object(mknew, "make_ar", side_effect=[["SubCat1"], []])
         mocker.patch.object(mknew, "ar_make_lab", return_value="")
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=[])
+        mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.list_en_pages_with_ar_links",
+            return_value=[],
+        )
 
         mknew.process_catagories("Category:Science", "علوم", 1, 10)
 
@@ -302,7 +305,10 @@ class TestOneCat:
 
         mocker.patch.object(mknew, "ar_make_lab", return_value="علوم")
         mocker.patch("src.mk_cats.mknew.check_en_temps", return_value=True)
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=[])
+        mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.list_en_pages_with_ar_links",
+            return_value=[],
+        )
 
         result = mknew.one_cat("Category:Science", 1, 1)
 
@@ -320,7 +326,10 @@ class TestOneCat:
 
         mocker.patch.object(mknew, "ar_make_lab", return_value="")
         mocker.patch("src.mk_cats.mknew.check_en_temps", return_value=True)
-        mocker.patch("src.mk_cats.mknew.get_ar_list_from_en", return_value=["Article1"])
+        mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.list_en_pages_with_ar_links",
+            return_value=["Article1"],
+        )
         mock_process = mocker.patch.object(mknew, "process_catagories")
 
         mknew.one_cat("Category:Science", 1, 1, sugust="علوم مقترحة")

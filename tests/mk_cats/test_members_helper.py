@@ -21,10 +21,11 @@ from src.mk_cats.members_helper import gather_members_from_api, gather_members_f
 class TestGatherMembersFromSql:
     """Tests for gather_members_from_sql function."""
 
-    def test_calls_get_listenpageTitle(self, mocker):
-        """Test that gather_members_from_sql calls get_listenpageTitle."""
+    def test_calls_get_listen_page_title(self, mocker):
+        """Test that gather_members_from_sql calls MemberLister.get_listen_page_title."""
         mock_get_listen = mocker.patch(
-            "src.mk_cats.members_helper.get_listenpageTitle", return_value=["Article1", "Article2"]
+            "src.core.new_c18.core.member_lister.MemberLister.get_listen_page_title",
+            return_value=["Article1", "Article2"],
         )
 
         result = gather_members_from_sql("تصنيف:علوم", "Category:Science")
@@ -34,7 +35,10 @@ class TestGatherMembersFromSql:
 
     def test_returns_empty_list_when_no_members(self, mocker):
         """Test that gather_members_from_sql returns empty list when no members found."""
-        mocker.patch("src.mk_cats.members_helper.get_listenpageTitle", return_value=[])
+        mocker.patch(
+            "src.core.new_c18.core.member_lister.MemberLister.get_listen_page_title",
+            return_value=[],
+        )
 
         result = gather_members_from_sql("تصنيف:علوم", "Category:Science")
 
@@ -44,18 +48,24 @@ class TestGatherMembersFromSql:
 class TestGatherMembersFromApi:
     """Tests for gather_members_from_api function."""
 
-    def test_calls_makelitapiway(self, mocker):
-        """Test that gather_members_from_api calls MakeLitApiWay."""
-        mock_api = mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=["Article1", "Article2"])
+    def test_calls_make_lit_api_way(self, mocker):
+        """Test that gather_members_from_api calls CategoryResolver.make_lit_api_way."""
+        mock_api = mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.make_lit_api_way",
+            return_value=["Article1", "Article2"],
+        )
 
         result = gather_members_from_api("Category:Science")
 
-        mock_api.assert_called_once_with("Category:Science", Type="all")
+        mock_api.assert_called_once_with("Category:Science", item_type="all")
         assert result == ["Article1", "Article2"]
 
     def test_returns_empty_list_when_api_returns_none(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns None."""
-        mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=None)
+        mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.make_lit_api_way",
+            return_value=None,
+        )
         mocker.patch("src.mk_cats.members_helper.sub_cats_query", return_value=None)
 
         result = gather_members_from_api("Category:Science")
@@ -64,7 +74,10 @@ class TestGatherMembersFromApi:
 
     def test_returns_empty_list_when_api_returns_false(self, mocker):
         """Test that gather_members_from_api returns empty list when API returns False."""
-        mocker.patch("src.mk_cats.members_helper.MakeLitApiWay", return_value=False)
+        mocker.patch(
+            "src.core.new_c18.core.category_resolver.CategoryResolver.make_lit_api_way",
+            return_value=False,
+        )
         mocker.patch("src.mk_cats.members_helper.sub_cats_query", return_value=False)
 
         result = gather_members_from_api("Category:Science")
