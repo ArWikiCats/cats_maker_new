@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Shared text helpers for c18 module."""
+"""Shared text helpers for the module."""
 
 import logging
 import re

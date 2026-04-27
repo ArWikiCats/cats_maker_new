@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""File I/O helpers for c18 module."""
+"""File I/O helpers for the module."""
 
 from __future__ import annotations
 

@@ -171,7 +171,7 @@ def get_english_page_title(
         en = get_page_link(pagetitle, en_site, en_site, text=text_new) or ""
 
     if (not en) and settings.category.work_fr:
-        logger.info("<<lightred>>c18/scat/cat.py no en")
+        logger.info(f"<<lightred>> no en for {pagetitle}")
         logger.info(ar_page_langlinks)
 
         fr_page_title = ar_page_langlinks.get(fr_site, "")

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Pure SQL query functions for c18 module."""
+"""Pure SQL query functions for the module."""
 
 from __future__ import annotations
 

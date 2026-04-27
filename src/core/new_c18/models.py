@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Lightweight dataclasses for c18 module."""
+"""Lightweight dataclasses for the module."""
 
 from dataclasses import dataclass, field
 

@@ -20,13 +20,6 @@ def disable_network(mocker):
     mocker.patch("requests.post", side_effect=Exception("Network disabled in tests"))
     mocker.patch("urllib.request.urlopen", side_effect=Exception("Network disabled in tests"))
 
-
-@pytest.fixture(autouse=True)
-def fake_all_apis(monkeypatch):
-    _fake = MagicMock()
-    monkeypatch.setattr("src.core.new_api.pagenew.ALL_APIS", _fake)
-
-
 # ===== Shared Test Data Fixtures =====
 
 

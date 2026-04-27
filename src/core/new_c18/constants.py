@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Centralised constants for c18 module."""
+"""Centralised constants for the module."""
 
 from enum import IntEnum
 
