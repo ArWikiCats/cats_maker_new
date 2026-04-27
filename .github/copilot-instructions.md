@@ -84,7 +84,7 @@ Business Logic (mk_cats/mknew.py)
     ↓
 Page Creation (mk_cats/create_category_page.py, categorytext.py)
     ↓
-Data Processing (b18/, c18/)
+Data Processing (c18/)
     ↓
 External Services (wiki_api/, wd_bots/, api_sql/)
     ↓
