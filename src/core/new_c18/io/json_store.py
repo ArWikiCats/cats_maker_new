@@ -11,7 +11,7 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
-from ...config import settings
+from ....config import settings
 from .sql_queries import fetch_dont_add_pages
 
 logger = logging.getLogger(__name__)

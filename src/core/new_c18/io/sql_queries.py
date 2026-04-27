@@ -6,8 +6,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from ...config import settings
-from ..api_sql import add_namespace_prefix, db_manager
+from ....config import settings
+from ...api_sql import add_namespace_prefix, db_manager
 
 logger = logging.getLogger(__name__)
 

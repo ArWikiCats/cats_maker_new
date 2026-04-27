@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from typing import Any
 
 from ...wiki_api import find_LCN, get_cache_L_C_N, set_cache_L_C_N
 from ..constants import SKIP_CATEGORIES
