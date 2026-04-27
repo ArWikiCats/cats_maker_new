@@ -14,6 +14,7 @@ This module tests:
 """
 
 from unittest.mock import MagicMock
+
 from src.mk_cats.mknew import add_to_final_list
 
 
