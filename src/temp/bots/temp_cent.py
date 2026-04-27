@@ -96,9 +96,7 @@ def Make_Cent_temp(title):
                 before = "1 ق م"
             template = f"{cacaca[tex]}بلد قرن"
 
-            text = (
-                f"{{{{{template}|{sdsd}|قرن={cent}|سابق={before}|لاحق={cent + 1}|ألفية={elff}|بلد={bld}}}}}\n"  # noqa
-            )
+            text = f"{{{{{template}|{sdsd}|قرن={cent}|سابق={before}|لاحق={cent + 1}|ألفية={elff}|بلد={bld}}}}}\n"  # noqa
             if not bld:
                 template = f"{cacaca[tex]}قرن"
                 text = f"{{{{{template}|{sdsd}|قرن={cent}|سابق={before}|لاحق={cent + 1}|ألفية={elff}}}}}\n"  # noqa
