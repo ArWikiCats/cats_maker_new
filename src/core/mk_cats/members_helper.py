@@ -46,15 +46,17 @@ def gather_members_from_api(en_page_title: str) -> list:
     """
     result = MakeLitApiWay(en_page_title, Type="all")
 
-    if not result:
-        en_page_title = en_page_title.removeprefix("Category:")
+    if result:
+        return result
 
-        # {'Yemen': {'ns': 0, 'ar': 'اليمن'}, 'Outline of Yemen': {'ns': 0, 'ar': 'مخطط اليمن'}, ... }
-        subcategories_result = sub_cats_query("Category:" + en_page_title, "en")
+    en_page_title = en_page_title.removeprefix("Category:")
 
+    # {'Yemen': {'ns': 0, 'ar': 'اليمن'}, 'Outline of Yemen': {'ns': 0, 'ar': 'مخطط اليمن'}, ... }
+    subcategories_result = sub_cats_query("Category:" + en_page_title, "en")
+    if subcategories_result:
         result = [x["ar"] for x in subcategories_result.get("categorymembers", {}).values() if x.get("ar")]
 
-    return result
+    return result or []
 
 
 def merge_member_lists(*member_lists: list) -> list:

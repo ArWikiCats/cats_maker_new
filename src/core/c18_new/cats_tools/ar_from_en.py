@@ -78,12 +78,12 @@ def make_ar_list_from_en_cat(encat):
     if not listenpageTitle2:
         # {'Yemen': {'ns': 0, 'ar': 'اليمن'}, 'Outline of Yemen': {'ns': 0, 'ar': 'مخطط اليمن'}, ... }
         subcategories_result = sub_cats_query("Category:" + encat, "en")
-        listenpageTitle2 = [x["ar"] for x in subcategories_result.get("categorymembers", {}).values() if x.get("ar")]
+        if subcategories_result:
+            listenpageTitle2 = [
+                x["ar"] for x in subcategories_result.get("categorymembers", {}).values() if x.get("ar")
+            ]
 
     listenpageTitle = list(set(listenpageTitle2))
-
-    if len(listenpageTitle) == 0:
-        logger.info("<<lightblue>> No cats listenpageTitle = [] ")
 
     logger.info(f"<<lightblue>> end of , lenth:{len(listenpageTitle)}")
     return listenpageTitle
