@@ -103,11 +103,13 @@ class WikiApiClient:
             return json.loads(text)
         except Exception as e:
             logger.warning(e)
-            logger.warning(self.url_o_print)
 
         return {}
 
     def filter_params(self, params: dict) -> dict:
+        """
+        Filter out unnecessary parameters.
+        """
         params["format"] = "json"
         params["utf8"] = 1
 
@@ -149,7 +151,10 @@ class WikiApiClient:
 
             self.session = load_session(lang=self.lang, family=self.family, username=self.username)
 
-        req = self.session.request("POST", self.endpoint, data=self.params_w(params), files=files, timeout=timeout)
+        params = self.params_w(params)
+
+        # req = self.session.request("POST", self.endpoint, data=params, files=files, timeout=timeout)
+        req = self._raw_request(params, files=files, timeout=timeout)
 
         if req:
             data = self.parse_data(req)
@@ -159,6 +164,56 @@ class WikiApiClient:
             return self._handle_error(error, "", params=params, do_error=do_error)
 
         return data
+
+    def _raw_request(
+        self,
+        params: dict,
+        files: Any = None,
+        timeout: int = 30,
+    ) -> requests.Response | None:
+        # TODO: ('toomanyvalues', 'Too many values supplied for parameter "titles". The limit is 50.', 'See https://en.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.')
+        if not self.session:
+            self.session = load_session(lang=self.lang, family=self.family, username=self.username)
+
+        self.p_url(params)
+        if not self.user_table_done:
+            logger.debug("<<green>> user_table_done == False!")
+
+        if self.family == "mdwiki":
+            timeout = 60
+
+        args = {
+            "files": files,
+            "headers": self.headers,
+            "data": params,
+            "timeout": timeout,
+        }
+
+        u_action = params.get("action", "")
+
+        if settings.debug_config.do_post:
+            logger.debug("<<green>> dopost:::")
+            logger.debug(params)
+            logger.debug("<<green>> :::dopost")
+            req0 = self.session.request("POST", self.endpoint, **args)
+            self._handle_server_error(req0, u_action, params=params)
+            return req0
+
+        req0 = None
+        try:
+            req0 = self.session.request("POST", self.endpoint, **args)
+        except requests.exceptions.ReadTimeout:
+            logger.debug(f"<<red>> ReadTimeout: {self.endpoint=}, {timeout=}")
+        except Exception as e:
+            logger.warning(f" {self.lang}.{self.family} exception for action '{u_action}': {e}")
+
+        self._handle_server_error(req0, u_action, params=params)
+        return req0
+
+    def _handle_server_error(self, req0, action: str, params=None) -> None:
+        if req0 and req0.status_code:
+            if not str(req0.status_code).startswith("2"):
+                logger.debug(f"<<red>>  {req0.status_code} Server Error: Server Hangup for url: {self.endpoint}")
 
     def _handle_error(
         self,
@@ -325,15 +380,15 @@ class WikiApiClient:
         else:
             timeout = 30
 
-        if not self._client.session:
-            self._make_session()
+        if not self.session:
+            self.session = load_session(lang=self.lang, family=self.family, username=self.username)
 
-        req = self._client.session.request(
+        req = self.session.request(
             "POST", self.endpoint, data=self.params_w(params), files=files, timeout=timeout
         )
 
         if req:
-            data = self._client.parse_data(req)
+            data = self.parse_data(req)
 
         error = data.get("error", {})
         if error != {}:
