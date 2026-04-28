@@ -47,6 +47,7 @@ class Transport:
         if self.cookie_jar is None:
             self.cookie_jar = MozillaCookieJar(str(self.cookies_file))
             if os.path.exists(self.cookies_file) and self.family != "mdwiki":
+                logger.debug("Load cookies from file, including session cookies")
                 try:
                     self.cookie_jar.load(ignore_discard=True, ignore_expires=True)
                     logger.debug("We have %d cookies" % len(self.cookie_jar))
