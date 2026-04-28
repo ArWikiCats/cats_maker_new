@@ -5,12 +5,8 @@ python3 core8/pwb.py mk_cats/mknew
 import logging
 
 from ..config import settings
-from ..core.new_c18 import (
-    get_ar_list_from_en,
-    make_ar_list_newcat2,
-    validate_categories_for_new_cat,
-)
 from ..core.new_api import load_main_api
+from ..core.new_c18 import CategoryResolver, validate_categories_for_new_cat
 from ..core.wd_bots import Get_Sitelinks_From_wikidata, add_labels, log_to_wikidata, log_to_wikidata_qid
 from ..core.wiki_api import find_Page_Cat_without_hidden
 from .add_bot import add_to_page
@@ -43,6 +39,8 @@ _already_created: list = []
 # TODO: move it to the settings file!
 WIKI_SITE_AR = {"family": "wikipedia", "code": "ar"}
 WIKI_SITE_EN = {"family": "wikipedia", "code": "en"}
+
+_resolver = CategoryResolver()
 
 logger = logging.getLogger(__name__)
 
@@ -242,7 +240,7 @@ def _finalize_category_creation(
     add_to_final_list(members, ar_title, callback=callback)
 
     if validate_categories_for_new_cat(ar_title, en_page_title, wiki="en"):
-        listen = make_ar_list_newcat2(ar_title, en_page_title, us_sql=True) or []
+        listen = _resolver.resolve_members(en_page_title, ar_title, wiki="en") or []
         if listen:
             add_to_final_list(listen, ar_title, callback=callback)
 
@@ -369,7 +367,7 @@ def process_catagories(cat, arlab, num, lenth, callback=None) -> None:
             if not labe:
                 continue
 
-            en_list = get_ar_list_from_en(title, us_sql=True, wiki="en")
+            en_list = _resolver.list_en_pages_with_ar_links(title, wiki="en")
 
             if not en_list:
                 continue
@@ -411,7 +409,7 @@ def one_cat(en_title, num, lenth, sugust="", callback=None):
         logger.warning("<<lightred>> check_en_temps failed.")
         return False
 
-    en_list = get_ar_list_from_en(en_title, us_sql=True, wiki="en")
+    en_list = _resolver.list_en_pages_with_ar_links(en_title, wiki="en")
 
     if not en_list:
         logger.warning("<<lightred>> en_list is empty. return")
