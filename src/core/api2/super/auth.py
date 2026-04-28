@@ -38,6 +38,9 @@ class AuthProvider:
         self.session = session
 
     def log_in(self) -> bool:
+        """
+        Log in to the wiki and get authentication token.
+        """
         logintoken = self._get_logintoken()
         if not logintoken:
             return False
@@ -50,6 +53,9 @@ class AuthProvider:
             "meta": "tokens",
             "type": "login",
         }
+
+        # WARNING: /data/project/himo/core/bots/page.py:101: UserWarning: Exception:502 Server Error: Server Hangup for url: https://ar.wikipedia.org/w/api.php
+
         try:
             r11 = self.session.request("POST", self.endpoint, data=r1_params, headers=self.headers)
             if not str(r11.status_code).startswith("2"):

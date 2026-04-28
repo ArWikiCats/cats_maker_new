@@ -1,5 +1,6 @@
 """ """
 
+import os
 import logging
 import time
 import urllib.parse
@@ -182,24 +183,15 @@ class Login(HandleErrors):
         try:
             req0 = self._client.session.request("POST", self.endpoint, **args)
         except requests.exceptions.ReadTimeout:
-            self._log_error("ReadTimeout", u_action, params=params)
             logger.debug(f"<<red>> ReadTimeout: {self.endpoint=}, {timeout=}")
         except Exception as e:
-            self._log_error("Exception", u_action, params=params)
             logger.warning(f" {self.lang}.{self.family} exception for action '{u_action}': {e}")
 
         self._handle_server_error(req0, u_action, params=params)
         return req0
 
-    def _log_error(self, result, action: str, params=None) -> None:
-        if result not in ["success", 200]:
-            logger.error(
-                f"page.py: {self.lang}.{self.family}.org user:{self._client.username}, action:{action}, result:{result}"
-            )
-
     def _handle_server_error(self, req0, action: str, params=None) -> None:
         if req0 and req0.status_code:
-            self._log_error(req0.status_code, action, params=params)
             if not str(req0.status_code).startswith("2"):
                 logger.debug(f"<<red>>  {req0.status_code} Server Error: Server Hangup for url: {self.endpoint}")
 
@@ -290,17 +282,6 @@ class Login(HandleErrors):
 
         return {}
 
-    def _make_new_r3_token(self) -> str:
-        r3_params = {
-            "format": "json",
-            "action": "query",
-            "meta": "tokens",
-        }
-        req = self.post_it_parse_data(r3_params) or {}
-        if not req:
-            return ""
-        return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
-
     def _make_response_impl(
         self,
         params,
@@ -336,9 +317,7 @@ class Login(HandleErrors):
         from .transport import load_session
 
         Login._logins_count += 1
-        colors = {"ar": "yellow", "en": "lightpurple"}
-        color = colors.get(self.lang, "")
-        logger.debug(f"<<{color}>> {self.endpoint} count:{Login._logins_count}")
+        logger.debug(f"<<yellow>> {self.endpoint} count:{Login._logins_count}")
         logger.debug(f"page.py: log to {self.lang}.{self.family}.org user:{self._client.username})")
 
         if not self._client.session:
@@ -347,12 +326,7 @@ class Login(HandleErrors):
         logintoken = self._get_logintoken()
         if not logintoken:
             return False
-
-        success = self._get_login_result(logintoken, self._client.username, self._client.password)
-        if success:
-            logger.debug("<<green>> new_api login Success")
-            return True
-        return False
+        return self._get_login_result(logintoken, self._client.username, self._client.password)
 
     def _get_logintoken(self) -> str:
         r1_params = {
@@ -366,7 +340,6 @@ class Login(HandleErrors):
 
         try:
             r11 = self._client.session.request("POST", self.endpoint, data=r1_params, headers=self.headers)
-            self._log_error(r11.status_code, "logintoken")
             if not str(r11.status_code).startswith("2"):
                 logger.debug(f"<<red>>  {r11.status_code} Server Error: Server Hangup for url: {self.endpoint}")
         except Exception as e:
@@ -415,7 +388,6 @@ class Login(HandleErrors):
 
         login_result = result.get("login", {}).get("result", "")
         success = login_result.lower() == "success"
-        self._log_error(login_result, "login")
 
         if success:
             self._logged_in()
@@ -439,7 +411,6 @@ class Login(HandleErrors):
             req = self._client.session.request("POST", self.endpoint, data=params, headers=self.headers)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} userinfo request exception: {e}")
-            self._log_error("failed", "userinfo")
             return False
 
         json1 = {}
@@ -455,13 +426,23 @@ class Login(HandleErrors):
 
         userinfo = json1.get("query", {}).get("userinfo", {})
         result_x = "success" if userinfo else "failed"
-        self._log_error(result_x, "userinfo")
 
         if "anon" in userinfo or "temp" in userinfo:
             return False
 
         self._client.username_in = userinfo.get("name", "")
         return True
+
+    def _make_new_r3_token(self) -> str:
+        r3_params = {
+            "format": "json",
+            "action": "query",
+            "meta": "tokens",
+        }
+        req = self.post_it_parse_data(r3_params) or {}
+        if not req:
+            return ""
+        return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
 
     def make_new_session(self) -> None:
         from .transport import load_session
@@ -472,7 +453,7 @@ class Login(HandleErrors):
 
         self._client.session.cookies = MozillaCookieJar(self._client.cookies_file)
 
-        if __import__("os").path.exists(self._client.cookies_file) and self.family != "mdwiki":
+        if os.path.exists(self._client.cookies_file) and self.family != "mdwiki":
             logger.debug("Load cookies from file, including session cookies")
             try:
                 self._client.session.cookies.load(ignore_discard=True, ignore_expires=True)
@@ -482,16 +463,17 @@ class Login(HandleErrors):
 
         if self._client.session.cookies is not self._client.session.cookies:
             pass
+        self.ensure_logged_in()
 
-        loged_t = False
+    def ensure_logged_in(self) -> bool:
+        logged_in = False
         if len(self._client.session.cookies) > 0:
             if self._logged_in():
-                loged_t = True
+                logged_in = True
                 logger.debug(f"<<green>>Cookie Already logged in with user:{self._client.username_in}")
         else:
-            loged_t = self.log_in()
-
-        if loged_t:
+            logged_in = self.log_in()
+        if logged_in and hasattr(self.session, "cookies"):
             try:
                 self._client.session.cookies.save(ignore_discard=True, ignore_expires=True)
             except Exception:

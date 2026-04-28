@@ -118,6 +118,106 @@ class Login(HandleErrors):
 
         return data
 
+    def post_it(self, params, files=None, timeout=30):
+        params = self.params_w(params)
+
+        if not self.session:
+            self.make_new_session()
+
+        if not self.username_in:
+            logger.debug("<<red>> no username_in.. action:" + params.get("action"))
+            # return {}
+
+        req0 = self._raw_request(params, files=files, timeout=timeout)
+
+        if not req0:
+            logger.debug("<<red>> no req0.. ")
+            return req0
+
+        if req0.headers and req0.headers.get("x-database-lag"):
+            logger.debug("<<red>> x-database-lag.. ")
+            logger.debug(req0.headers)
+            # raise
+
+        return req0
+
+    def _raw_request(self, params, files=None, timeout=30):
+        # TODO: ('toomanyvalues', 'Too many values supplied for parameter "titles". The limit is 50.', 'See https://en.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.')
+
+        if not self.user_table_done:
+            logger.debug("<<green>> user_table_done == False!")
+
+        if self.family == "mdwiki":
+            timeout = 60
+
+        args = {
+            "files": files,
+            "headers": self.headers,
+            "data": params,
+            "timeout": timeout,
+        }
+
+        u_action = params.get("action", "")
+
+        if settings.debug_config.do_post:
+            logger.debug("<<green>> dopost:::")
+            logger.debug(params)
+            logger.debug("<<green>> :::dopost")
+            req0 = self.session.request("POST", self.endpoint, **args)
+
+            self._handle_server_error(req0, u_action, params=params)
+
+            return req0
+
+        req0 = None
+
+        try:
+            req0 = self.session.request("POST", self.endpoint, **args)
+
+        except requests.exceptions.ReadTimeout:
+            logger.debug(f"<<red>> ReadTimeout: {self.endpoint=}, {timeout=}")
+
+        except Exception as e:
+            logger.warning(f" {self.lang}.{self.family} exception for action '{u_action}': {e}")
+
+        self._handle_server_error(req0, u_action, params=params)
+
+        return req0
+
+    def _handle_server_error(self, req0, action, params=None):
+        if req0 and req0.status_code:
+
+            if not str(req0.status_code).startswith("2"):
+                logger.debug(f"<<red>>  {req0.status_code} Server Error: Server Hangup for url: {self.endpoint}")
+
+    def post_it_parse_data(self, params, files=None, timeout=30) -> dict:
+        req = self.post_it(params, files, timeout)
+
+        data = {}
+
+        if req:
+            data = self.parse_data(req) or {}
+
+        error = data.get("error", {})
+
+        # {'code': 'assertnameduserfailed', 'info': 'You are no longer logged in as "Mr. Ibrahem", ....', '*': ''}
+
+        if error:
+            code = error.get("code", "")
+
+            if code == "assertnameduserfailed":
+                logger.warning("assertnameduserfailed" * 10)
+
+                del_cookies_file(self.cookies_file)
+
+                self.username_in = ""
+                _load_session.cache_clear()
+                self.make_new_session()
+
+                return self.post_it_parse_data(params, files, timeout)
+
+        return data
+
     def post_params(
         self,
         params,
@@ -180,17 +280,6 @@ class Login(HandleErrors):
 
         return {}
 
-    def _make_new_r3_token(self) -> str:
-        r3_params = {
-            "format": "json",
-            "action": "query",
-            "meta": "tokens",
-        }
-        req = self.post_it_parse_data(r3_params) or {}
-        if not req:
-            return ""
-        return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
-
     def _make_response_impl(
         self,
         params,
@@ -218,12 +307,6 @@ class Login(HandleErrors):
             return self.handle_err(error, "", params=params, do_error=do_error)
 
         return data
-
-    def log_error(self, result, action, params=None) -> None:
-        if result not in ["success", 200]:
-            logger.error(
-                f"page.py: {self.lang}.{self.family}.org user:{self.username}, action:{action}, result:{result}"
-            )
 
     def add_User_tables(self, family, table, lang="") -> None:
         langx = self.lang
@@ -263,13 +346,8 @@ class Login(HandleErrors):
         Log in to the wiki and get authentication token.
         """
         # time.sleep(0.5)
-
-        colors = {"ar": "yellow", "en": "lightpurple"}
-
-        color = colors.get(self.lang, "")
-
         Login._logins_count += 1
-        logger.debug(f"<<{color}>> {self.endpoint} count:{Login._logins_count}")
+        logger.debug(f"<<yellow>> {self.endpoint} count:{Login._logins_count}")
         logger.debug(f"page.py: log to {self.lang}.{self.family}.org user:{self.username})")
 
         logintoken = self.get_logintoken()
@@ -297,9 +375,6 @@ class Login(HandleErrors):
 
         try:
             r11 = self.session.request("POST", self.endpoint, data=r1_params, headers=self.headers)
-
-            self.log_error(r11.status_code, "logintoken")
-
             if not str(r11.status_code).startswith("2"):
                 logger.debug(f"<<red>>  {r11.status_code} Server Error: Server Hangup for url: {self.endpoint}")
 
@@ -355,8 +430,6 @@ class Login(HandleErrors):
 
         success = login_result.lower() == "success"
 
-        self.log_error(login_result, "login")
-
         if success:
             self.loged_in()
             return True
@@ -381,7 +454,6 @@ class Login(HandleErrors):
             req = self.session.request("POST", self.endpoint, data=params, headers=self.headers)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} userinfo request exception: {e}")
-            self.log_error("failed", "userinfo")
             return False
 
         json1 = {}
@@ -398,9 +470,6 @@ class Login(HandleErrors):
         userinfo = json1.get("query", {}).get("userinfo", {})
 
         result_x = "success" if userinfo else "failed"
-
-        self.log_error(result_x, "userinfo")
-
         # logger.debug(json1)
 
         if "anon" in userinfo or "temp" in userinfo:
@@ -409,6 +478,17 @@ class Login(HandleErrors):
         self.username_in = userinfo.get("name", "")
 
         return True
+
+    def _make_new_r3_token(self) -> str:
+        r3_params = {
+            "format": "json",
+            "action": "query",
+            "meta": "tokens",
+        }
+        req = self.post_it_parse_data(r3_params) or {}
+        if not req:
+            return ""
+        return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
 
     def make_new_session(self) -> None:
         logger.debug(f":({self.lang}, {self.family}, {self.username})")
@@ -432,120 +512,20 @@ class Login(HandleErrors):
         if self.session.cookies is not self.cookie_jar:
             self.session.cookies = self.cookie_jar
 
-        loged_t = False
+        self.ensure_logged_in()
+
+    def ensure_logged_in(self) -> bool:
+        logged_in = False
 
         if len(self.cookie_jar) > 0:
             if self.loged_in():
-                loged_t = True
+                logged_in = True
                 logger.debug(f"<<green>>Cookie Already logged in with user:{self.username_in}")
         else:
-            loged_t = self.log_in()
+            logged_in = self.log_in()
 
-        if loged_t:
+        if logged_in:
             self.cookie_jar.save(ignore_discard=True, ignore_expires=True)
-
-    def _handle_server_error(self, req0, action, params=None):
-        if req0 and req0.status_code:
-            self.log_error(req0.status_code, action, params=params)
-
-            if not str(req0.status_code).startswith("2"):
-                logger.debug(f"<<red>>  {req0.status_code} Server Error: Server Hangup for url: {self.endpoint}")
-
-    def raw_request(self, params, files=None, timeout=30):
-        # TODO: ('toomanyvalues', 'Too many values supplied for parameter "titles". The limit is 50.', 'See https://en.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.')
-
-        if not self.user_table_done:
-            logger.debug("<<green>> user_table_done == False!")
-
-        if self.family == "mdwiki":
-            timeout = 60
-
-        args = {
-            "files": files,
-            "headers": self.headers,
-            "data": params,
-            "timeout": timeout,
-        }
-
-        u_action = params.get("action", "")
-
-        if settings.debug_config.do_post:
-            logger.debug("<<green>> dopost:::")
-            logger.debug(params)
-            logger.debug("<<green>> :::dopost")
-            req0 = self.session.request("POST", self.endpoint, **args)
-
-            self._handle_server_error(req0, u_action, params=params)
-
-            return req0
-
-        req0 = None
-
-        try:
-            req0 = self.session.request("POST", self.endpoint, **args)
-
-        except requests.exceptions.ReadTimeout:
-            self.log_error("ReadTimeout", u_action, params=params)
-            logger.debug(f"<<red>> ReadTimeout: {self.endpoint=}, {timeout=}")
-
-        except Exception as e:
-            self.log_error("Exception", u_action, params=params)
-            logger.warning(f" {self.lang}.{self.family} exception for action '{u_action}': {e}")
-
-        self._handle_server_error(req0, u_action, params=params)
-
-        return req0
-
-    def post_it(self, params, files=None, timeout=30):
-        params = self.params_w(params)
-
-        if not self.session:
-            self.make_new_session()
-
-        if not self.username_in:
-            logger.debug("<<red>> no username_in.. action:" + params.get("action"))
-            # return {}
-
-        req0 = self.raw_request(params, files=files, timeout=timeout)
-
-        if not req0:
-            logger.debug("<<red>> no req0.. ")
-            return req0
-
-        if req0.headers and req0.headers.get("x-database-lag"):
-            logger.debug("<<red>> x-database-lag.. ")
-            logger.debug(req0.headers)
-            # raise
-
-        return req0
-
-    def post_it_parse_data(self, params, files=None, timeout=30) -> dict:
-        req = self.post_it(params, files, timeout)
-
-        data = {}
-
-        if req:
-            data = self.parse_data(req) or {}
-
-        error = data.get("error", {})
-
-        # {'code': 'assertnameduserfailed', 'info': 'You are no longer logged in as "Mr. Ibrahem", ....', '*': ''}
-
-        if error:
-            code = error.get("code", "")
-
-            if code == "assertnameduserfailed":
-                logger.warning("assertnameduserfailed" * 10)
-
-                del_cookies_file(self.cookies_file)
-
-                self.username_in = ""
-                _load_session.cache_clear()
-                self.make_new_session()
-
-                return self.post_it_parse_data(params, files, timeout)
-
-        return data
 
     def params_w(self, params: dict) -> dict:
         params = dict(params)
