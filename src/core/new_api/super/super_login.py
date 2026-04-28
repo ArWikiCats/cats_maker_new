@@ -7,7 +7,7 @@ import urllib.parse
 
 from ....config import settings
 from .bot import LOGIN_HELPS
-from .handel_errors import HANDEL_ERRORS
+from .handel_errors import HandleErrors
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ ar_lag = {1: 3}
 urls_prints = {"all": 0}
 
 
-class Login(LOGIN_HELPS, HANDEL_ERRORS):
+class Login(LOGIN_HELPS, HandleErrors):
     """
     Represents a login session for a wiki.
     """
