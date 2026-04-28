@@ -14,7 +14,7 @@ password = os.getenv("WIKIPEDIA_BOT_PASSWORD", "")
 
 
 @functools.lru_cache(maxsize=1024)
-def load_main_api(lang="ar", family="wikipedia") -> ALL_APIS:
+def load_main_api(lang: str = "ar", family: str = "wikipedia") -> ALL_APIS:
     return ALL_APIS(
         lang=lang,
         family=family,
@@ -24,7 +24,7 @@ def load_main_api(lang="ar", family="wikipedia") -> ALL_APIS:
 
 
 @functools.lru_cache(maxsize=1024)
-def load_login_bot(lang="ar", family="wikipedia") -> Login:
+def load_login_bot(lang: str = "ar", family: str = "wikipedia") -> Login:
     return load_main_api(lang=lang, family=family).login_bot
 
 

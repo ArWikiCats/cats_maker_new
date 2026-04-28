@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 # Optional ArWikiCats integration - configure via environment variable
-arwikicats_path = os.getenv("ARWIKICATS_PATH", "D:/categories_bot/make2_new/ArWikiCats")
+arwikicats_path = os.getenv("ARWIKICATS_PATH")
 if arwikicats_path:
     arwikicats_path = Path(arwikicats_path)
     if arwikicats_path.exists():
