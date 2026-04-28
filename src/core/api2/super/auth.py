@@ -57,7 +57,7 @@ class AuthProvider:
         # WARNING: /data/project/himo/core/bots/page.py:101: UserWarning: Exception:502 Server Error: Server Hangup for url: https://ar.wikipedia.org/w/api.php
 
         try:
-            r11 = self.session.request("POST", self.endpoint, data=r1_params, headers=self.headers)
+            r11 = self.session.request("POST", self.endpoint, data=r1_params)
             if not str(r11.status_code).startswith("2"):
                 logger.debug(f"<<red>>  {r11.status_code} Server Error: Server Hangup for url: {self.endpoint}")
         except Exception as e:
@@ -86,7 +86,7 @@ class AuthProvider:
             "lgtoken": logintoken,
         }
         try:
-            req = self.session.request("POST", self.endpoint, data=r2_params, headers=self.headers)
+            req = self.session.request("POST", self.endpoint, data=r2_params)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} login request exception: {e}")
             return False
@@ -123,7 +123,7 @@ class AuthProvider:
             "uiprop": "groups|rights",
         }
         try:
-            req = self.session.request("POST", self.endpoint, data=params, headers=self.headers)
+            req = self.session.request("POST", self.endpoint, data=params)
         except Exception as e:
             logger.warning(f" {self.lang}.{self.family} userinfo request exception: {e}")
             return False
@@ -152,7 +152,7 @@ class AuthProvider:
             "action": "query",
             "meta": "tokens",
         }
-        req = self.session.request("POST", self.endpoint, data=r3_params, headers=self.headers)
+        req = self.session.request("POST", self.endpoint, data=r3_params)
         if not req:
             return ""
         try:
