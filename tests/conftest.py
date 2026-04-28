@@ -10,6 +10,17 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
+# ===== Test Utility Functions =====
+
+
+@pytest.fixture(autouse=True)
+def disable_network(mocker):
+    """Disable all network requests during testing"""
+    mocker.patch("requests.get", side_effect=Exception("Network disabled in tests"))
+    mocker.patch("requests.post", side_effect=Exception("Network disabled in tests"))
+    mocker.patch("urllib.request.urlopen", side_effect=Exception("Network disabled in tests"))
+
+
 # ===== Shared Test Data Fixtures =====
 
 
@@ -143,14 +154,3 @@ def temp_jsonl_file(tmp_path):
     """Create a temporary JSONL file for testing"""
     file_path = tmp_path / "test_data.jsonl"
     return file_path
-
-
-# ===== Test Utility Functions =====
-
-
-@pytest.fixture
-def disable_network(mocker):
-    """Disable all network requests during testing"""
-    mocker.patch("requests.get", side_effect=Exception("Network disabled in tests"))
-    mocker.patch("requests.post", side_effect=Exception("Network disabled in tests"))
-    mocker.patch("urllib.request.urlopen", side_effect=Exception("Network disabled in tests"))

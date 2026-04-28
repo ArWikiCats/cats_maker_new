@@ -1,18 +1,13 @@
 """
-Tests for src/core/c18/tools_bots/temp_bot.py
+Tests for template_query.py
 
 This module tests template query functions for Wikipedia categories.
 """
 
 import pytest
 
-from src.core.c18.tools_bots.temp_bot import (
-    SKIP_CATEGORIES,
-    _get_from_cache,
-    templatequery,
-    templatequery_cache,
-    templatequerymulti,
-)
+from src.core.new_c18.constants import SKIP_CATEGORIES
+from src.core.new_c18.tools.template_query import TemplateCache, _cache, get_templates
 
 
 class TestSkipCategories:
@@ -24,90 +19,72 @@ class TestSkipCategories:
         assert "تصنيف:أشخاص أحياء" in SKIP_CATEGORIES
 
 
-class TestGetFromCache:
-    """Tests for _get_from_cache function"""
+class TestTemplateCache:
+    """Tests for TemplateCache class"""
 
     def test_returns_none_for_missing_cache(self):
         """Test that cache miss returns None"""
-        cached, tup, site_cache = _get_from_cache("nonexistent_link", "ar")
-        assert cached is None
-        assert tup == ("nonexistent_link", "ar", "templates")
+        cache = TemplateCache()
+        result = cache.get("nonexistent_link", "ar")
+        assert result is None
 
 
-class TestTemplatequery:
-    """Tests for templatequery function"""
+class TestGetTemplates:
+    """Tests for get_templates function"""
 
-    def test_returns_false_for_skip_categories(self):
-        """Test that skip categories return False"""
-        result = templatequery("تصنيف:أشخاص على قيد الحياة", "ar")
-        assert result is False
+    def test_returns_none_for_skip_categories(self):
+        """Test that skip categories return None"""
+        result = get_templates("تصنيف:أشخاص على قيد الحياة", "ar")
+        assert result is None
 
-    def test_returns_false_for_living_people(self):
-        """Test that living people category returns False"""
-        result = templatequery("تصنيف:أشخاص أحياء", "ar")
-        assert result is False
+    def test_returns_none_for_living_people(self):
+        """Test that living people category returns None"""
+        result = get_templates("تصنيف:أشخاص أحياء", "ar")
+        assert result is None
 
     def test_returns_cached_value_if_available(self, mocker):
         """Test that cached values are returned without API call"""
         # Clear cache first
-        templatequery_cache["ar"]["cached_test"] = ["قالب:تصنيف ويكيميديا"]
+        _cache._store["ar"]["cached_test"] = {"cached_test": {"templates": ["قالب:تصنيف ويكيميديا"]}}
 
-        result = templatequery("cached_test", "ar")
+        result = get_templates("cached_test", "ar")
         assert result == ["قالب:تصنيف ويكيميديا"]
 
         # Clean up
-        del templatequery_cache["ar"]["cached_test"]
+        del _cache._store["ar"]["cached_test"]
 
-    def test_calls_find_LCN_for_uncached_link(self, mocker):
+    def test_calls_find_lcn_for_uncached_link(self, mocker):
         """Test that find_LCN is called for uncached links"""
         mock_find_lcn = mocker.patch(
-            "src.core.c18.tools_bots.temp_bot.find_LCN", return_value={"test": {"templates": ["قالب:test"]}}
+            "src.core.new_c18.tools.template_query.find_LCN",
+            return_value={"test": {"templates": ["قالب:test"]}},
         )
 
         # Use unique key to avoid cache
-        result = templatequery("unique_test_link_123", "ar")
+        result = get_templates("unique_test_link_123", "ar")
 
         mock_find_lcn.assert_called_once()
 
-    def test_returns_false_when_no_templates_found(self, mocker):
-        """Test that False is returned when no templates are found"""
-        mocker.patch("src.core.c18.tools_bots.temp_bot.find_LCN", return_value={"test": {}})
+    def test_returns_none_when_no_templates_found(self, mocker):
+        """Test that None is returned when no templates are found"""
+        mocker.patch("src.core.new_c18.tools.template_query.find_LCN", return_value={"test": {}})
 
-        result = templatequery("no_templates_link", "ar")
-        assert result is False
+        result = get_templates("no_templates_link", "ar")
+        assert result is None
 
-
-class TestTemplatequeryMulti:
-    """Tests for templatequerymulti function"""
-
-    def test_returns_false_for_skip_categories(self):
-        """Test that skip categories return False"""
-        result = templatequerymulti("تصنيف:أشخاص على قيد الحياة", "ar")
-        assert result is False
-
-    def test_returns_cached_value_if_available(self, mocker):
-        """Test that cached values are returned without API call"""
-        templatequery_cache["ar"]["multi_cached_test"] = {"result": "test"}
-
-        result = templatequerymulti("multi_cached_test", "ar")
-        assert result == {"result": "test"}
-
-        # Clean up
-        del templatequery_cache["ar"]["multi_cached_test"]
-
-    def test_calls_find_LCN_for_uncached_link(self, mocker):
-        """Test that find_LCN is called for uncached links"""
-        mock_find_lcn = mocker.patch(
-            "src.core.c18.tools_bots.temp_bot.find_LCN", return_value={"test": {"templates": ["قالب:test"]}}
+    def test_returns_dict_for_batch_query(self, mocker):
+        """Test that dict is returned for batch template queries"""
+        mocker.patch(
+            "src.core.new_c18.tools.template_query.find_LCN",
+            return_value={"test1": {"templates": ["قالب:test"]}, "test2": {"templates": ["قالب:test2"]}},
         )
 
-        result = templatequerymulti("unique_multi_test_link_456", "ar")
+        result = get_templates(["test1", "test2"], "ar")
+        assert isinstance(result, dict)
 
-        mock_find_lcn.assert_called_once()
+    def test_returns_none_when_find_lcn_returns_none_for_batch(self, mocker):
+        """Test that None is returned when find_LCN returns None for batch"""
+        mocker.patch("src.core.new_c18.tools.template_query.find_LCN", return_value=None)
 
-    def test_returns_false_when_find_lcn_returns_none(self, mocker):
-        """Test that False is returned when find_LCN returns None"""
-        mocker.patch("src.core.c18.tools_bots.temp_bot.find_LCN", return_value=None)
-
-        result = templatequerymulti("null_result_link", "ar")
-        assert result is False
+        result = get_templates(["null_result_link"], "ar")
+        assert result is None

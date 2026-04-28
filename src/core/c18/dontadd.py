@@ -124,7 +124,7 @@ def get_pages_nocat():
 
 
 @functools.lru_cache(maxsize=1)
-def Dont_add_to_pages_def():
+def get_dont_add_pages():
     data = load_json(filename_json)
     date = ""
 

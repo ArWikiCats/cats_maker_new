@@ -29,13 +29,13 @@ def fake_api():
 
 @pytest.fixture
 def api_en(monkeypatch, fake_api):
-    monkeypatch.setattr("src.core.new_api.pagenew.load_main_api", lambda lang="en": fake_api)
+    monkeypatch.setattr("src.core.new_api.factory.load_main_api", lambda lang="en": fake_api)
     return fake_api
 
 
 @pytest.fixture
 def api_ar(monkeypatch, fake_api):
-    monkeypatch.setattr("src.core.new_api.pagenew.load_main_api", lambda lang="ar": fake_api)
+    monkeypatch.setattr("src.core.new_api.factory.load_main_api", lambda lang="ar": fake_api)
     return fake_api
 
 

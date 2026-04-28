@@ -1,5 +1,5 @@
 """
-Tests for src/core/c18/bots/text_to_temp_bot.py
+Tests for doc_handler.py
 
 This module tests functions for adding text/categories to template pages.
 """
@@ -8,57 +8,55 @@ import re
 
 import pytest
 
-from src.core.c18.bots.text_to_temp_bot import (
+from src.core.new_c18.constants import PRE_TEXT, TO_SEARCH, TOSEARCH_AND_REPLACE
+from src.core.new_c18.tools.doc_handler import (
     add_direct,
     add_text_to_template,
     add_to_doc_page,
     add_to_text_temps,
     find_doc_and_add,
-    pre_text,
-    to_search,
-    tosearch_and_replace,
 )
 
 
 class TestTosearchAndReplace:
-    """Tests for tosearch_and_replace list"""
+    """Tests for TOSEARCH_AND_REPLACE constant"""
 
     def test_is_list(self):
-        """Test that tosearch_and_replace is a list"""
-        assert isinstance(tosearch_and_replace, list)
+        """Test that TOSEARCH_AND_REPLACE is a list"""
+        assert isinstance(TOSEARCH_AND_REPLACE, list)
 
     def test_contains_expected_templates(self):
         """Test that expected templates are in list"""
-        assert "{{توثيق شريط}}" in tosearch_and_replace
-        assert "{{Navbox documentation}}" in tosearch_and_replace
+        assert "{{توثيق شريط}}" in TOSEARCH_AND_REPLACE
+        assert "{{Navbox documentation}}" in TOSEARCH_AND_REPLACE
 
 
 class TestToSearch:
-    """Tests for to_search list"""
+    """Tests for TO_SEARCH constant"""
 
     def test_is_list(self):
-        """Test that to_search is a list"""
-        assert isinstance(to_search, list)
+        """Test that TO_SEARCH is a list"""
+        assert isinstance(TO_SEARCH, list)
 
     def test_contains_expected_patterns(self):
         """Test that expected patterns are in list"""
-        assert "{{#استدعاء:شريط|شريط" in to_search
+        assert "{{#استدعاء:شريط|شريط" in TO_SEARCH
 
 
 class TestPreText:
-    """Tests for pre_text constant"""
+    """Tests for PRE_TEXT constant"""
 
     def test_is_string(self):
-        """Test that pre_text is a string"""
-        assert isinstance(pre_text, str)
+        """Test that PRE_TEXT is a string"""
+        assert isinstance(PRE_TEXT, str)
 
     def test_contains_documentation_header(self):
-        """Test that pre_text contains documentation header"""
-        assert "صفحة توثيق فرعية" in pre_text
+        """Test that PRE_TEXT contains documentation header"""
+        assert "صفحة توثيق فرعية" in PRE_TEXT
 
     def test_contains_usage_section(self):
-        """Test that pre_text contains usage section"""
-        assert "استعمال" in pre_text
+        """Test that PRE_TEXT contains usage section"""
+        assert "استعمال" in PRE_TEXT
 
 
 class TestAddToTextTemps:
@@ -171,14 +169,14 @@ class TestFindDocAndAdd:
         result = find_doc_and_add("[[تصنيف:علوم]]", "قالب:اختبار/مختبر")
         assert result is False
 
-    @pytest.mark.skip(reason="_lru_cache_wrapper does not have the attribute 'MainPage")
+    @pytest.mark.skip(reason="_lru_cache_wrapper does not have the attribute 'MainPage'")
     def test_returns_false_for_nonexistent_page(self, mocker):
         """Test that False is returned for nonexistent page"""
         mock_page = mocker.MagicMock()
         mock_page.get_text.return_value = ""
         mock_page.exists.return_value = False
 
-        mocker.patch("src.core.c18.bots.text_to_temp_bot.load_main_api.MainPage", return_value=mock_page)
+        mocker.patch("src.core.new_c18.tools.doc_handler.load_main_api.MainPage", return_value=mock_page)
 
         result = find_doc_and_add("[[تصنيف:علوم]]", "قالب:اختبار", create=False)
         assert result is False
@@ -189,12 +187,12 @@ class TestAddTextToTemplate:
 
     def test_handles_doc_page(self, mocker):
         """Test handling of /شرح pages"""
-        mocker.patch("src.core.c18.bots.text_to_temp_bot.add_to_doc_page", return_value="نتيجة التوثيق")
+        mocker.patch("src.core.new_c18.tools.doc_handler.add_to_doc_page", return_value="نتيجة التوثيق")
 
         result = add_text_to_template("نص", "[[تصنيف:علوم]]", "قالب:اختبار/شرح")
         assert result == "نتيجة التوثيق"
 
-    def test_handles_navbox_template(self, mocker):
+    def test_handles_navbox_template(self):
         """Test handling of navbox templates"""
         text = "{{توثيق شريط}}"
         result = add_text_to_template(text, "[[تصنيف:علوم]]", "قالب:اختبار")
@@ -204,7 +202,7 @@ class TestAddTextToTemplate:
 
     def test_handles_regular_template(self, mocker):
         """Test handling of regular templates"""
-        mocker.patch("src.core.c18.bots.text_to_temp_bot.find_doc_and_add", return_value=False)
+        mocker.patch("src.core.new_c18.tools.doc_handler.find_doc_and_add", return_value=False)
 
         text = "محتوى القالب"
         result = add_text_to_template(text, "[[تصنيف:علوم]]", "قالب:اختبار")
