@@ -178,11 +178,11 @@ class AuthProvider:
         if not self.session:
             self.session = load_session(lang=self.lang, family=self.family, username=self.username)
 
-        if len(getattr(self.session.cookies, "_cookies", {}).get(".wikipedia.org", {}).get("/w/", [])) > 0:
+        logged_in = False
+        if self.session.cookies:
             if self._logged_in():
                 logger.debug(f"<<green>>Cookie Already logged in with user:{self.username_in}")
                 return True
-
         logged_in = self.log_in()
         if logged_in and hasattr(self.session, "cookies"):
             try:
