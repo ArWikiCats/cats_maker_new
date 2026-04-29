@@ -11,10 +11,10 @@ from typing import Any
 
 import requests
 
-from ....config import settings
+from ...config import settings
 from .auth import AuthProvider
 from .cookies_bot import del_cookies_file, get_file_name
-from ..api_utils.handel_errors import HandleErrors
+from .api_utils.handel_errors import HandleErrors
 
 logger = logging.getLogger(__name__)
 
