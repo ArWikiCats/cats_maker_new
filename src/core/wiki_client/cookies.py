@@ -101,3 +101,10 @@ def save_from_session(session: requests.Session, path: Path) -> None:
         logger.warning("Could not set permissions on %s: %s", path, exc)
 
     logger.debug("Saved %d cookies to %s", len(jar), path)
+
+
+__all__ = [
+    "get_cookie_path",
+    "load_into_session",
+    "save_from_session",
+]

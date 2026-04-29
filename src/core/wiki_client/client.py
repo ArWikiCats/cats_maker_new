@@ -8,8 +8,10 @@ from pathlib import Path
 import mwclient
 import mwclient.errors
 
-from . import config, cookies, requests_handler
+from .config import COOKIES_DIR, DEFAULT_PATH
+from .cookies import get_cookie_path, load_into_session, save_from_session
 from .exceptions import LoginError
+from .requests_handler import wrap_session
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +44,7 @@ class WikiLoginClient:
         family: str,
         username: str,
         password: str,
-        cookies_dir: str = config.COOKIES_DIR,
+        cookies_dir: str = COOKIES_DIR,
     ) -> None:
         """
         Initialise the client, load any saved cookies, and ensure the session
@@ -62,7 +64,7 @@ class WikiLoginClient:
         self._password = password  # kept private — never log or expose this
 
         # ── Cookie path ────────────────────────────────────────────────────
-        self._cookie_path: Path = cookies.get_cookie_path(cookies_dir, family, lang, username)
+        self._cookie_path: Path = get_cookie_path(cookies_dir, family, lang, username)
 
         # ── mwclient Site ──────────────────────────────────────────────────
         # mwclient.Site accepts a (family, lang) tuple to build the hostname.
@@ -70,15 +72,15 @@ class WikiLoginClient:
         logger.debug("Creating mwclient.Site for %s.%s", lang, family)
         self._site = mwclient.Site(
             (family, lang),
-            path=config.DEFAULT_PATH,
+            path=DEFAULT_PATH,
         )
 
         # ── Inject saved cookies ───────────────────────────────────────────
         # mwclient stores its requests.Session at site.connection.
-        cookies.load_into_session(self._site.connection, self._cookie_path)
+        load_into_session(self._site.connection, self._cookie_path)
 
         # ── Wrap the session with retry / CSRF / maxlag logic ──────────────
-        requests_handler.wrap_session(self._site.connection, self._site)
+        wrap_session(self._site.connection, self._site)
 
         # ── Authenticate if necessary ──────────────────────────────────────
         self._ensure_logged_in()
@@ -109,7 +111,7 @@ class WikiLoginClient:
         mwclient automatically saves cookies after login, but you can call this
         after a long batch of writes to checkpoint the session mid-run.
         """
-        cookies.save_from_session(self._site.connection, self._cookie_path)
+        save_from_session(self._site.connection, self._cookie_path)
         logger.debug("Cookies saved to %s", self._cookie_path)
 
     # ── Private helpers ────────────────────────────────────────────────────
@@ -164,7 +166,12 @@ class WikiLoginClient:
             self.lang,
             self.family,
         )
-        cookies.save_from_session(self._site.connection, self._cookie_path)
+        save_from_session(self._site.connection, self._cookie_path)
 
     def __repr__(self) -> str:
         return f"WikiLoginClient(" f"lang={self.lang!r}, " f"family={self.family!r}, " f"username={self.username!r})"
+
+
+__all__ = [
+    "WikiLoginClient",
+]

@@ -15,6 +15,27 @@ from .exceptions import CSRFError, MaxlagError
 logger = logging.getLogger(__name__)
 
 
+def _replace_token(kwargs: dict, new_token: str) -> dict:
+    """
+    Return a copy of *kwargs* with any "token" key updated to *new_token*.
+
+    mwclient passes write parameters either in `params` (GET query string) or
+    `data` (POST body).  We update whichever dict contains the key.
+    """
+    kwargs = dict(kwargs)  # shallow copy — don't mutate caller's dict
+
+    for key in ("params", "data"):
+        bucket = kwargs.get(key)
+        if isinstance(bucket, dict) and "token" in bucket:
+            bucket = dict(bucket)  # copy the inner dict too
+            bucket["token"] = new_token
+            kwargs[key] = bucket
+            logger.debug("Injected new CSRF token into request %s", key)
+            break
+
+    return kwargs
+
+
 def wrap_session(session: requests.Session, site) -> None:
     """
     Monkey-patch *session*.request so that every HTTP call made by mwclient
@@ -134,22 +155,6 @@ def wrap_session(session: requests.Session, site) -> None:
     logger.debug("Session wrapped with retry handler")
 
 
-def _replace_token(kwargs: dict, new_token: str) -> dict:
-    """
-    Return a copy of *kwargs* with any "token" key updated to *new_token*.
-
-    mwclient passes write parameters either in `params` (GET query string) or
-    `data` (POST body).  We update whichever dict contains the key.
-    """
-    kwargs = dict(kwargs)  # shallow copy — don't mutate caller's dict
-
-    for key in ("params", "data"):
-        bucket = kwargs.get(key)
-        if isinstance(bucket, dict) and "token" in bucket:
-            bucket = dict(bucket)  # copy the inner dict too
-            bucket["token"] = new_token
-            kwargs[key] = bucket
-            logger.debug("Injected new CSRF token into request %s", key)
-            break
-
-    return kwargs
+__all__ = [
+    "wrap_session",
+]
