@@ -1,6 +1,6 @@
 import pytest
 
-from src.core.new_api.factory import load_main_api
+from src.core.client_wiki.factory import load_main_api
 
 
 @pytest.fixture
@@ -29,13 +29,13 @@ def fake_api():
 
 @pytest.fixture
 def api_en(monkeypatch, fake_api):
-    monkeypatch.setattr("src.core.new_api.factory.load_main_api", lambda lang="en": fake_api)
+    monkeypatch.setattr("src.core.client_wiki.factory.load_main_api", lambda lang="en": fake_api)
     return fake_api
 
 
 @pytest.fixture
 def api_ar(monkeypatch, fake_api):
-    monkeypatch.setattr("src.core.new_api.factory.load_main_api", lambda lang="ar": fake_api)
+    monkeypatch.setattr("src.core.client_wiki.factory.load_main_api", lambda lang="ar": fake_api)
     return fake_api
 
 

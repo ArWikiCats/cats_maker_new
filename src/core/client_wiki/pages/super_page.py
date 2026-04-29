@@ -6,8 +6,7 @@ from dataclasses import dataclass, field
 
 from ....config import settings
 from ..api_utils import ASK_BOT, bot_May_Edit, change_codes
-from .handel_errors import HandleErrors
-from .super_login import Login
+from ..api_utils.handel_errors import HandleErrors
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +85,7 @@ def find_edit_error(old, new):
 class MainPage(ASK_BOT, HandleErrors):
     def __init__(
         self,
-        login_bot: Login,
+        login_bot,
         title,
         lang,
         family="wikipedia",
@@ -573,7 +572,7 @@ class MainPage(ASK_BOT, HandleErrors):
 
         # params['basetimestamp'] = self.revisions_data.timestamp
 
-        pop = self.login_bot.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params)
 
         if not pop:
             return False
@@ -643,7 +642,7 @@ class MainPage(ASK_BOT, HandleErrors):
             "createonly": 1,
         }
 
-        pop = self.login_bot.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params)
 
         if not pop:
             return False

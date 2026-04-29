@@ -11,7 +11,7 @@ from typing import Any
 
 import requests
 
-from ....config import settings
+from ...config import settings
 from .auth import AuthProvider
 from .cookies_bot import del_cookies_file, get_file_name
 from .handel_errors import HandleErrors
@@ -215,8 +215,7 @@ class Login(HandleErrors):
     def post_params(
         self,
         params: dict,
-        Type: str = "get",
-        addtoken: bool = False,
+        method: str = "get",
         GET_CSRF: bool = True,
         files: Any = None,
         do_error: bool = False,
