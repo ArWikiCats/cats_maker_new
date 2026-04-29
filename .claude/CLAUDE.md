@@ -23,6 +23,7 @@ pytest tests/mk_cats/test_mknew.py        # Specific file
 pytest -m unit                            # Unit tests only
 pytest -m integration                     # Integration tests only
 pytest -m "not network"                   # Exclude network tests
+pytest --cov=src --cov-report=html        # Run with coverage report
 
 # Linting/Formatting
 black src/                                # Format code (120 char line length)
@@ -45,10 +46,15 @@ run.py (CLI args) → config/settings.py (dataclass config) → mk_cats/mknew.py
 ## Key Modules
 
 -   `src/config/settings.py`: Centralized dataclass-based configuration. All settings accessed via `from src.config import settings`
--   `src/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`
+-   `src/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`, `process_catagories()`
 -   `src/mk_cats/members_helper.py`: Member collection from SQL, API, and SubSub sources
--   `src/core/wd_bots/`: Wikidata API integration
--   `src/core/wiki_api/`: MediaWiki API calls
+-   `src/mk_cats/categorytext.py`: Generates wikitext content for category pages
+-   `src/mk_cats/create_category_page.py`: Page creation and saving logic (`make_category()`)
+-   `src/core/wd_bots/`: Wikidata API integration (`wd_api_bot.py`, `to_wd.py`, `lag_bot.py`)
+-   `src/core/wiki_api/`: MediaWiki API calls (`himoBOT2.py`, `api_requests.py`, `sub_cats_bot.py`)
+-   `src/core/api_sql/`: Database access layer with connection pooling (`db_pool.py`, `repository.py`, `service.py`)
+-   `src/core/utils/skip_cats.py`: Category blacklists - always check before processing
+-   `src/temp/bots/`: Template generation for centuries, decades, years
 
 ## Configuration
 
