@@ -216,7 +216,6 @@ class Login(HandleErrors):
         self,
         params: dict,
         method: str = "get",
-        addtoken: bool = False,
         GET_CSRF: bool = True,
         files: Any = None,
         do_error: bool = False,

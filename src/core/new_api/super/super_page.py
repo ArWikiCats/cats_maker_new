@@ -573,7 +573,7 @@ class MainPage(ASK_BOT, HandleErrors):
 
         # params['basetimestamp'] = self.revisions_data.timestamp
 
-        pop = self.login_bot.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params)
 
         if not pop:
             return False
@@ -643,7 +643,7 @@ class MainPage(ASK_BOT, HandleErrors):
             "createonly": 1,
         }
 
-        pop = self.login_bot.post_params(params, addtoken=True)
+        pop = self.login_bot.post_params(params)
 
         if not pop:
             return False
