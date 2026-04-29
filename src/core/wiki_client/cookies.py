@@ -123,9 +123,7 @@ def load_into_session(session: requests.Session, path: Path) -> bool:
         jar.load(ignore_discard=True, ignore_expires=True)
         logger.debug("Loaded %d cookies from %s", len(jar), path)
     except (LoadError, OSError) as exc:
-        logger.warning(
-            "Could not load cookie file %s (%s) — will require login", path, exc
-        )
+        logger.warning("Could not load cookie file %s (%s) — will require login", path, exc)
         session.cookies = RequestsCookieJar()
         return False
 

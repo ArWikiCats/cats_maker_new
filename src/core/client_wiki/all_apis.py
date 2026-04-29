@@ -3,10 +3,9 @@
 import functools
 import logging
 
-from .categories import catdepth_new
-
-from .pages import super_page
 from ..new_api.super_login import Login
+from .categories import catdepth_new
+from .pages import super_page
 
 logger = logging.getLogger(__name__)
 
