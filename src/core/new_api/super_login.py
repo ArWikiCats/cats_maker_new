@@ -41,7 +41,7 @@ class Login(HandleErrors):
         self.cookies_file = get_file_name(self.lang, self.family, self.username)
         self.session = None
         self.auth = None
-        self.auth = AuthProvider()
+        # self.auth = AuthProvider()
 
 
         super().__init__()
