@@ -21,13 +21,13 @@ def generate_domain_test_placeholders(src_root, test_root):
             if file.endswith(".py") and file != "__init__.py":
                 file_stem = Path(file).stem
 
-                # تحديد اسم ملف الاختبار
-                if "routes" in current_path.parts:
-                    test_filename = f"test_{file_stem}_routes.py"
-                else:
-                    # test_filename = f"test_{file_stem}.py"
-                    continue
+                # # تحديد اسم ملف الاختبار
+                # if "routes" in current_path.parts:
+                #     test_filename = f"test_{file_stem}_routes.py"
+                # else:
+                #     continue
 
+                test_filename = f"test_{file_stem}.py"
                 # إنشاء المجلد إذا لم يكن موجوداً
                 target_dir.mkdir(parents=True, exist_ok=True)
                 test_file_path = target_dir / test_filename
