@@ -167,6 +167,7 @@ def make_category(categories, enca, title, qid, family="") -> CategoryResult:
     page = api.MainPage(title)
 
     if page.get_text() or page.exists():
+        logger.debug(f"<<lightred>> page: {title} already exists")
         return CategoryResult(False, None, "Page already exists")
 
     new_cat = create_Page(text, page)
@@ -177,6 +178,7 @@ def make_category(categories, enca, title, qid, family="") -> CategoryResult:
         return CategoryResult(True, title, None)
 
     logger.warning(f"<<lightgreen>> New_Cat failed: {title}")
+    logger.warning(new_cat)
     return CategoryResult(False, None, "Failed to create page")
 
 

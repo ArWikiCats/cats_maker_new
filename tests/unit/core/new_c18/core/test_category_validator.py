@@ -89,9 +89,14 @@ class TestCheckPageStatus:
             "exists": True,
             "isRedirectPage": False,
             "templates": {},
-            "langlinks": {"ar": "تصنيف:أخرى"},
+            "langlinks": {"en": "Category:Other"},
         }
-        result = _check_page_status("en", "Category:Test", "تصنيف:اختبار", frozenset())
+        # is_ar=True, so it looks for "ar" key; expected_langlink doesn't match
+        result = _check_page_status("ar", "تصنيف:اختبار", "Category:Test", frozenset(), is_ar=True)
+        # langlinks has "en" but not "ar", so langlink="" and condition is skipped
+        # Need to provide the ar key
+        mock_get_info.return_value["langlinks"]["ar"] = "تصنيف:أخرى"
+        result = _check_page_status("ar", "تصنيف:اختبار", "Category:Test", frozenset(), is_ar=True)
         assert result.valid is False
         assert "mismatch" in result.reason
 

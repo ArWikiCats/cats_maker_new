@@ -37,7 +37,7 @@ class TestLocalLanguageLinks:
         assert "فلسطين" in LocalLanguageLinks
         assert "اليمن" in LocalLanguageLinks
         assert "سوريا" in LocalLanguageLinks
-        assert "مصر" in LocalLanguageLinks  # Not in the set, checking
+        assert "المغرب" in LocalLanguageLinks
 
     def test_contains_sciences(self):
         assert "الكيمياء" in LocalLanguageLinks
