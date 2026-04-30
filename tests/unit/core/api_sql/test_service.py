@@ -4,6 +4,8 @@ Tests for service.py
 This module tests namespace handling and SQL query functions for MediaWiki.
 """
 
+import pytest
+
 from src.core.api_sql.service import CategoryComparator
 
 
@@ -77,8 +79,6 @@ class TestCategoryComparator:
         comparator = CategoryComparator()
         # Arabic category that is entirely the prefix will normalize to empty
         # This triggers UnboundLocalError because ar_titles is never assigned
-        import pytest
-
         with pytest.raises(UnboundLocalError):
             comparator.get_exclusive_category_titles("Science", "تصنيف:")
 
