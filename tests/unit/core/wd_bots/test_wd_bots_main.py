@@ -1,7 +1,6 @@
 """
-Tests for wd_bots_main.py
-
-This module tests the WD_API class.
+Unit tests for src/core/wd_bots/wd_bots_main.py module.
+TODO: write tests
 """
 
 import pytest
