@@ -18,3 +18,4 @@ __pycache__/
 scan.py
 coverage.xml
 *.zip
+.claude/settings.local.json

@@ -64,3 +64,40 @@ class TestGetFileName:
         with patch.dict(os.environ, {"HOME": "/tmp"}):
             result = get_file_name("en", "wikipedia", "bot")
             assert result.suffix == ".txt"
+
+    @patch("src.core.new_api.cookies_bot.settings")
+    def test_home_not_set_uses_file_parent(self, mock_settings):
+        """Test that when HOME is not set, Path(__file__).parent is used."""
+        mock_settings.bot.no_cookies = True
+        with patch.dict(os.environ, {}, clear=True):
+            if "HOME" in os.environ:
+                del os.environ["HOME"]
+            result = get_file_name("en", "wikipedia", "bot")
+            assert result.suffix == ".txt"
+
+    @patch("src.core.new_api.cookies_bot.settings")
+    def test_normal_path_generation(self, mock_settings, tmp_path):
+        """Test normal (non-random) cookie path generation."""
+        mock_settings.bot.no_cookies = False
+        with patch.dict(os.environ, {"HOME": str(tmp_path)}):
+            result = get_file_name("EN", "Wikipedia", "MyBot@BotPassword")
+            assert result.name == "wikipedia_en_mybot.txt"
+
+    @patch("src.core.new_api.cookies_bot.settings")
+    def test_directory_creation(self, mock_settings, tmp_path):
+        """Test that cookies directory is created if it doesn't exist."""
+        mock_settings.bot.no_cookies = False
+        cookies_dir = tmp_path / "cookies"
+        assert not cookies_dir.exists()
+        with patch.dict(os.environ, {"HOME": str(tmp_path)}):
+            get_file_name("en", "wikipedia", "bot")
+            assert cookies_dir.exists()
+
+
+class TestDelCookiesFileException:
+    def test_exception_during_unlink(self, tmp_path):
+        """Test that exception during unlink is caught and logged."""
+        path = tmp_path / "locked.txt"
+        path.touch()
+        with patch.object(type(path), "unlink", side_effect=PermissionError("denied")):
+            del_cookies_file(path)  # Should not raise
