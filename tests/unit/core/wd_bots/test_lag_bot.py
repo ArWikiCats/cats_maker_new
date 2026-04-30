@@ -1,7 +1,6 @@
 """
-Tests for lag_bot.py
-
-This module tests Wikidata lag handling functions.
+Unit tests for src/core/wd_bots/lag_bot.py module.
+TODO: write tests
 """
 
 import pytest

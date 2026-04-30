@@ -8,7 +8,6 @@ textfiles/Dont_add_to_these_pages.json
 *.lnk
 *.db
 mk_cats/desktop.ini
-*.txt
 .coverage
 htmlcov/
 *.egg-info/

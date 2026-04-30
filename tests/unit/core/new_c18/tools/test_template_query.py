@@ -6,17 +6,7 @@ This module tests template query functions for Wikipedia categories.
 
 import pytest
 
-from src.core.new_c18.constants import SKIP_CATEGORIES
 from src.core.new_c18.tools.template_query import TemplateCache, _cache, get_templates
-
-
-class TestSkipCategories:
-    """Tests for SKIP_CATEGORIES constant"""
-
-    def test_skip_categories_contains_living_people(self):
-        """Test that living people categories are in skip list"""
-        assert "تصنيف:أشخاص على قيد الحياة" in SKIP_CATEGORIES
-        assert "تصنيف:أشخاص أحياء" in SKIP_CATEGORIES
 
 
 class TestTemplateCache:

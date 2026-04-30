@@ -5,6 +5,8 @@ import logging
 
 from tqdm import tqdm
 
+from ...wiki_client import WikiLoginClient
+
 logger = logging.getLogger(__name__)
 
 
@@ -15,7 +17,12 @@ class CategoryDepth:
     Provides methods for recursively querying category members.
     """
 
-    def __init__(self, login_bot, title: str = "", **kwargs) -> None:
+    def __init__(
+        self,
+        login_bot: WikiLoginClient,
+        title: str = "",
+        **kwargs,
+    ) -> None:
         self.login_bot = login_bot
 
         self.title: str = title
@@ -249,7 +256,7 @@ class CategoryDepth:
             if continue_params:
                 params.update(continue_params)
 
-            api_data = self.login_bot.post_params(params)
+            api_data = self.login_bot.client_request(params)
 
             if not api_data:
                 print(f"api is False for {cac}")

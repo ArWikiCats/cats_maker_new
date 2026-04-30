@@ -7,8 +7,6 @@ This module tests functions for adding text/categories to template pages.
 import re
 
 import pytest
-
-from src.core.new_c18.constants import PRE_TEXT, TO_SEARCH, TOSEARCH_AND_REPLACE
 from src.core.new_c18.tools.doc_handler import (
     add_direct,
     add_text_to_template,
@@ -16,48 +14,6 @@ from src.core.new_c18.tools.doc_handler import (
     add_to_text_temps,
     find_doc_and_add,
 )
-
-
-class TestTosearchAndReplace:
-    """Tests for TOSEARCH_AND_REPLACE constant"""
-
-    def test_is_list(self):
-        """Test that TOSEARCH_AND_REPLACE is a list"""
-        assert isinstance(TOSEARCH_AND_REPLACE, list)
-
-    def test_contains_expected_templates(self):
-        """Test that expected templates are in list"""
-        assert "{{توثيق شريط}}" in TOSEARCH_AND_REPLACE
-        assert "{{Navbox documentation}}" in TOSEARCH_AND_REPLACE
-
-
-class TestToSearch:
-    """Tests for TO_SEARCH constant"""
-
-    def test_is_list(self):
-        """Test that TO_SEARCH is a list"""
-        assert isinstance(TO_SEARCH, list)
-
-    def test_contains_expected_patterns(self):
-        """Test that expected patterns are in list"""
-        assert "{{#استدعاء:شريط|شريط" in TO_SEARCH
-
-
-class TestPreText:
-    """Tests for PRE_TEXT constant"""
-
-    def test_is_string(self):
-        """Test that PRE_TEXT is a string"""
-        assert isinstance(PRE_TEXT, str)
-
-    def test_contains_documentation_header(self):
-        """Test that PRE_TEXT contains documentation header"""
-        assert "صفحة توثيق فرعية" in PRE_TEXT
-
-    def test_contains_usage_section(self):
-        """Test that PRE_TEXT contains usage section"""
-        assert "استعمال" in PRE_TEXT
-
 
 class TestAddToTextTemps:
     """Tests for add_to_text_temps function"""

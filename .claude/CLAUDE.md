@@ -23,6 +23,7 @@ pytest tests/mk_cats/test_mknew.py        # Specific file
 pytest -m unit                            # Unit tests only
 pytest -m integration                     # Integration tests only
 pytest -m "not network"                   # Exclude network tests
+pytest --cov=src --cov-report=html        # Run with coverage report
 
 # Linting/Formatting
 black src/                                # Format code (120 char line length)
@@ -45,46 +46,58 @@ run.py (CLI args) → config/settings.py (dataclass config) → mk_cats/mknew.py
 ## Key Modules
 
 -   `src/config/settings.py`: Centralized dataclass-based configuration. All settings accessed via `from src.config import settings`
--   `src/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`
+-   `src/mk_cats/mknew.py`: Core functions - `create_categories_from_list()`, `ar_make_lab()`, `process_catagories()`
 -   `src/mk_cats/members_helper.py`: Member collection from SQL, API, and SubSub sources
--   `src/core/wd_bots/`: Wikidata API integration
--   `src/core/wiki_api/`: MediaWiki API calls
+-   `src/mk_cats/categorytext.py`: Generates wikitext content for category pages
+-   `src/mk_cats/create_category_page.py`: Page creation and saving logic (`make_category()`)
+-   `src/core/wd_bots/`: Wikidata API integration (`wd_api_bot.py`, `to_wd.py`, `lag_bot.py`)
+-   `src/core/wiki_api/`: MediaWiki API calls (`himoBOT2.py`, `api_requests.py`, `sub_cats_bot.py`)
+-   `src/core/api_sql/`: Database access layer with connection pooling (`db_pool.py`, `repository.py`, `service.py`)
+-   `src/core/utils/skip_cats.py`: Category blacklists - always check before processing
+-   `src/temp/bots/`: Template generation for centuries, decades, years
 
 ## Configuration
 
 Settings are dataclasses in `src/config/settings.py`:
 
 -   `WikipediaConfig`: language codes, user agent, timeout
--   `WikidataConfig`: endpoints, maxlag
--   `DatabaseConfig`: SQL connection settings
--   `CategoryConfig`: min_members (default: 10), stubs, we_try mode
--   `BotConfig`: ask confirmation, diff display
+-   `WikidataConfig`: endpoints, maxlag, test_mode
+-   `DatabaseConfig`: SQL connection settings (host, port, use_sql)
+-   `CategoryConfig`: min_members (default: 10), stubs, we_try mode, test_mode
+-   `BotConfig`: ask confirmation, diff display, force_edit, no_login
+-   `QueryConfig`: offset, depth, to_limit, namespace filters
+-   `SiteConfig`: custom_family, custom_lang, secondary_lang
+-   `DebugConfig`: print_url, do_post
 
 Runtime config via CLI args (processed in `settings._process_argv()`):
 
--   `-range:<n>`, `-depth:<n>`, `-minmembers:<n>`
+-   `-range:<n>`, `-depth:<n>`, `-minmembers:<n>`, `-offset:<n>`
 -   `-nosql`, `DEBUG`, `testwikidata`, `ask`
+-   `-family:<wikiquote|wikisource>`, `-uselang:<code>`, `-slang:<code>`
+
+Environment variables (loaded via `python-dotenv`): `WIKIPEDIA_AR_CODE`, `WIKIDATA_ENDPOINT`, `DATABASE_HOST`, `MIN_MEMBERS`, `DEBUG`, etc.
 
 ## Code Style
 
 -   Line length: 120 characters
--   Formatters: Black, isort (black profile), ruff
--   Target: Python 3.10+ (tested on 3.13)
+-   Formatters: Black (target py310), isort (black profile), ruff (target py313)
+-   Ruff ignores: E402, E501, F841, F401 (see `pyproject.toml` for full list)
+-   Flynt for f-string conversion
 -   Test framework: pytest with pytest-mock
 
 ## Testing Conventions
 
 -   Tests in `tests/` mirror `src/` structure
--   Shared fixtures in `tests/conftest.py`
+-   Shared fixtures in `tests/conftest.py` (network auto-disabled via `disable_network` fixture)
 -   Mock all external API calls (Wikipedia, Wikidata, SQL)
--   Test markers: `unit`, `integration`, `network`, `slow`, `skip2`
+-   Test markers: `unit`, `integration`, `network`, `slow`, `fast`, `skip2`
 -   Default pytest excludes `network` and `skip2` tests
 
 ## Important Patterns
 
 ```python
 # Import main functions from mk_cats
-from src.mk_cats import create_categories_from_list, ar_make_lab
+from src.mk_cats import create_categories_from_list, ar_make_lab, make_category
 
 # Access settings
 from src.config import settings
@@ -94,6 +107,14 @@ settings.database.use_sql      # whether to use SQL queries
 # Process categories with callback
 create_categories_from_list(["Category:Science"], callback=my_callback)
 ```
+
+### External Dependencies
+
+-   `wikitextparser` - Wiki text parsing
+-   `tqdm` - Progress bars
+-   `SPARQLWrapper` - SPARQL queries to Wikidata
+-   `pymysql` - MySQL database connections (Wikimedia Tool Labs)
+-   `python-dotenv` - Environment variable loading from `.env`
 
 ## Special Considerations
 
