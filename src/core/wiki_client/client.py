@@ -118,8 +118,10 @@ class WikiLoginClient:
         # ── mwclient Site ──────────────────────────────────────────────────
         # Pass our shared session in so mwclient doesn't create its own.
         logger.debug("Creating mwclient.Site for %s.%s", lang, family)
+
+        self.api_url = f"https://{self.lang}.{self.family}.org/w/api.php"
         self._site = mwclient.Site(
-            (family, lang),
+            f"{self.lang}.{self.family}.org",
             path=DEFAULT_PATH,
             pool=shared_session,  # inject the shared session
         )
@@ -165,7 +167,7 @@ class WikiLoginClient:
     def client_request(
         self,
         params: dict,
-        method: str = "get",
+        method: str = "post",
         files: Optional[Any] = None,
     ) -> dict:
         """
@@ -228,12 +230,11 @@ class WikiLoginClient:
         params = self._enrich_params(params)
 
         session: requests.Session = self._site.connection
-        api_url: str = self._site.api_url
 
         logger.debug(
             "%s %s action=%s files=%s",
             method.upper(),
-            api_url,
+            self.api_url,
             params.get("action"),
             list(files.keys()) if files else None,
         )
@@ -241,11 +242,13 @@ class WikiLoginClient:
         # Merge #4: assertnameduserfailed recovery — retry once after re-login
         for attempt in range(2):
             if method == "get":
-                response = session.request("GET", api_url, params=params)
+                response = session.request("GET", self.api_url, params=params)
             elif files:
-                response = session.request("POST", api_url, data=params, files=files)
+                params["token"] = self._site.get_token("csrf")
+                response = session.request("POST", self.api_url, data=params, files=files)
             else:
-                response = session.request("POST", api_url, data=params)
+                params["token"] = self._site.get_token("csrf")
+                response = session.request("POST", self.api_url, data=params)
 
             response.raise_for_status()
             result: dict = response.json()

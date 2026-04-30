@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+from pytest_socket import disable_socket
 
 # Add the ArWikiCats directory to the python path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -19,8 +20,13 @@ def disable_network(mocker):
     mocker.patch("requests.get", side_effect=Exception("Network disabled in tests"))
     mocker.patch("requests.post", side_effect=Exception("Network disabled in tests"))
     mocker.patch("urllib.request.urlopen", side_effect=Exception("Network disabled in tests"))
+    mocker.patch("src.core.wiki_client.client.mwclient.client.requests.get", side_effect=Exception("Network disabled in tests"))
+    mocker.patch("src.core.wiki_client.client.mwclient.client.requests.post", side_effect=Exception("Network disabled in tests"))
 
 
+@pytest.fixture(autouse=True)
+def stop_nets():
+    disable_socket(allow_unix_socket=True)
 # ===== Shared Test Data Fixtures =====
 
 

@@ -186,10 +186,24 @@ class AuthProvider:
             "action": "query",
             "meta": "tokens",
         }
-        req = self.post_it_parse_data(r3_params) or {}
-        if not req:
+        try:
+            req = self.session.request("POST", self.endpoint, data=r3_params)
+        except Exception as e:
+            logger.warning(f" {self.lang}.{self.family} request exception: {e}")
             return ""
-        return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
+
+        json1 = {}
+        if req:
+            try:
+                json1 = req.json()
+            except Exception as e:
+                logger.warning(
+                    f" {self.lang}.{self.family} error parsing userinfo response: {e} - response: {getattr(req, 'text', '')}"
+                )
+                logger.debug(req.text)
+                return False
+
+        return json1.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
 
 
 __all__ = [

@@ -28,8 +28,8 @@ class ALL_APIS:
         self.family = family
         self.username = username
         self.password = password
-        self.login_bot = self._login()
-        # self.login_bot = self._login2()
+        # self.login_bot = self._login()
+        self.login_bot = self._login2()
 
     def MainPage(self, title: str, *args, **kwargs) -> super_page.MainPage:
         return super_page.MainPage(self.login_bot, title, self.lang, family=self.family)

@@ -37,12 +37,11 @@ class Login(HandleErrors):
         self.r3_token: str = ""
         self.user_agent: str = settings.wikipedia.user_agent
         self.endpoint: str = f"https://{self.lang}.{self.family}.org/w/api.php"
+        self.username = getattr(self, "username", "")
         self.cookies_file = get_file_name(self.lang, self.family, self.username)
         self.session = None
         self.auth = None
-        self.auth = AuthProvider()
-
-        self.username = getattr(self, "username", "")
+        # self.auth = AuthProvider()
 
         super().__init__()
 
@@ -285,10 +284,10 @@ class Login(HandleErrors):
         else:
             timeout = 30
 
-        if not self._client.session:
+        if not self.auth.session:
             self._make_session()
 
-        req = self._client.session.request(
+        req = self.auth.session.request(
             "POST", self.endpoint, data=self.params_w(params), files=files, timeout=timeout
         )
 
@@ -302,6 +301,10 @@ class Login(HandleErrors):
         return data
 
     def add_User_tables(self, family, table, lang="") -> None:
+        if not self.auth:
+            self.lang = lang
+            self.family = family
+            self._make_session()
         self.auth.add_User_tables(family, table, lang)
 
     def params_w(self, params: dict) -> dict:
@@ -388,7 +391,7 @@ class Login(HandleErrors):
                 logged_in = True
                 logger.debug(f"<<green>>Cookie Already logged in with user:{self.username_in}")
         else:
-            logged_in = self.log_in()
+            logged_in = self.auth.log_in()
 
         if logged_in:
             self.cookie_jar.save(ignore_discard=True, ignore_expires=True)
