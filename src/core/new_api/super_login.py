@@ -37,12 +37,12 @@ class Login(HandleErrors):
         self.r3_token: str = ""
         self.user_agent: str = settings.wikipedia.user_agent
         self.endpoint: str = f"https://{self.lang}.{self.family}.org/w/api.php"
+        self.username = getattr(self, "username", "")
         self.cookies_file = get_file_name(self.lang, self.family, self.username)
         self.session = None
         self.auth = None
         self.auth = AuthProvider()
 
-        self.username = getattr(self, "username", "")
 
         super().__init__()
 
