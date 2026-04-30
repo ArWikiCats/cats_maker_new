@@ -228,6 +228,7 @@ class WikiLoginClient:
 
         # Merge #5: inject bot flag and identity assertion for write actions
         params = self._enrich_params(params)
+        params["token"] = self._site.get_token("csrf")
 
         session: requests.Session = self._site.connection
 
