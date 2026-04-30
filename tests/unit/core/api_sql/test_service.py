@@ -60,12 +60,7 @@ class TestCategoryComparator:
         assert result == []
 
     def test_get_exclusive_skips_ar_fetch_when_ar_title_empty(self, mocker):
-        """Test that Arabic repo is not called when ar_category normalizes to empty.
-
-        Note: This currently hits an UnboundLocalError bug in service.py:67
-        where ar_titles is referenced but never assigned when ar_title_clean
-        is empty. When the bug is fixed, this test should be updated.
-        """
+        """Test that Arabic repo is not called when ar_category normalizes to empty."""
         mocker.patch("src.core.api_sql.service.ConfigLoader.is_production", return_value=True)
         mock_ar = mocker.patch(
             "src.core.api_sql.repository.CategoryRepository.fetch_arabic_titles_with_english_links",
@@ -78,10 +73,9 @@ class TestCategoryComparator:
 
         comparator = CategoryComparator()
         # Arabic category that is entirely the prefix will normalize to empty
-        # This triggers UnboundLocalError because ar_titles is never assigned
-        with pytest.raises(UnboundLocalError):
-            comparator.get_exclusive_category_titles("Science", "تصنيف:")
-
+        result = comparator.get_exclusive_category_titles("Science", "تصنيف:")
+        # ar_titles_set stays empty, so all EN titles are exclusive
+        assert result == ["Page1"]
         mock_ar.assert_not_called()
 
     def test_get_exclusive_returns_all_when_no_ar_titles(self, mocker):
