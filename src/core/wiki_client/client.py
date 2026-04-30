@@ -119,9 +119,9 @@ class WikiLoginClient:
         # Pass our shared session in so mwclient doesn't create its own.
         logger.debug("Creating mwclient.Site for %s.%s", lang, family)
 
-        self.api_url = f"{self.lang}.{self.family}.org"
+        self.api_url = f"https://{self.lang}.{self.family}.org"
         self._site = mwclient.Site(
-            self.api_url,
+            f"{self.lang}.{self.family}.org",
             path=DEFAULT_PATH,
             pool=shared_session,  # inject the shared session
         )
