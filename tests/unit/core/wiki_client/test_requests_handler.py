@@ -62,7 +62,6 @@ class TestWrappedRequest:
         response = MagicMock()
         response.headers = {"Content-Type": "text/html"}
         session.request.return_value = response
-        session._original_request = session.request
 
         wrap_session(session, site)
         result = session.request("GET", "http://example.com")
@@ -75,7 +74,6 @@ class TestWrappedRequest:
         response.headers = {"Content-Type": "application/json"}
         response.json.return_value = {"error": {"code": "badtoken"}}
         session.request.return_value = response
-        session._original_request = session.request
 
         site.get_token.return_value = "new_token"
 
@@ -90,7 +88,6 @@ class TestWrappedRequest:
         response.headers = {"Content-Type": "application/json"}
         response.json.return_value = {"error": {"code": "maxlag"}}
         session.request.return_value = response
-        session._original_request = session.request
 
         wrap_session(session, site)
         with pytest.raises(MaxlagError):
