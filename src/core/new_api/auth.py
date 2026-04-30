@@ -186,7 +186,11 @@ class AuthProvider:
             "action": "query",
             "meta": "tokens",
         }
-        req = self.post_it_parse_data(r3_params) or {}
+        try:
+            req = self.session.request("POST", self.endpoint, data=r3_params)
+        except Exception as e:
+            logger.warning(f" {self.lang}.{self.family} request exception: {e}")
+            return ""
         if not req:
             return ""
         return req.get("query", {}).get("tokens", {}).get("csrftoken", "") or ""
